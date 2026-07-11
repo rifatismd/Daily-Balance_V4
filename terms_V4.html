@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms & Privacy — Daily Balance</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0a0b0f;font-family:'Segoe UI',sans-serif;color:#e0e6f0;max-width:700px;margin:0 auto;padding:24px 20px 60px;}
+    h1{font-size:1.6rem;color:#f5c542;margin-bottom:4px;}
+    h2{font-size:1rem;color:#f5c542;margin-top:28px;margin-bottom:6px;}
+    p,li{font-size:0.9rem;color:#b0bcd0;line-height:1.7;}
+    ul{padding-left:20px;}
+    .date{font-size:0.78rem;color:#5a6a80;margin-bottom:28px;}
+    a{color:#34d9c3;}
+    .card{background:#12151e;border:1px solid #1e2535;border-radius:12px;padding:16px 20px;margin-bottom:16px;}
+    .back-btn{display:inline-flex;align-items:center;gap:6px;background:#12151e;border:1px solid #1e2535;border-radius:8px;padding:8px 14px;color:#5e728c;font-size:0.8rem;cursor:pointer;margin-bottom:24px;text-decoration:none;}
+    .back-btn:hover{color:#f5c542;border-color:#f5c542;}
+    .tab-btns{display:flex;gap:0;margin-bottom:24px;border:1px solid #1e2535;border-radius:10px;overflow:hidden;}
+    .tab-btn{flex:1;padding:10px;text-align:center;font-size:0.82rem;cursor:pointer;background:#12151e;color:#5e728c;border:none;font-family:'Segoe UI',sans-serif;transition:all 0.15s;}
+    .tab-btn.active{background:#f5c54215;color:#f5c542;font-weight:600;}
+    .tab-content{display:none;}
+    .tab-content.active{display:block;}
+  </style>
+</head>
+<body>
+  <a href="index_V4.html" class="back-btn">&#8592; Back to Home</a>
+  <h1>Legal</h1>
+  <div class="date">Last updated: July 11, 2026</div>
+
+  <div class="tab-btns">
+    <button class="tab-btn active" onclick="showTab('terms',this)">Terms &amp; Conditions</button>
+    <button class="tab-btn" onclick="showTab('privacy',this)">Privacy Policy</button>
+  </div>
+
+  <!-- TERMS -->
+  <div id="tab-terms" class="tab-content active">
+    <div class="card"><h2>Acceptance</h2><p>By using Daily Balance, you agree to these Terms. If you do not agree, please do not use this app.</p></div>
+    <div class="card"><h2>About the App</h2><p>Daily Balance is a free personal productivity app provided as-is for personal use only.</p></div>
+    <div class="card"><h2>User Responsibilities</h2><ul><li>You are responsible for the accuracy of data you enter.</li><li>Do not use for any unlawful purpose.</li><li>Medicine tracker is for reminders only — not medical advice.</li><li>You are responsible for your device and browser security.</li></ul></div>
+    <div class="card"><h2>Google Sign In</h2><p>If you sign in with Google, you also agree to <a href="https://policies.google.com/terms" target="_blank">Google's Terms of Service</a>. We only request basic profile info to personalize your experience.</p></div>
+    <div class="card"><h2>Medical Disclaimer</h2><p>The medicine tracker is a reminder tool only. Always consult a qualified healthcare professional for medical decisions.</p></div>
+    <div class="card"><h2>No Warranty</h2><p>Daily Balance is provided as-is without any warranty. We do not guarantee the app will be error-free or uninterrupted. Use at your own risk.</p></div>
+    <div class="card"><h2>Changes</h2><p>We may update these Terms occasionally. Continued use after changes means acceptance.</p></div>
+    <div class="card"><h2>Contact</h2><p><a href="mailto:voicelessvoice00@gmail.com">voicelessvoice00@gmail.com</a></p></div>
+  </div>
+
+  <!-- PRIVACY -->
+  <div id="tab-privacy" class="tab-content">
+    <div class="card"><h2>About Daily Balance</h2><p>Daily Balance is a free personal productivity web app for tracking daily routines, goals, notes, water, mood, skill progress, and medicine reminders.</p></div>
+    <div class="card"><h2>Data We Collect</h2><p>We only store data you enter:</p><ul><li>Daily routine completion</li><li>Notes and goals</li><li>Water intake and mood logs</li><li>Skill XP and progress</li><li>Medicine reminders</li><li>App settings and preferences</li><li>Custom schedule slots</li></ul><p style="margin-top:8px;">We do <strong>not</strong> automatically collect your location, device info, or any other personal data.</p></div>
+    <div class="card"><h2>How Data is Stored</h2><p>All your data is stored locally in your browser's localStorage. Nothing is sent to any external server. Each Google account's data is stored separately — signing out does not delete your data.</p></div>
+    <div class="card"><h2>Google Sign In</h2><ul><li>We only request your basic profile (name, email, photo)</li><li>Your Google credentials are never stored by this app</li><li>You can sign out anytime from the app header</li><li>Revoke access anytime from your Google Account settings</li></ul></div>
+    <div class="card"><h2>Multi-Account Support</h2><p>If multiple people use the same device/browser, each Google account's data is stored separately using your email as a unique key. Guest mode data is shared across all guest sessions on the same device.</p></div>
+    <div class="card"><h2>Third-Party Services</h2><ul><li>Google Identity Services — for sign in</li><li>GitHub Pages — for hosting</li><li>Google Fonts — for typography</li><li>Anthropic Claude API — for AI schedule suggestions (only when you use the AI feature)</li></ul></div>
+    <div class="card"><h2>Data Sharing</h2><p>We do not sell, trade, or share your personal data with any third parties.</p></div>
+    <div class="card"><h2>Contact</h2><p><a href="mailto:voicelessvoice00@gmail.com">voicelessvoice00@gmail.com</a></p></div>
+  </div>
+
+  <p style="margin-top:32px;font-size:0.75rem;color:#3a4a60;text-align:center;">&#169; 2026 Daily Balance</p>
+
+  <script>
+    function showTab(name, btn){
+      document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.getElementById('tab-'+name).classList.add('active');
+      btn.classList.add('active');
+    }
+    // Auto-switch to privacy if hash is #privacy
+    if(window.location.hash==='#privacy'){
+      showTab('privacy', document.querySelectorAll('.tab-btn')[1]);
+    }
+  </script>
+</body>
+</html>
