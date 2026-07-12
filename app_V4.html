@@ -1029,12 +1029,7 @@
     <div id="tabToggles"></div>
   </div>
 
-  <!-- ═══ DASHBOARD ═══ -->
-  <div class="settings-card">
-    <div class="settings-section-title">📊 Dashboard (Daily Home)</div>
-    <div style="font-size:0.73rem;color:var(--muted);margin-bottom:10px;">Choose what shows on the Daily tab.</div>
-    <div id="dashboardToggles"></div>
-  </div>
+
 
   <!-- ═══ SKILLS & GOALS ═══ -->
   <div class="settings-card">
@@ -2068,12 +2063,7 @@ const DAILY_OPTIONS = [
   {id:'showProgressBar', label:'Progress Bar',          sub:'Completion % bar',                 def:true},
   {id:'showSelectBtns',  label:'Select All / Clear',    sub:'Bulk check/uncheck buttons',       def:true},
 ];
-const DASHBOARD_OPTIONS = [
-  {id:'dashStats',      label:'Stats Row',        sub:'Classes / Study / Done% cards on Daily',  def:true},
-  {id:'dashProgress',   label:'Progress Bar',     sub:'Completion bar on Daily',                  def:true},
-  {id:'dashQuickAccess',label:'Quick Access',     sub:'Pomo / Tracker / Slots buttons on Daily',  def:true},
-  {id:'dashSelectBtns', label:'Select All/Clear', sub:'Bulk check buttons on Daily',               def:true},
-];
+
 
 function loadSettings(){ try{return JSON.parse(localStorage.getItem(getUserKey('voice_settings'))||'{}')}catch(e){return {};} }
 function saveSettings(s){ localStorage.setItem(getUserKey('voice_settings'),JSON.stringify(s)); }
@@ -2081,7 +2071,7 @@ let appSettings = loadSettings();
 
 function getTabVisible(id){ return appSettings['tab_'+id]!==false; }
 function getDailyOpt(id){ const o=DAILY_OPTIONS.find(x=>x.id===id); return appSettings[id]!==false&&(o?o.def:true); }
-function getDashOpt(id){ const o=DASHBOARD_OPTIONS.find(x=>x.id===id); return appSettings[id]!==false&&(o?o.def:true); }
+function getDashOpt(id){ return getDailyOpt(id); } // alias
 
 function initSettings(){
   const tabEl=document.getElementById('tabToggles');
@@ -2098,12 +2088,7 @@ function initSettings(){
       <label class="toggle-switch"><input type="checkbox" ${getDailyOpt(o.id)?'checked':''} onchange="toggleDailyOpt('${o.id}',this.checked)"><span class="toggle-slider"></span></label>
     </div>`).join('');
 
-  const dbEl=document.getElementById('dashboardToggles');
-  if(dbEl) dbEl.innerHTML=DASHBOARD_OPTIONS.map(o=>`
-    <div class="setting-row">
-      <div><div class="setting-label">${o.label}</div><div class="setting-sub">${o.sub}</div></div>
-      <label class="toggle-switch"><input type="checkbox" ${getDashOpt(o.id)?'checked':''} onchange="toggleDashOpt('${o.id}',this.checked)"><span class="toggle-slider"></span></label>
-    </div>`).join('');
+  // Dashboard options unified with Daily View options
 
   const slEl=document.getElementById('skillLevelEditor');
   if(slEl){
@@ -2137,7 +2122,7 @@ function setActiveBtn(prefix,val){
 
 function toggleTabSetting(id,v){ appSettings['tab_'+id]=v; saveSettings(appSettings); applyTabVisibility(); }
 function toggleDailyOpt(id,v){ appSettings[id]=v; saveSettings(appSettings); applyDailyOptions(); }
-function toggleDashOpt(id,v){ appSettings[id]=v; saveSettings(appSettings); applyDashboardOptions(); }
+function toggleDashOpt(id,v){ toggleDailyOpt(id,v); } // alias
 
 function setTheme(t){ appSettings.theme=t; saveSettings(appSettings); applyTheme(); setActiveBtn('themeBtn',t); }
 function applyTheme(){
@@ -2198,14 +2183,15 @@ function applyDailyOptions(){
   applyDashboardOptions();
 }
 function applyDashboardOptions(){
+  // Unified with daily options
+  const qar=document.getElementById('quickAccessRow');
+  if(qar) qar.style.display=getDailyOpt('showQuickAccess')?'flex':'none';
   const sr=document.querySelector('.stats-row');
-  if(sr) sr.style.display=getDashOpt('dashStats')?'':'none';
+  if(sr) sr.style.display=getDailyOpt('showStatsRow')?'':'none';
   const pb=document.querySelector('.progress-bar');
-  if(pb) pb.style.display=getDashOpt('dashProgress')?'':'none';
-  const qa=document.getElementById('quickAccessRow');
-  if(qa) qa.style.display=getDashOpt('dashQuickAccess')?'flex':'none';
+  if(pb) pb.style.display=getDailyOpt('showProgressBar')?'':'none';
   const sel=document.getElementById('selectBtnsRow');
-  if(sel) sel.style.display=getDashOpt('dashSelectBtns')?'flex':'none';
+  if(sel) sel.style.display=getDailyOpt('showSelectBtns')?'flex':'none';
 }
 // Language strings
 const LANG={
