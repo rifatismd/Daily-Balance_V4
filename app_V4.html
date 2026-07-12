@@ -2195,20 +2195,15 @@ function applyTabVisibility(){
   });
 }
 function applyDailyOptions(){
-  // These are now handled by applyDashboardOptions
   applyDashboardOptions();
 }
 function applyDashboardOptions(){
-  // Stats row
   const sr=document.querySelector('.stats-row');
   if(sr) sr.style.display=getDashOpt('dashStats')?'':'none';
-  // Progress bar
   const pb=document.querySelector('.progress-bar');
   if(pb) pb.style.display=getDashOpt('dashProgress')?'':'none';
-  // Quick access buttons
   const qa=document.getElementById('quickAccessRow');
   if(qa) qa.style.display=getDashOpt('dashQuickAccess')?'flex':'none';
-  // Select All/Clear buttons
   const sel=document.getElementById('selectBtnsRow');
   if(sel) sel.style.display=getDashOpt('dashSelectBtns')?'flex':'none';
 }
@@ -2260,27 +2255,11 @@ function importData(e){
   reader.readAsText(file);
 }
 function confirmReset(){
-  if(confirm('⚠️ Delete YOUR data? Only your account data will be cleared. This cannot be undone.')){
-    // Only delete current user's keys, not all users
-    const keys = Object.keys(localStorage);
-    const userSuffix = getUserKey('').replace('_guest','_guest').replace(/^[a-z_]+/,'');
-    keys.forEach(k=>{
-      if(k.startsWith('voice_done') || k.startsWith('voice_extra') ||
-         k.startsWith('voice_settings') || k.startsWith('voice_cancelled') ||
-         k.startsWith('voice_setup_done')) {
-        // Only delete if it matches current user key suffix
-        const currentDone = getUserKey('voice_done');
-        const currentExtra = getUserKey('voice_extra');
-        const currentSettings = getUserKey('voice_settings');
-        const currentCancelled = getUserKey('voice_cancelled');
-        const currentSetup = getUserKey('voice_setup_done');
-        if(k===currentDone||k===currentExtra||k===currentSettings||k===currentCancelled||k===currentSetup){
-          localStorage.removeItem(k);
-        }
-      }
-    });
-    showDataMsg('🗑️ Your data cleared. Refreshing...');
-    setTimeout(()=>location.reload(),1000);
+  if(confirm('Delete YOUR data only? Other accounts will not be affected.')){
+    const keys=['voice_done','voice_extra','voice_settings','voice_cancelled','voice_setup_done'];
+    keys.forEach(function(k){ localStorage.removeItem(getUserKey(k)); });
+    showDataMsg('Your data cleared. Refreshing...');
+    setTimeout(function(){ location.reload(); },1000);
   }
 }
 function showDataMsg(msg){
