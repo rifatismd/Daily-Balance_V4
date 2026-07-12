@@ -506,7 +506,7 @@
   .pin-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:12px;width:64px;height:64px;font-size:1.3rem;font-family:'DM Serif Display',serif;cursor:pointer;transition:all 0.15s;}
   .pin-btn:active{background:var(--accent);color:#0a0905;transform:scale(0.95);}
   /* Light theme */
-  body.light-theme{--bg:#f5f5f0;--surface:#ffffff;--surface2:#eeede8;--text:#1a1a14;--muted:#888880;--border:#d8d7d0;--border2:#c8c7c0;--accent:#c07818;}
+  body.light-theme{--bg:#f5f5f0;--surface:#ffffff;--surface2:#eeede8;--text:#1a1a14;--muted:#888880;--border:#d8d7d0;--border2:#c8c7c0;}
 
   /* SETTINGS */
   .accent-swatch{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all 0.18s;flex-shrink:0;}
@@ -2052,14 +2052,15 @@ function renderWeekProgress(){
 // SETTINGS SYSTEM
 // ═══════════════════════════════════════════════
 const ALL_TABS = [
-  {id:'daily',  label:'📋 Daily',   required:true},
-  {id:'monthly',label:'📅 Month'},
-  {id:'skills', label:'📈 Skills'},
-  {id:'goals',  label:'🎯 Goals'},
-  {id:'notes',  label:'📝 Notes'},
-  {id:'pomo',   label:'⏱️ Pomodoro'},
-  {id:'tracker',label:'🩺 Tracker'},
-  {id:'slots',  label:'🗓️ Slots'},
+  {id:'daily',    label:'📋 Daily',    required:true},
+  {id:'monthly',  label:'📅 Month'},
+  {id:'medicine', label:'💊 Medicine'},
+  {id:'skills',   label:'📈 Skills'},
+  {id:'goals',    label:'🎯 Goals'},
+  {id:'notes',    label:'📝 Notes'},
+  {id:'pomo',     label:'⏱️ Pomodoro'},
+  {id:'tracker',  label:'🩺 Tracker'},
+  {id:'slots',    label:'🗓️ Slots'},
 ];
 const DAILY_OPTIONS = [
   {id:'showQuickAccess', label:'Quick Access Buttons', sub:'Pomo / Tracker / Slots shortcuts', def:true},
@@ -2068,10 +2069,10 @@ const DAILY_OPTIONS = [
   {id:'showSelectBtns',  label:'Select All / Clear',    sub:'Bulk check/uncheck buttons',       def:true},
 ];
 const DASHBOARD_OPTIONS = [
-  {id:'dashStreak', label:'Streak Banner',   sub:'Daily streak count',        def:true},
-  {id:'dashWater',  label:'Water Tracker',   sub:'Glass count on daily view', def:true},
-  {id:'dashMood',   label:'Mood Tracker',    sub:'Mood emoji row',            def:true},
-  {id:'dashPomo',   label:'Pomodoro Widget', sub:'Mini timer on daily view',  def:false},
+  {id:'dashStats',      label:'Stats Row',        sub:'Classes / Study / Done% cards on Daily',  def:true},
+  {id:'dashProgress',   label:'Progress Bar',     sub:'Completion bar on Daily',                  def:true},
+  {id:'dashQuickAccess',label:'Quick Access',     sub:'Pomo / Tracker / Slots buttons on Daily',  def:true},
+  {id:'dashSelectBtns', label:'Select All/Clear', sub:'Bulk check buttons on Daily',               def:true},
 ];
 
 function loadSettings(){ try{return JSON.parse(localStorage.getItem(getUserKey('voice_settings'))||'{}')}catch(e){return {};} }
@@ -2194,27 +2195,31 @@ function applyTabVisibility(){
   });
 }
 function applyDailyOptions(){
-  const qar=document.getElementById('quickAccessRow'); if(qar) qar.style.display=getDailyOpt('showQuickAccess')?'flex':'none';
-  const sr=document.querySelector('.stats-row'); if(sr) sr.style.display=getDailyOpt('showStatsRow')?'':'none';
-  const pb=document.querySelector('.progress-bar'); if(pb) pb.style.display=getDailyOpt('showProgressBar')?'':'none';
-  const sel=document.getElementById('selectBtnsRow'); if(sel) sel.style.display=getDailyOpt('showSelectBtns')?'flex':'none';
+  // These are now handled by applyDashboardOptions
+  applyDashboardOptions();
 }
 function applyDashboardOptions(){
-  const waterSection=document.getElementById('inlineWaterSection');
-  if(waterSection) waterSection.style.display=getDashOpt('dashWater')?'':'none';
-  const moodSection=document.getElementById('inlineMoodSection');
-  if(moodSection) moodSection.style.display=getDashOpt('dashMood')?'':'none';
-  const pomoWidget=document.getElementById('dailyPomoWidget');
-  if(pomoWidget) pomoWidget.style.display=getDashOpt('dashPomo')?'':'none';
+  // Stats row
+  const sr=document.querySelector('.stats-row');
+  if(sr) sr.style.display=getDashOpt('dashStats')?'':'none';
+  // Progress bar
+  const pb=document.querySelector('.progress-bar');
+  if(pb) pb.style.display=getDashOpt('dashProgress')?'':'none';
+  // Quick access buttons
+  const qa=document.getElementById('quickAccessRow');
+  if(qa) qa.style.display=getDashOpt('dashQuickAccess')?'flex':'none';
+  // Select All/Clear buttons
+  const sel=document.getElementById('selectBtnsRow');
+  if(sel) sel.style.display=getDashOpt('dashSelectBtns')?'flex':'none';
 }
 // Language strings
 const LANG={
-  en:{daily:'Daily',month:'Month',skills:'Skills',goals:'Goals',notes:'Notes',settings:'Settings',streak:'day streak'},
-  bn:{daily:'দৈনিক',month:'মাস',skills:'দক্ষতা',goals:'লক্ষ্য',notes:'নোট',settings:'সেটিং',streak:'দিনের ধারা'}
+  en:{daily:'Daily',month:'Month',skills:'Skills',goals:'Goals',notes:'Notes',settings:'Settings',streak:'day streak',meds:'Meds'},
+  bn:{daily:'দৈনিক',month:'মাস',skills:'দক্ষতা',goals:'লক্ষ্য',notes:'নোট',settings:'সেটিং',streak:'দিনের ধারা',meds:'ওষুধ'}
 };
 function applyLang(){
   const L=LANG[appSettings.lang||'en']||LANG.en;
-  const tabMap={tabDaily:'daily',tabMonthly:'month',tabSkills:'skills',tabGoals:'goals',tabNotes:'notes',tabSettings:'settings'};
+  const tabMap={tabDaily:'daily',tabMonthly:'month',tabSkills:'skills',tabGoals:'goals',tabNotes:'notes',tabSettings:'settings',tabMedicine:'meds'};
   Object.entries(tabMap).forEach(([id,key])=>{
     const btn=document.getElementById(id); if(!btn) return;
     const icon=btn.querySelector('.tab-icon');
@@ -2255,8 +2260,27 @@ function importData(e){
   reader.readAsText(file);
 }
 function confirmReset(){
-  if(confirm('⚠️ Delete ALL data? This cannot be undone.')){
-    localStorage.clear(); showDataMsg('🗑️ Cleared. Refreshing...'); setTimeout(()=>location.reload(),1000);
+  if(confirm('⚠️ Delete YOUR data? Only your account data will be cleared. This cannot be undone.')){
+    // Only delete current user's keys, not all users
+    const keys = Object.keys(localStorage);
+    const userSuffix = getUserKey('').replace('_guest','_guest').replace(/^[a-z_]+/,'');
+    keys.forEach(k=>{
+      if(k.startsWith('voice_done') || k.startsWith('voice_extra') ||
+         k.startsWith('voice_settings') || k.startsWith('voice_cancelled') ||
+         k.startsWith('voice_setup_done')) {
+        // Only delete if it matches current user key suffix
+        const currentDone = getUserKey('voice_done');
+        const currentExtra = getUserKey('voice_extra');
+        const currentSettings = getUserKey('voice_settings');
+        const currentCancelled = getUserKey('voice_cancelled');
+        const currentSetup = getUserKey('voice_setup_done');
+        if(k===currentDone||k===currentExtra||k===currentSettings||k===currentCancelled||k===currentSetup){
+          localStorage.removeItem(k);
+        }
+      }
+    });
+    showDataMsg('🗑️ Your data cleared. Refreshing...');
+    setTimeout(()=>location.reload(),1000);
   }
 }
 function showDataMsg(msg){
