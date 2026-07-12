@@ -1225,13 +1225,6 @@ function buildDay(dayName) {
 }
 
 // STATE
-function getUserKey(base){
-  try{
-    var u=JSON.parse(localStorage.getItem('db_user')||'null');
-    if(u&&u.email&&u.authType==='google') return base+'_'+u.email.replace(/[^a-z0-9]/gi,'_');
-  }catch(e){}
-  return base+'_guest';
-}
 function loadState(){try{return JSON.parse(localStorage.getItem(getUserKey('voice_done'))||'{}');}catch(e){return {};}}
 function saveState(){try{localStorage.setItem(getUserKey('voice_done'),JSON.stringify(doneState));}catch(e){}}
 let doneState=loadState();
@@ -2242,8 +2235,18 @@ function importData(e){
 }
 function confirmReset(){
   if(confirm('Delete YOUR data only? Other accounts will not be affected.')){
-    const keys=['voice_done','voice_extra','voice_settings','voice_cancelled','voice_setup_done'];
-    keys.forEach(function(k){ localStorage.removeItem(getUserKey(k)); });
+    // Get all localStorage keys and remove only current user's
+    const userKey = getUserKey('');
+    const allKeys = Object.keys(localStorage);
+    allKeys.forEach(function(k){
+      if(k.indexOf('voice_')===0 && k.indexOf(userKey.replace('voice_',''))>=0){
+        localStorage.removeItem(k);
+      }
+    });
+    // Also explicitly remove known keys
+    ['voice_done','voice_extra','voice_settings','voice_cancelled','voice_setup_done'].forEach(function(k){
+      localStorage.removeItem(getUserKey(k));
+    });
     showDataMsg('Your data cleared. Redirecting...');
     setTimeout(function(){ window.location.href='index_V4.html'; },1000);
   }
