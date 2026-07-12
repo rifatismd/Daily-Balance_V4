@@ -61,7 +61,7 @@
   <button class="ai-btn" onclick="toggleAI()">&#10024; AI Suggest — Describe your routine</button>
   <div class="ai-input-wrap" id="aiInputWrap">
     <div style="font-size:0.72rem;color:#f5c542;font-weight:700;margin-bottom:8px;">Describe your daily routine</div>
-    <textarea class="ai-textarea" id="aiPromptText" placeholder="e.g. I'm a RUET student. I have classes from 8am to 2pm. I pray 5 times a day. I study in the evenings and sleep by 11pm..."></textarea>
+    <textarea class="ai-textarea" id="aiPromptText" placeholder="e.g. I'm a student. I have classes from 8am to 2pm. I pray 5 times a day. I study in the evenings and sleep by 11pm..."></textarea>
     <button class="ai-gen-btn" onclick="generateWithAI()">&#9889; Generate Schedule</button>
     <div class="ai-loading" id="aiLoading">&#129302; AI is thinking...</div>
   </div>
@@ -74,10 +74,10 @@
       <span class="tmpl-name">Student</span>
       <span class="tmpl-sub">Study + Classes</span>
     </button>
-    <button class="tmpl-btn" onclick="applyTemplate('ruet',this)">
+    <button class="tmpl-btn" onclick="applyTemplate('student2',this)">
       <span class="tmpl-icon">🎓</span>
-      <span class="tmpl-name">RUET</span>
-      <span class="tmpl-sub">University schedule</span>
+      <span class="tmpl-name">University</span>
+      <span class="tmpl-sub">Uni + Prayers</span>
     </button>
     <button class="tmpl-btn" onclick="applyTemplate('professional',this)">
       <span class="tmpl-icon">💼</span>
@@ -166,7 +166,7 @@ var TEMPLATES = {
     {title:'Dinner',start:'20:00',end:'20:30',type:'meal',day:'all'},
     {title:'Sleep',start:'22:30',end:'05:00',type:'sleep',day:'all'},
   ],
-  ruet:[
+  student2:[
     {title:'Fajr Prayer',start:'05:00',end:'05:30',type:'prayer',day:'all'},
     {title:'Morning Study',start:'06:00',end:'07:45',type:'study',day:'all'},
     {title:'Breakfast',start:'07:45',end:'08:00',type:'meal',day:'all'},
@@ -219,6 +219,25 @@ function applyTemplate(name, btn){
   if(btn) btn.classList.add('selected');
   slots = (TEMPLATES[name]||[]).slice();
   renderPreview();
+  // Show confirmation
+  var warn = document.getElementById('emptyWarn');
+  if(warn) warn.style.display='none';
+  var preview = document.getElementById('previewSection');
+  if(preview && preview.style.display!=='none'){
+    setTimeout(function(){ preview.scrollIntoView({behavior:'smooth'}); }, 100);
+  }
+  // Show toast
+  showToast(slots.length + ' slots loaded! Tap "Done" to continue.');
+}
+
+function showToast(msg){
+  var t = document.getElementById('setupToast');
+  if(!t){ t=document.createElement('div'); t.id='setupToast';
+    t.style='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#f5c542;color:#0a0905;padding:10px 18px;border-radius:20px;font-size:0.82rem;font-weight:700;font-family:Inter,sans-serif;z-index:999;box-shadow:0 4px 16px #00000060;transition:opacity 0.3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg; t.style.opacity='1'; t.style.display='block';
+  clearTimeout(t._t); t._t=setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.style.display='none'; },300); },3000);
 }
 
 function addSlot(){

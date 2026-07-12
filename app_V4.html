@@ -1182,181 +1182,10 @@ const DAYS_OF_WEEK = DAYS_OF_WEEK_BASE;
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const TYPE_COLORS = {class:'var(--class-b)',study:'var(--accent2)',break:'var(--break-b)',sleep:'var(--sleep-b)',meal:'var(--rose)',python:'var(--accent)',video:'var(--rose)'};
 
-const classSchedule = {
-  Sat: [
-    {time:'8:00–8:50 AM',   title:'ChE 2103',      sub:'1st Period · Admin 306'},
-    {time:'8:50–9:40 AM',   title:'Chem 2129 (NF)', sub:'2nd Period'},
-    {time:'9:40–10:30 AM',  title:'Math 2129 (X)',  sub:'3rd Period'},
-    {time:'10:50 AM–1:20 PM',title:'ChE 2102 (MMK/X)',sub:'4th–6th Period (Long Class)'},
-  ],
-  Sun: [
-    {time:'8:00–8:50 AM',  title:'ME 2157 (MMK)',  sub:'1st Period'},
-    {time:'8:50–9:40 AM',  title:'Chem 2129 (NF)', sub:'2nd Period'},
-    {time:'9:40–10:30 AM', title:'ME 2157 (MRP)',  sub:'3rd Period'},
-  ],
-  Mon: [
-    {time:'8:00–10:30 AM',  title:'Chem 2130 (NF+MAA)', sub:'1st–3rd Period (Long Class)'},
-    {time:'10:50–11:40 AM', title:'ChE 2103 (MNR)',      sub:'4th Period'},
-    {time:'11:40–12:30 PM', title:'ChE 2101 (NTS/SA)',   sub:'5th Period'},
-    {time:'12:30–1:20 PM',title:'ChE 2101 (SA)',      sub:'6th Period'},
-  ],
-  Tue: [
-    {time:'8:00–8:50 AM',  title:'Math 2129 (X)',   sub:'1st Period'},
-    {time:'8:50–9:40 AM',  title:'ChE 2101 (NTS)',  sub:'2nd Period'},
-    {time:'9:40–10:30 AM', title:'ME 2157 (MRP)',   sub:'3rd Period'},
-    {time:'10:50 AM–1:20 PM',title:'ChE 2100 (SD)',sub:'4th–6th Period (Long Class)'},
-  ],
-  Wed: [
-    {time:'8:00–8:50 AM',  title:'ChE 2103 (MNR/X)', sub:'1st Period'},
-    {time:'8:50–9:40 AM',  title:'Math 2129 (JAY)',  sub:'2nd Period'},
-    {time:'9:40–10:30 AM', title:'Chem 2129 (MAA)',  sub:'3rd Period'},
-  ],
-  Thu: [],
-  Fri: [],
-};
-
-// Python topics per day
-const pythonTopics = {
-  Sat: 'Variables, Data Types, Input/Output',
-  Sun: 'Operators, Conditionals (if/else/elif)',
-  Mon: 'Loops — for, while, range()',
-  Tue: 'Functions & def keyword',
-  Wed: 'Lists, Tuples, Dictionaries · Longer session',
-  Thu: 'File Handling / NumPy intro',
-  Fri: 'Mini project or solve 3 coding challenges',
-};
+const classSchedule = {}; // Removed hardcoded schedule — users set their own
 
 function buildDay(dayName) {
-  const classes = classSchedule[dayName] || [];
-  const isLateDay = ['Sat','Mon','Tue'].includes(dayName);
   const slots = [];
-
-  // ── FRIDAY — Rest day ──
-  if (dayName === 'Fri') {
-    slots.push({type:'break',icon:'🌅',time:'6:00 AM',title:'Fajr Namaj + Morning',sub:'Rest day — slightly later wake up'});
-    slots.push({type:'meal', icon:'🍳',time:'7:30 AM',title:'Breakfast',sub:'Relaxed morning meal'});
-    slots.push({section:'MORNING FOCUS'});
-    slots.push({type:'study',icon:'📖',time:'8:30 AM',title:'Weekly Notes Consolidation',sub:'Summarize all subjects in 1 notebook · 1.5h'});
-    slots.push({type:'python',icon:'🐍',time:'10:00 AM',title:'Python — Big Session',sub:'Topic: '+pythonTopics['Fri']+' · 1.5h'});
-    slots.push({type:'break',icon:'🕌',time:'1:00–2:00 PM',title:'Jumma Namaj',sub:'Compulsory — do not miss'});
-    slots.push({type:'meal', icon:'🍚',time:'1:30 PM',title:'Lunch',sub:'Full meal'});
-    slots.push({section:'AFTERNOON'});
-    slots.push({type:'break',icon:'😴',time:'2:30 PM',title:'Rest / Nap',sub:'Recharge fully · 1h'});
-    slots.push({type:'study',icon:'📝',time:'3:30 PM',title:'Catch-up / Assignments',sub:'Finish pending work from this week · 1h'});
-    slots.push({type:'break',icon:'🕌',time:'4:00 PM',title:'Asor Namaj',sub:'Asr prayer'});
-    slots.push({type:'break',icon:'🏃',time:'4:15 PM',title:'Outdoor / Exercise',sub:'Walk, cricket, or sports · 1h'});
-    slots.push({section:'EVENING'});
-    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Revision',sub:'Review all topics covered this week · 30 min'});
-    slots.push({type:'video',icon:'🎬',time:'6:30 PM',title:'Video Editing Revision',sub:'Re-edit best clip of the week · 50 min'});
-    slots.push({type:'break',icon:'🕌',time:'7:00 PM',title:'Maghrib Namaj',sub:'Maghrib prayer'});
-    slots.push({type:'meal', icon:'🍽️',time:'8:00 PM',title:'Dinner',sub:'Light meal'});
-    slots.push({type:'break',icon:'🕌',time:'8:30 PM',title:'Isha Namaj',sub:'Isha prayer'});
-    slots.push({type:'break',icon:'🚿',time:'8:45 PM',title:'Night Shower',sub:'Relax before sleep · 10 min'});
-    slots.push({type:'break',icon:'📱',time:'9:00 PM',title:'Free Time',sub:'Full relax — you earned it · 1h'});
-    slots.push({type:'sleep',icon:'😴',time:'10:30 PM',title:'Sleep',sub:'Good rest for the week ahead'});
-    return slots;
-  }
-
-  // ── All other days ──
-  slots.push({type:'break',icon:'🌅',time:'5:00 AM',title:'Fajr Namaj + Morning',sub:'Wudu, prayer, freshen up'});
-  slots.push({type:'break',icon:'🧘',time:'5:20 AM',title:'Meditation',sub:'Breathing + focus · 10 min'});
-  slots.push({type:'meal', icon:'🍳',time:'6:30 AM',title:'Breakfast',sub:'Eat well before the day starts'});
-
-  if (classes.length > 0) {
-    if (dayName !== 'Thu') {
-      slots.push({type:'break',icon:'🎒',time:'7:30 AM',title:'Leave for RUET',sub:'Bag check, revise notes on the way'});
-    }
-    slots.push({section:'CLASS PERIODS'});
-    for (const c of classes) slots.push({type:'class',icon:'🏫',time:c.time,title:c.title,sub:c.sub});
-  } else {
-    slots.push({section:'NO CLASS TODAY'});
-    slots.push({type:'study',icon:'📖',time:'7:00 AM',title:'Morning Study Block',sub:'No class — use this time for deep study · 2h'});
-    slots.push({type:'study',icon:'📝',time:'9:00 AM',title:'Assignment / Revision',sub:'Catch up on pending work · 1h'});
-  }
-
-  // ── Johor Namaj — after class on late days, 1 PM otherwise ──
-  if (isLateDay) {
-    slots.push({type:"break",icon:"🕌",time:"1:20 PM",title:"Johor Namaj",sub:"Zuhr prayer — right after class"});
-    slots.push({type:"break",icon:"🚿",time:"1:25 PM",title:"Shower",sub:"Fresh up after class · 10 min"});
-    slots.push({type:'meal', icon:'🍚',time:'1:30 PM',title:'Lunch',sub:'Full meal'});
-  } else {
-    slots.push({type:'study',icon:'📖',time:'11:00 AM',title:'Morning Self-Study',sub: dayName==='Sun' ? 'Math 2129 problems · 1.5h' : dayName==='Tue' ? 'Math 2129 practice · 1h' : 'Math / ChE problems · 1h'});
-    const johorTime = dayName==='Thu' ? '1:30 PM' : '1:00 PM';
-    const showerTime = dayName==='Thu' ? '1:40 PM' : '1:05 PM';
-    slots.push({type:'break',icon:'🕌',time:johorTime,title:'Johor Namaj',sub:'Zuhr prayer'});
-    slots.push({type:"break",icon:"🚿",time:showerTime,title:"Shower",sub:"Fresh up · 10 min"});
-  }
-
-  slots.push({section:'STUDY & REVIEW'});
-
-  // Per-day study blocks
-  if (dayName === 'Sat') {
-    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2103 Notes Review',sub:"Re-read today's ChE lecture · 1h"});
-    slots.push({type:'study',icon:'🧪',time:'3:00 PM',title:'',sub:''});
-  } else if (dayName === 'Sun') {
-    slots.push({type:'study',icon:'📝',time:'2:30 PM',title:'ME 2157 Notes Review',sub:'Re-read both ME periods · 1h'});
-    slots.push({type:'study',icon:'📖',time:'3:00 PM',title:'Read Ahead — Tomorrow',sub:"Preview Mon's syllabus · 1h"});
-  } else if (dayName === 'Mon') {
-    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2101 Notes Review',sub:'Re-read both ChE 2101 periods · 1h'});
-    slots.push({type:'study',icon:'🧪',time:'3:00 PM',title:'',sub:''});
-  } else if (dayName === 'Tue') {
-    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2100 + ChE 2101 Review',sub:'Notes + assignment check · 1h'});
-    slots.push({type:'study',icon:'⚙️',time:'3:00 PM',title:'',sub:''});
-  } else if (dayName === 'Wed') {
-    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2100 Review',sub:"Re-read today's long class notes · 1h"});
-    slots.push({type:'python',icon:'🐍',time:'3:00 PM',title:'Python — Longer Session',sub:'Topic: '+pythonTopics['Wed']+' · 1h'});
-  } else if (dayName === 'Thu') {
-    slots.push({type:'study',icon:'📐',time:'2:00 PM',title:'',sub:''});
-    slots.push({type:'study',icon:'🧪',time:'3:30 PM',title:'',sub:''});
-  }
-
-  // Asor + Afternoon free time 5:00–7:00 PM
-  slots.push({type:'break',icon:'🕌',time:'4:00 PM',title:'Asor Namaj',sub:'Asr prayer'});
-  slots.push({type:'break',icon:'😴',time:'4:15–5:00 PM',title:'Afternoon Rest',sub:'Nap or light walk · 45 min'});
-  slots.push({type:'break',icon:'🆓',time:'5:00–7:00 PM',title:'Free Time',sub:'Cricket, gaming, walk — your choice · 2h'});
-
-  slots.push({section:'EVENING'});
-
-  // Skill block — 7-day pattern
-  if (dayName === 'Sat') {
-    // Day 1 — Python only
-    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Sat']+' · 45 min'});
-    slots.push({type:'study', icon:'🔁',time:'6:45 PM',title:'Chem 2129 Revision',sub:'Review chemistry concepts · 30 min'});
-  } else if (dayName === 'Sun') {
-    // Day 2 — Python + Video Editing + Music/Podcast
-    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Sun']+' · 60 min'});
-    slots.push({type:'video', icon:'🎬',time:'7:00 PM',title:'Video Editing Practice',sub:'Cuts, transitions · 50 min'});
-    slots.push({type:'break', icon:'🎵',time:'7:10 PM',title:'Music / Podcast',sub:'Listen while cooling down · 15 min — before Maghrib'});
-  } else if (dayName === 'Mon') {
-    // Day 3 — Video Editing only
-    slots.push({type:'video',icon:'🎬',time:'6:00 PM',title:'Video Editing Practice',sub:'CapCut/DaVinci — cuts, transitions · 50 min'});
-    slots.push({type:'study',icon:'🔁',time:'6:45 PM',title:'ChE 2103 Revision',sub:'Key formulas, concepts · 30 min'});
-  } else if (dayName === 'Tue') {
-    // Day 4 — Video Editing + Python
-    slots.push({type:'video',icon:'🎬',time:'6:00 PM',title:'Video Editing Practice',sub:'Color grading, effects · 50 min'});
-    slots.push({type:'python',icon:'🐍',time:'6:50 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Tue']+' · 60 min'});
-  } else if (dayName === 'Wed') {
-    // Day 5 — Python only + Music/Podcast at night
-    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Wed']+' · 45 min'});
-    slots.push({type:'study',icon:'🧪',time:'6:45 PM',title:'',sub:''});
-  } else if (dayName === 'Thu') {
-    // Day 6 — Video Editing + Python
-    slots.push({type:'video',icon:'🎬',time:'6:00 PM',title:'Video Editing Practice',sub:'Export, color, audio sync · 50 min'});
-    slots.push({type:'python',icon:'🐍',time:'6:50 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Thu']+' · 60 min'});
-  }
-
-  // Fixed evening
-  slots.push({type:'break',icon:'🕌',time:'7:00 PM',title:'Maghrib Namaj',sub:'Maghrib prayer'});
-  slots.push({type:'meal', icon:'🍽️',time:'8:00 PM',title:'Dinner',sub:'Light meal'});
-  slots.push({type:'break',icon:'🕌',time:'8:30 PM',title:'Isha Namaj',sub:'Isha prayer'});
-  slots.push({type:'break',icon:'🚿',time:'8:45 PM',title:'Night Shower',sub:'Optional — relax before sleep · 10 min', optional:true});
-  slots.push({type:'study',icon:'🇬🇧',time:'9:00 PM',title:'English Learning',sub:'Vocabulary, speaking or listening · 15 min'});
-  slots.push({type:'study',icon:'📚',time:'9:15 PM',title:'Night Revision',sub:'Formula sheets, key concepts · 45 min'});
-  if (dayName === 'Wed') {
-    slots.push({type:'break',icon:'🎵',time:'10:00 PM',title:'Music / Podcast',sub:'Relax with music or podcast · 15 min'});
-  }
-  slots.push({type:'sleep',icon:'😴',time:'10:30 PM',title:'Sleep',sub:'6–7h target · wake 5 AM'});
-
   // Add custom slots for this day
   const custom = extraState['customSlots_'+dayName]||[];
   for(const cs of custom){
@@ -1410,14 +1239,14 @@ function getUserKey(base){
 }
 function loadState(){try{return JSON.parse(localStorage.getItem(getUserKey('voice_done'))||'{}');}catch(e){return {};}}
 function saveState(){try{localStorage.setItem(getUserKey('voice_done'),JSON.stringify(doneState));}catch(e){}}
-let doneState={};
+let doneState=loadState();
 function loadCancelled(){try{return JSON.parse(localStorage.getItem(getUserKey('voice_cancelled'))||'{}');}catch(e){return {};}}
 function saveCancelled(){try{localStorage.setItem(getUserKey('voice_cancelled'),JSON.stringify(cancelledState));}catch(e){}}
-let cancelledState={};
+let cancelledState=loadCancelled();
 
 function loadExtra(){try{return JSON.parse(localStorage.getItem(getUserKey('voice_extra'))||'{}');}catch(e){return {};}}
 function saveExtra(){try{localStorage.setItem(getUserKey('voice_extra'),JSON.stringify(extraState));}catch(e){}}
-let extraState={};
+let extraState=loadExtra();
 
 function initWater(){
   const dk=getActiveDK(),count=extraState['water_'+dk]||0;
@@ -2247,7 +2076,7 @@ const DASHBOARD_OPTIONS = [
 
 function loadSettings(){ try{return JSON.parse(localStorage.getItem(getUserKey('voice_settings'))||'{}')}catch(e){return {};} }
 function saveSettings(s){ localStorage.setItem(getUserKey('voice_settings'),JSON.stringify(s)); }
-let appSettings = {};
+let appSettings = loadSettings();
 
 function getTabVisible(id){ return appSettings['tab_'+id]!==false; }
 function getDailyOpt(id){ const o=DAILY_OPTIONS.find(x=>x.id===id); return appSettings[id]!==false&&(o?o.def:true); }
