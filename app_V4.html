@@ -2244,8 +2244,8 @@ function confirmReset(){
   if(confirm('Delete YOUR data only? Other accounts will not be affected.')){
     const keys=['voice_done','voice_extra','voice_settings','voice_cancelled','voice_setup_done'];
     keys.forEach(function(k){ localStorage.removeItem(getUserKey(k)); });
-    showDataMsg('Your data cleared. Refreshing...');
-    setTimeout(function(){ location.reload(); },1000);
+    showDataMsg('Your data cleared. Redirecting...');
+    setTimeout(function(){ window.location.href='index_V4.html'; },1000);
   }
 }
 function showDataMsg(msg){
