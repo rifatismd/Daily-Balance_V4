@@ -1119,6 +1119,130 @@
 
 </div>
 
+
+<div id="notesView" class="view-panel" style="display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;">📝 Notes</div>
+    <div style="font-size:0.78rem;color:var(--muted);" id="notesDate"></div>
+  </div>
+
+  <!-- Search bar -->
+  <div style="position:relative;margin-bottom:12px;">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem;">🔍</span>
+    <input id="noteSearch" placeholder="Search notes..." oninput="renderNotes()" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px 9px 34px;color:var(--text);font-size:0.83rem;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;" />
+  </div>
+
+  <!-- Category filter pills -->
+  <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none;">
+    <button onclick="setNoteCategory(this,'all')" id="ncat_all" class="ncat-btn active-ncat">All</button>
+    <button onclick="setNoteCategory(this,'study')" id="ncat_study" class="ncat-btn">📚 Study</button>
+    <button onclick="setNoteCategory(this,'class')" id="ncat_class" class="ncat-btn">🏫 Class</button>
+    <button onclick="setNoteCategory(this,'idea')" id="ncat_idea" class="ncat-btn">💡 Idea</button>
+    <button onclick="setNoteCategory(this,'todo')" id="ncat_todo" class="ncat-btn">✅ Todo</button>
+    <button onclick="setNoteCategory(this,'personal')" id="ncat_personal" class="ncat-btn">🌙 Personal</button>
+  </div>
+
+  <!-- Note input area -->
+  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:16px;">
+    <textarea id="noteInput" placeholder="Write something..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;resize:none;height:72px;outline:none;box-sizing:border-box;margin-bottom:8px;"></textarea>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <select id="noteCatSelect" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;">
+        <option value="study">📚 Study</option>
+        <option value="class">🏫 Class</option>
+        <option value="idea">💡 Idea</option>
+        <option value="todo">✅ Todo</option>
+        <option value="personal">🌙 Personal</option>
+      </select>
+      <button onclick="addNote()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:8px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">Add</button>
+    </div>
+  </div>
+
+  <div id="notesList"></div>
+</div>
+
+<div id="slotsView" class="view-panel" style="display:none;">
+  <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;margin-bottom:14px;">⚙️ Slot Manager</div>
+
+
+
+
+  <!-- Unified Slot Manager -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;overflow:hidden;">
+
+    <!-- Find & Manage Slots box -->
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:12px;letter-spacing:0.05em;text-transform:uppercase;">🔍 Find & Manage Slots</div>
+
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">1. Day</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;">
+        <button onclick="setUnifiedDay(this,'Sat')" class="stype-btn active-type" id="uDay_Sat">Sat</button>
+        <button onclick="setUnifiedDay(this,'Sun')" class="stype-btn" id="uDay_Sun">Sun</button>
+        <button onclick="setUnifiedDay(this,'Mon')" class="stype-btn" id="uDay_Mon">Mon</button>
+        <button onclick="setUnifiedDay(this,'Tue')" class="stype-btn" id="uDay_Tue">Tue</button>
+        <button onclick="setUnifiedDay(this,'Wed')" class="stype-btn" id="uDay_Wed">Wed</button>
+        <button onclick="setUnifiedDay(this,'Thu')" class="stype-btn" id="uDay_Thu">Thu</button>
+        <button onclick="setUnifiedDay(this,'Fri')" class="stype-btn" id="uDay_Fri">Fri</button>
+      </div>
+      <input type="hidden" id="unifiedDay" value="Sat" />
+      <input type="hidden" id="addSlotDay" value="Sat" />
+
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">2. Time Range</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <input id="unifiedFrom" type="time" onchange="loadUnifiedSlots()" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;" />
+        <span style="color:var(--muted);font-size:0.75rem;">to</span>
+        <input id="unifiedTo" type="time" onchange="loadUnifiedSlots()" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;" />
+      </div>
+
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">3. Select Slot</div>
+      <select id="unifiedSlotPicker" onchange="onUnifiedSlotSelect()" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;">
+        <option value="">— set day & time range first —</option>
+      </select>
+      <button onclick="unifiedRemoveSlot()" style="width:100%;background:#2a1010;border:1.5px solid var(--rose);color:var(--rose);border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:700;margin-bottom:10px;">🗑 Remove Selected Slot</button>
+
+      <!-- Rename panel -->
+      <div id="renamePanel" style="display:none;margin-top:8px;background:var(--surface);border-radius:10px;padding:10px;border:1px solid var(--accent);box-sizing:border-box;width:100%;">
+        <div style="font-size:0.7rem;color:var(--accent);margin-bottom:8px;font-weight:600;">✏️ Rename selected slot</div>
+        <input id="blankSlotName" placeholder="Enter new name..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;" />
+        <button onclick="nameBlankSlot()" style="width:100%;background:var(--accent);border:none;color:#fff;border-radius:8px;padding:9px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">💾 Save Name</button>
+        <div id="blankSlotMsg" style="font-size:0.73rem;margin-top:6px;color:var(--accent2);"></div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div style="display:flex;align-items:center;gap:8px;margin:16px 0 12px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <div style="font-size:0.7rem;color:var(--muted);">OR ADD NEW SLOT</div>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+
+    <!-- Add new slot — boxed -->
+    <div style="background:var(--bg);border:1px solid #1a3a2e;border-radius:12px;padding:14px;">
+      <div style="font-size:0.7rem;color:var(--accent2);font-weight:700;margin-bottom:10px;letter-spacing:0.05em;text-transform:uppercase;">➕ New Slot Details</div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Time *</div>
+      <input id="newSlotTimeInput" type="time" style="width:100%;background:var(--surface);border:1px solid #1a3a2e;border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:10px;" />
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">Type</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">
+        <button onclick="setSlotType(this,'study')"  class="stype-btn active-type">📝 Study</button>
+        <button onclick="setSlotType(this,'class')"  class="stype-btn">🏫 Class</button>
+        <button onclick="setSlotType(this,'python')" class="stype-btn">🐍 Python</button>
+        <button onclick="setSlotType(this,'video')"  class="stype-btn">🎬 Video</button>
+        <button onclick="setSlotType(this,'break')"  class="stype-btn">☕ Break</button>
+        <button onclick="setSlotType(this,'meal')"   class="stype-btn">🍽️ Meal</button>
+        <button onclick="setSlotType(this,'sleep')"  class="stype-btn">😴 Sleep</button>
+      </div>
+      <input type="hidden" id="newSlotType" value="study" />
+      <input id="newSlotTitle" placeholder="Topic / Title *" style="width:100%;background:var(--surface);border:1px solid #1a3a2e;border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;" />
+      <input id="newSlotSub" placeholder="Note (optional)" style="width:100%;background:var(--surface);border:1px solid #1a3a2e;border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:12px;" />
+      <input type="hidden" id="newSlotTime" />
+      <button onclick="addCustomSlot()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#c07818);border:none;color:#0a0905;border-radius:9px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.9rem;">+ Add to Routine</button>
+      <div id="addSlotMsg" style="font-size:0.75rem;margin-top:8px;color:var(--accent2);"></div>
+    </div>
+    <div id="deleteSlotMsg" style="font-size:0.75rem;margin-top:8px;color:var(--rose);"></div>
+  </div>
+
+  <div id="customSlotList"></div>
+
+</div>
 <script>
 function getUserKey(base){
   try{
