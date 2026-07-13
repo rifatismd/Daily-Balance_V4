@@ -2235,20 +2235,17 @@ function importData(e){
 }
 function confirmReset(){
   if(confirm('Delete YOUR data only? Other accounts will not be affected.')){
-    // Get all localStorage keys and remove only current user's
-    const userKey = getUserKey('');
-    const allKeys = Object.keys(localStorage);
-    allKeys.forEach(function(k){
-      if(k.indexOf('voice_')===0 && k.indexOf(userKey.replace('voice_',''))>=0){
-        localStorage.removeItem(k);
-      }
-    });
-    // Also explicitly remove known keys
-    ['voice_done','voice_extra','voice_settings','voice_cancelled','voice_setup_done'].forEach(function(k){
-      localStorage.removeItem(getUserKey(k));
-    });
-    showDataMsg('Your data cleared. Redirecting...');
-    setTimeout(function(){ window.location.href='setup_V4.html'; },1000);
+    // Get current user's exact keys and delete only those
+    var keys = [
+      getUserKey('voice_done'),
+      getUserKey('voice_extra'),
+      getUserKey('voice_settings'),
+      getUserKey('voice_cancelled'),
+      getUserKey('voice_setup_done')
+    ];
+    keys.forEach(function(k){ localStorage.removeItem(k); });
+    showDataMsg('Your data cleared. Going to setup...');
+    setTimeout(function(){ window.location.href='setup_V4.html'; },800);
   }
 }
 function showDataMsg(msg){
