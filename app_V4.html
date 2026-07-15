@@ -1304,48 +1304,26 @@ const TYPE_COLORS = {class:'var(--class-b)',study:'var(--accent2)',break:'var(--
 const classSchedule = {}; // Removed hardcoded schedule — users set their own
 
 function buildDay(dayName) {
-  const slots = [];
-  // Add custom slots for this day
   const custom = extraState['customSlots_'+dayName]||[];
-  for(const cs of custom){
-    slots.push({type:cs.type,icon:cs.icon||'📌',time:cs.time,title:cs.title,sub:cs.sub||'',isCustom:true});
-  }
-  // Sort non-section slots by time, keeping sections as dividers
-  function toMins(t){
-    if(!t)return 9999;
-    // Take only start time if range like "8:00–8:50" or "10:50–1:20 PM"
-    const start = t.split('–')[0].trim();
-    if(start.includes('AM')||start.includes('PM')){
-      const clean=start.replace('AM','').replace('PM','').trim();
-      const parts=clean.split(':');
-      let h=parseInt(parts[0]),m=parseInt(parts[1]||0);
-      if(start.includes('PM')&&h!==12)h+=12;
-      if(start.includes('AM')&&h===12)h=0;
+  const slots = custom.map(cs=>({
+    type:cs.type, icon:cs.icon||'📌', time:cs.time,
+    title:cs.title, sub:cs.sub||'', isCustom:true
+  }));
+  // Sort by time
+  slots.sort((a,b)=>{
+    function toMins(t){
+      if(!t) return 9999;
+      const start=t.split('–')[0].trim().replace(/AM|PM/gi,'').trim();
+      const parts=start.split(':');
+      let h=parseInt(parts[0]||0), m=parseInt(parts[1]||0);
+      const orig=t.split('–')[0].trim();
+      if(/PM/i.test(orig)&&h!==12) h+=12;
+      if(/AM/i.test(orig)&&h===12) h=0;
       return h*60+m;
     }
-    const parts=start.split(':');
-    const h=parseInt(parts[0]),m=parseInt(parts[1]||0);
-    // Class times: 8-13 are always AM/early PM (university hours)
-    // 8:00 = 8*60, 10:50 = 650, 12:30 = 750, 1:20 PM = 80min = treat as 13:20
-    return h*60+m;
-  }
-  // Only sort the custom slots, insert them at correct time position in existing slots
-  const builtIn = slots.filter(s=>!s.isCustom);
-  const customOnes = slots.filter(s=>s.isCustom);
-  if(!customOnes.length) return builtIn;
-  // Insert each custom slot at correct position based on time
-  const result = [...builtIn];
-  for(const cs of customOnes){
-    const csMins = toMins(cs.time);
-    let insertIdx = result.length;
-    for(let i=0;i<result.length;i++){
-      if(!result[i].section && toMins(result[i].time) > csMins){
-        insertIdx=i; break;
-      }
-    }
-    result.splice(insertIdx,0,cs);
-  }
-  return result;
+    return toMins(a.time)-toMins(b.time);
+  });
+  return slots;
 }
 
 // STATE
@@ -1746,6 +1724,17 @@ function renderTimeline(){
   // Filter out removed slots
   const removedKeys = extraState['removedSlots']||[];
   const visibleSlots = slots.filter(s=>s.section||!removedKeys.includes(dk+'_'+s.time));
+
+  // Empty state for new users
+  if(!visibleSlots.length){
+    tl.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:14px;">
+      <div style="font-size:3rem;opacity:0.3;">🗓️</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--muted);text-align:center;">No slots for this day</div>
+      <div style="font-size:0.78rem;color:var(--muted);text-align:center;max-width:220px;line-height:1.6;">Add your daily schedule from the Slots tab.</div>
+      <button onclick="switchView('slots')" style="background:var(--accent);border:none;color:#0a0905;border-radius:10px;padding:12px 24px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;margin-top:4px;">+ Add Slots</button>
+    </div>`;
+    return;
+  }
 
   // Current time in minutes
   const now=new Date();
