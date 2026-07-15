@@ -3,203 +3,357 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Set Up Your Schedule — Daily Balance</title>
+  <title>Set Up — Daily Balance</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:#080b10;font-family:'Inter',sans-serif;min-height:100vh;color:#e6edf8;}
-    .wrap{max-width:420px;margin:0 auto;padding:36px 20px 80px;}
-    h1{font-family:'DM Serif Display',serif;font-size:1.7rem;font-weight:400;margin-bottom:6px;}
-    h1 em{font-style:italic;color:#f5c542;}
-    .sub{font-size:0.8rem;color:#5e728c;margin-bottom:28px;line-height:1.6;}
+    .page{display:none;min-height:100vh;flex-direction:column;}
+    .page.active{display:flex;}
+
+    /* ── WELCOME PAGE ── */
+    .welcome-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px 100px;text-align:center;}
+    .welcome-icon{font-size:3.5rem;margin-bottom:20px;}
+    .welcome-title{font-family:'DM Serif Display',serif;font-size:2rem;color:#e6edf8;margin-bottom:10px;line-height:1.2;}
+    .welcome-title em{color:#f5c542;font-style:italic;}
+    .welcome-sub{font-size:0.85rem;color:#5e728c;line-height:1.7;margin-bottom:36px;max-width:320px;}
+    .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px;margin-bottom:36px;}
+    .feat-card{background:#0d1018;border:1px solid #1c2535;border-radius:12px;padding:14px 12px;text-align:left;}
+    .feat-card-icon{font-size:1.4rem;margin-bottom:6px;}
+    .feat-card-name{font-size:0.82rem;font-weight:600;color:#e6edf8;margin-bottom:3px;}
+    .feat-card-desc{font-size:0.68rem;color:#5e728c;line-height:1.5;}
+    .welcome-note{font-size:0.72rem;color:#3a4a60;margin-bottom:20px;}
+
+    /* ── SETUP PAGE ── */
+    .setup-wrap{flex:1;display:flex;flex-direction:column;padding:0 0 100px;}
+    .setup-header{padding:24px 20px 0;}
+    .setup-step{font-size:0.68rem;color:#5e728c;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+    .setup-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:#e6edf8;margin-bottom:6px;}
+    .setup-sub{font-size:0.78rem;color:#5e728c;line-height:1.6;margin-bottom:20px;}
+    .progress-bar{height:3px;background:#1c2535;margin:0 20px;border-radius:2px;overflow:hidden;margin-bottom:24px;}
+    .progress-fill{height:100%;background:#f5c542;border-radius:2px;transition:width 0.4s;}
+
+    /* AI Section */
+    .ai-section{margin:0 20px 20px;}
+    .ai-toggle{width:100%;background:linear-gradient(135deg,#0f1a0a,#0a1a10);border:1px solid #f5c54230;border-radius:12px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;font-family:'Inter',sans-serif;color:#f5c542;font-size:0.85rem;font-weight:600;text-align:left;}
+    .ai-toggle-icon{font-size:1.3rem;flex-shrink:0;}
+    .ai-toggle-text{flex:1;}
+    .ai-toggle-sub{font-size:0.68rem;color:#3a5a3a;margin-top:2px;font-weight:400;}
+    .ai-toggle-arrow{font-size:0.9rem;transition:transform 0.2s;}
+    .ai-toggle.open .ai-toggle-arrow{transform:rotate(90deg);}
+    .ai-body{display:none;background:#0d1018;border:1px solid #1c2535;border-radius:12px;padding:14px;margin-top:8px;}
+    .ai-body.show{display:block;}
+    .ai-examples{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px;margin-bottom:10px;}
+    .ai-examples::-webkit-scrollbar{display:none;}
+    .ai-ex-btn{flex-shrink:0;background:#080b10;border:1px solid #1c2535;border-radius:20px;padding:6px 12px;color:#5e728c;font-size:0.7rem;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;}
+    .ai-ex-btn:hover{border-color:#f5c542;color:#f5c542;}
+    .ai-textarea{width:100%;background:#080b10;border:1px solid #1c2535;border-radius:8px;padding:12px;color:#e6edf8;font-size:0.83rem;font-family:'Inter',sans-serif;resize:none;height:100px;box-sizing:border-box;outline:none;margin-bottom:10px;line-height:1.6;}
+    .ai-textarea:focus{border-color:#f5c54260;}
+    .ai-gen-btn{width:100%;background:#f5c542;border:none;color:#0a0905;border-radius:9px;padding:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .ai-gen-btn:disabled{opacity:0.5;cursor:not-allowed;}
+    .ai-status{font-size:0.75rem;color:#5e728c;text-align:center;padding:8px;display:none;}
+
+    /* Divider */
+    .divider{display:flex;align-items:center;gap:10px;margin:0 20px 16px;}
+    .divider-line{flex:1;height:1px;background:#1c2535;}
+    .divider-text{font-size:0.68rem;color:#3a4a60;}
+
+    /* Templates */
+    .templates-section{padding:0 20px;margin-bottom:16px;}
     .section-label{font-size:0.68rem;color:#f5c542;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;}
-    .templates{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-    .tmpl-btn{flex:1;min-width:100px;background:#0d1018;border:1px solid #1c2535;border-radius:10px;padding:14px 8px;cursor:pointer;text-align:center;transition:all 0.18s;font-family:'Inter',sans-serif;}
+    .templates{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .tmpl-btn{background:#0d1018;border:1px solid #1c2535;border-radius:10px;padding:12px;cursor:pointer;text-align:left;transition:all 0.18s;font-family:'Inter',sans-serif;}
     .tmpl-btn:hover,.tmpl-btn.selected{border-color:#f5c542;background:#141a0a;}
-    .tmpl-icon{font-size:1.4rem;display:block;margin-bottom:4px;}
-    .tmpl-name{font-size:0.78rem;color:#e6edf8;font-weight:600;}
-    .tmpl-sub{font-size:0.62rem;color:#5e728c;margin-top:2px;}
-    .card{background:#0d1018;border:1px solid #1c2535;border-radius:14px;padding:16px;margin-bottom:16px;}
-    input,select{width:100%;background:#080b10;border:1px solid #1c2535;border-radius:8px;padding:10px 12px;color:#e6edf8;font-size:0.84rem;font-family:'Inter',sans-serif;box-sizing:border-box;outline:none;}
-    input:focus,select:focus{border-color:#f5c542;}
-    .row{display:flex;gap:8px;margin-bottom:8px;}
+    .tmpl-icon{font-size:1.3rem;display:block;margin-bottom:6px;}
+    .tmpl-name{font-size:0.8rem;color:#e6edf8;font-weight:600;display:block;}
+    .tmpl-sub{font-size:0.65rem;color:#5e728c;display:block;margin-top:2px;}
+
+    /* Manual Add */
+    .manual-section{padding:0 20px;margin-bottom:16px;}
+    .manual-card{background:#0d1018;border:1px solid #1c2535;border-radius:12px;padding:14px;}
+    input,select{width:100%;background:#080b10;border:1px solid #1c2535;border-radius:8px;padding:10px 12px;color:#e6edf8;font-size:0.83rem;font-family:'Inter',sans-serif;box-sizing:border-box;outline:none;}
+    input:focus,select:focus{border-color:#f5c54260;}
+    .field-label{font-size:0.65rem;color:#5e728c;margin-bottom:4px;display:block;}
+    .row{display:flex;gap:8px;margin-bottom:10px;}
     .field{flex:1;}
-    .field label{font-size:0.64rem;color:#5e728c;display:block;margin-bottom:4px;}
-    .add-btn{width:100%;background:#f5c542;border:none;color:#0a0905;border-radius:9px;padding:11px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;margin-top:8px;}
-    .slot-item{background:#080b10;border:1px solid #1c2535;border-radius:9px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
-    .slot-info{flex:1;}
-    .slot-title{font-size:0.83rem;color:#e6edf8;font-weight:500;}
-    .slot-meta{font-size:0.64rem;color:#5e728c;margin-top:2px;}
-    .del-btn{background:transparent;border:none;color:#5e728c;cursor:pointer;font-size:0.9rem;padding:0;flex-shrink:0;}
-    .del-btn:hover{color:#f87171;}
-    .ai-btn{width:100%;background:linear-gradient(135deg,#141a0a,#0f1a10);border:1px solid #f5c54240;color:#f5c542;border-radius:10px;padding:12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
-    .ai-btn:hover{border-color:#f5c542;}
-    .ai-input-wrap{display:none;background:#0d1018;border:1px solid #1c2535;border-radius:12px;padding:14px;margin-bottom:16px;}
-    .ai-textarea{width:100%;background:#080b10;border:1px solid #1c2535;border-radius:8px;padding:10px 12px;color:#e6edf8;font-size:0.83rem;font-family:'Inter',sans-serif;resize:none;height:80px;box-sizing:border-box;outline:none;margin-bottom:8px;}
-    .ai-gen-btn{width:100%;background:#f5c542;border:none;color:#0a0905;border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.83rem;}
-    .ai-loading{display:none;text-align:center;padding:12px;font-size:0.8rem;color:#5e728c;}
-    .finish-bar{position:fixed;bottom:0;left:0;right:0;background:#080b10;border-top:1px solid #1c2535;padding:16px 20px;display:flex;gap:10px;max-width:420px;margin:0 auto;}
-    .empty-warn{font-size:0.72rem;color:#f87171;text-align:center;padding:8px;display:none;}
-    .progress{height:3px;background:#1c2535;border-radius:2px;margin-bottom:28px;overflow:hidden;}
-    .progress-fill{height:100%;background:#f5c542;border-radius:2px;width:60%;}
-    .must-badge{background:#f5c54220;color:#f5c542;border:1px solid #f5c54240;border-radius:20px;padding:3px 10px;font-size:0.62rem;font-weight:700;display:inline-block;margin-left:6px;vertical-align:middle;}
+    .add-slot-btn{width:100%;background:transparent;border:1px dashed #1c2535;color:#5e728c;border-radius:9px;padding:11px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;margin-top:4px;transition:all 0.15s;}
+    .add-slot-btn:hover{border-color:#f5c542;color:#f5c542;}
+
+    /* Preview */
+    .preview-section{padding:0 20px;margin-bottom:16px;}
+    .preview-count{font-size:0.72rem;color:#f5c542;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;}
+    .slot-item{background:#080b10;border:1px solid #1c2535;border-radius:9px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;animation:slideIn 0.2s ease;}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+    .slot-icon-wrap{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .slot-info{flex:1;min-width:0;}
+    .slot-title-text{font-size:0.83rem;color:#e6edf8;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .slot-meta{font-size:0.65rem;color:#5e728c;margin-top:2px;}
+    .slot-del{background:transparent;border:none;color:#3a4a60;cursor:pointer;font-size:0.9rem;padding:4px;flex-shrink:0;}
+    .slot-del:hover{color:#f87171;}
+    .empty-warn{font-size:0.75rem;color:#f87171;text-align:center;padding:10px;display:none;}
+
+    /* Bottom bar */
+    .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#080b10ee;border-top:1px solid #1c2535;padding:14px 20px;backdrop-filter:blur(8px);}
+    .bottom-btn{width:100%;background:#f5c542;border:none;color:#0a0905;border-radius:12px;padding:15px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.92rem;}
+    .bottom-btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .bottom-btn-outline{width:100%;background:transparent;border:1px solid #1c2535;color:#5e728c;border-radius:12px;padding:13px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.85rem;margin-bottom:8px;}
+
+    /* TYPE COLORS */
+    .type-study{background:#1a2a0a;}
+    .type-class{background:#0a1a2a;}
+    .type-prayer{background:#1a1a0a;}
+    .type-meal{background:#1a0a1a;}
+    .type-exercise{background:#0a1a1a;}
+    .type-break{background:#1c2535;}
+    .type-sleep{background:#1a0a2a;}
+    .type-python{background:#1a2a0a;}
+    .type-video{background:#2a0a0a;}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-    <div style="font-size:0.72rem;color:#5e728c;">Daily Balance</div>
-    <div style="font-size:0.72rem;color:#5e728c;">Step 1 of 1</div>
-  </div>
-  <div class="progress"><div class="progress-fill"></div></div>
 
-  <h1>Set Up Your <em>Schedule</em></h1>
-  <div class="sub">Create your daily time slots to get started. This helps Daily Balance track your routine. You must add at least one slot to continue.</div>
+<!-- ═══ PAGE 1: WELCOME ═══ -->
+<div id="welcomePage" class="page active">
+  <div class="welcome-wrap">
+    <div class="welcome-icon">📋</div>
+    <h1 class="welcome-title">Welcome to<br/><em>Daily Balance</em></h1>
+    <p class="welcome-sub">Your personal productivity companion. Track everything that matters — from daily classes to prayers, skills to goals.</p>
 
-  <!-- AI Suggest button -->
-  <button class="ai-btn" onclick="toggleAI()">&#10024; AI Suggest — Describe your routine</button>
-  <div class="ai-input-wrap" id="aiInputWrap">
-    <div style="font-size:0.72rem;color:#f5c542;font-weight:700;margin-bottom:8px;">Describe your daily routine</div>
-    <textarea class="ai-textarea" id="aiPromptText" placeholder="e.g. I'm a student. I have classes from 8am to 2pm. I pray 5 times a day. I study in the evenings and sleep by 11pm..."></textarea>
-    <button class="ai-gen-btn" onclick="generateWithAI()">&#9889; Generate Schedule</button>
-    <div class="ai-loading" id="aiLoading">&#129302; AI is thinking...</div>
-  </div>
-
-  <!-- Templates -->
-  <div class="section-label">Quick Templates</div>
-  <div class="templates">
-    <button class="tmpl-btn" onclick="applyTemplate('student',this)">
-      <span class="tmpl-icon">📚</span>
-      <span class="tmpl-name">Student</span>
-      <span class="tmpl-sub">Study + Classes</span>
-    </button>
-    <button class="tmpl-btn" onclick="applyTemplate('student2',this)">
-      <span class="tmpl-icon">🎓</span>
-      <span class="tmpl-name">University</span>
-      <span class="tmpl-sub">Uni + Prayers</span>
-    </button>
-    <button class="tmpl-btn" onclick="applyTemplate('professional',this)">
-      <span class="tmpl-icon">💼</span>
-      <span class="tmpl-name">Professional</span>
-      <span class="tmpl-sub">Work + Breaks</span>
-    </button>
-    <button class="tmpl-btn" onclick="applyTemplate('minimal',this)">
-      <span class="tmpl-icon">✨</span>
-      <span class="tmpl-name">Minimal</span>
-      <span class="tmpl-sub">Basic routine</span>
-    </button>
-  </div>
-
-  <!-- Manual add -->
-  <div class="section-label">Add Slot Manually <span class="must-badge">REQUIRED</span></div>
-  <div class="card">
-    <div style="margin-bottom:8px;">
-      <label style="font-size:0.64rem;color:#5e728c;display:block;margin-bottom:4px;">Slot Title</label>
-      <input id="slotTitle" placeholder="e.g. Morning Study, Fajr Prayer..." />
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Start Time</label>
-        <input id="slotStart" type="time"/>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-card-icon">🗓️</div>
+        <div class="feat-card-name">Daily Schedule</div>
+        <div class="feat-card-desc">Track your routine slots, check them off as you go</div>
       </div>
-      <div class="field">
-        <label>End Time</label>
-        <input id="slotEnd" type="time"/>
+      <div class="feat-card">
+        <div class="feat-card-icon">📈</div>
+        <div class="feat-card-name">Skills & XP</div>
+        <div class="feat-card-desc">Level up your skills with XP points each session</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">🎯</div>
+        <div class="feat-card-name">Goals</div>
+        <div class="feat-card-desc">Set goals with deadlines and track progress</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">📊</div>
+        <div class="feat-card-name">Monthly View</div>
+        <div class="feat-card-desc">See your streaks and completion heatmap</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">💊</div>
+        <div class="feat-card-name">Medicine</div>
+        <div class="feat-card-desc">Never miss a dose with daily medicine tracking</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">📝</div>
+        <div class="feat-card-name">Notes</div>
+        <div class="feat-card-desc">Quick notes by category — Study, Class, Ideas</div>
       </div>
     </div>
-    <div class="row">
-      <div class="field">
-        <label>Days</label>
-        <select id="slotDay">
-          <option value="all">All Days</option>
-          <option value="Sat">Saturday</option>
-          <option value="Sun">Sunday</option>
-          <option value="Mon">Monday</option>
-          <option value="Tue">Tuesday</option>
-          <option value="Wed">Wednesday</option>
-          <option value="Thu">Thursday</option>
-          <option value="Fri">Friday</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Type</label>
-        <select id="slotType">
-          <option value="study">📚 Study</option>
-          <option value="class">🏫 Class</option>
-          <option value="prayer">🕌 Prayer</option>
-          <option value="meal">🍽️ Meal</option>
-          <option value="exercise">🏃 Exercise</option>
-          <option value="break">☕ Break</option>
-          <option value="sleep">😴 Sleep</option>
-          <option value="python">🐍 Python</option>
-          <option value="video">🎬 Video Edit</option>
-        </select>
-      </div>
-    </div>
-    <button class="add-btn" onclick="addSlot()">+ Add This Slot</button>
-  </div>
 
-  <!-- Preview -->
-  <div id="previewSection" style="display:none;margin-bottom:80px;">
-    <div class="section-label" id="previewLabel">Added Slots</div>
-    <div id="slotList"></div>
+    <p class="welcome-note">⏱️ Takes about 2 minutes to set up</p>
+    <button class="bottom-btn" onclick="showSetup()" style="max-width:360px;width:100%;">Let's Set Up Your Schedule →</button>
   </div>
-  <div id="emptyWarn" class="empty-warn">⚠️ Please add at least one slot to continue.</div>
 </div>
 
-<div class="finish-bar">
-  <button onclick="finish()" style="flex:1;background:#f5c542;border:none;color:#0a0905;border-radius:10px;padding:14px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.9rem;">Done — Go to App &#8594;</button>
+<!-- ═══ PAGE 2: SETUP ═══ -->
+<div id="setupPage" class="page">
+  <div class="setup-wrap">
+    <div class="setup-header">
+      <div class="setup-step">Step 1 of 1 — Schedule Setup</div>
+      <h2 class="setup-title">Build Your <em style="color:#f5c542;font-style:italic;">Routine</em></h2>
+      <p class="setup-sub">Add your daily time slots. These become your trackable routine in the app. You need at least one slot to continue.</p>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:60%;"></div></div>
+
+    <!-- AI Generate -->
+    <div class="ai-section">
+      <button class="ai-toggle" id="aiToggle" onclick="toggleAI()">
+        <span class="ai-toggle-icon">✨</span>
+        <div class="ai-toggle-text">
+          <div>AI Schedule Generator</div>
+          <div class="ai-toggle-sub">Describe your routine, AI builds your schedule</div>
+        </div>
+        <span class="ai-toggle-arrow">›</span>
+      </button>
+      <div class="ai-body" id="aiBody">
+        <div style="font-size:0.7rem;color:#5e728c;margin-bottom:8px;">Try an example or write your own:</div>
+        <div class="ai-examples">
+          <button class="ai-ex-btn" onclick="setPrompt(this)">University student, 5 prayers daily, classes 8am-2pm</button>
+          <button class="ai-ex-btn" onclick="setPrompt(this)">Work from home, gym in morning, sleep by 11pm</button>
+          <button class="ai-ex-btn" onclick="setPrompt(this)">Student + freelancer, study evenings, pray 5x</button>
+          <button class="ai-ex-btn" onclick="setPrompt(this)">School student, extracurriculars after school</button>
+        </div>
+        <textarea class="ai-textarea" id="aiPrompt" placeholder="e.g. I'm a university student. I have classes from 8am to 2pm on weekdays. I pray 5 times a day (Fajr at 5am, Dhuhr at 1pm, Asr at 4pm, Maghrib at 6:30pm, Isha at 8pm). I study in the evenings and sleep by 11pm. I also do some Python practice 3 times a week..."></textarea>
+        <button class="ai-gen-btn" id="aiGenBtn" onclick="generateSchedule()">
+          <span>⚡</span> Generate My Schedule
+        </button>
+        <div class="ai-status" id="aiStatus">🤖 AI is building your schedule...</div>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">or choose a template</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Templates -->
+    <div class="templates-section">
+      <div class="templates">
+        <button class="tmpl-btn" onclick="applyTemplate('student',this)">
+          <span class="tmpl-icon">📚</span>
+          <span class="tmpl-name">Student</span>
+          <span class="tmpl-sub">Study + Classes + Prayers</span>
+        </button>
+        <button class="tmpl-btn" onclick="applyTemplate('university',this)">
+          <span class="tmpl-icon">🎓</span>
+          <span class="tmpl-name">University</span>
+          <span class="tmpl-sub">Uni schedule + Prayers</span>
+        </button>
+        <button class="tmpl-btn" onclick="applyTemplate('professional',this)">
+          <span class="tmpl-icon">💼</span>
+          <span class="tmpl-name">Professional</span>
+          <span class="tmpl-sub">Work + Breaks + Exercise</span>
+        </button>
+        <button class="tmpl-btn" onclick="applyTemplate('minimal',this)">
+          <span class="tmpl-icon">✨</span>
+          <span class="tmpl-name">Minimal</span>
+          <span class="tmpl-sub">Basic morning + evening</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">or add manually</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Manual Add -->
+    <div class="manual-section">
+      <div class="manual-card">
+        <div style="margin-bottom:10px;">
+          <span class="field-label">Slot Title</span>
+          <input id="slotTitle" placeholder="e.g. Morning Study, Fajr Prayer, Lunch..."/>
+        </div>
+        <div class="row">
+          <div class="field">
+            <span class="field-label">Start</span>
+            <input id="slotStart" type="time"/>
+          </div>
+          <div class="field">
+            <span class="field-label">End</span>
+            <input id="slotEnd" type="time"/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <span class="field-label">Days</span>
+            <select id="slotDay">
+              <option value="all">Every Day</option>
+              <option value="Sat">Saturday</option>
+              <option value="Sun">Sunday</option>
+              <option value="Mon">Monday</option>
+              <option value="Tue">Tuesday</option>
+              <option value="Wed">Wednesday</option>
+              <option value="Thu">Thursday</option>
+              <option value="Fri">Friday</option>
+            </select>
+          </div>
+          <div class="field">
+            <span class="field-label">Type</span>
+            <select id="slotType">
+              <option value="study">📚 Study</option>
+              <option value="class">🏫 Class</option>
+              <option value="prayer">🕌 Prayer</option>
+              <option value="meal">🍽️ Meal</option>
+              <option value="exercise">🏃 Exercise</option>
+              <option value="break">☕ Break</option>
+              <option value="sleep">😴 Sleep</option>
+              <option value="python">🐍 Python</option>
+              <option value="video">🎬 Video Edit</option>
+            </select>
+          </div>
+        </div>
+        <button class="add-slot-btn" onclick="addSlot()">+ Add This Slot</button>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-section" id="previewSection" style="display:none;">
+      <div class="preview-count" id="previewCount">0 slots added</div>
+      <div id="slotList"></div>
+    </div>
+
+    <div class="empty-warn" id="emptyWarn">⚠️ Add at least one slot to continue.</div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="finish()">Done — Open App →</button>
+  </div>
 </div>
 
 <script>
 var slots = [];
 var TYPE_ICONS = {study:'📚',class:'🏫',prayer:'🕌',meal:'🍽️',exercise:'🏃',break:'☕',sleep:'😴',python:'🐍',video:'🎬'};
+var TYPE_COLORS = {study:'#1a2a0a',class:'#0a1a2a',prayer:'#1a1a0a',meal:'#1a0a1a',exercise:'#0a1a1a',break:'#1c2535',sleep:'#1a0a2a',python:'#1a2a0a',video:'#2a0a0a'};
+
 var TEMPLATES = {
   student:[
     {title:'Fajr Prayer',start:'05:00',end:'05:30',type:'prayer',day:'all'},
     {title:'Morning Study',start:'06:00',end:'08:00',type:'study',day:'all'},
     {title:'Breakfast',start:'08:00',end:'08:30',type:'meal',day:'all'},
     {title:'Classes',start:'09:00',end:'14:00',type:'class',day:'all'},
+    {title:'Dhuhr Prayer',start:'13:00',end:'13:15',type:'prayer',day:'all'},
     {title:'Lunch',start:'14:00',end:'14:30',type:'meal',day:'all'},
+    {title:'Asr Prayer',start:'15:30',end:'15:45',type:'prayer',day:'all'},
     {title:'Evening Study',start:'16:00',end:'19:00',type:'study',day:'all'},
+    {title:'Maghrib Prayer',start:'18:30',end:'18:45',type:'prayer',day:'all'},
     {title:'Dinner',start:'20:00',end:'20:30',type:'meal',day:'all'},
-    {title:'Sleep',start:'22:30',end:'05:00',type:'sleep',day:'all'},
+    {title:'Isha Prayer',start:'20:30',end:'20:45',type:'prayer',day:'all'},
+    {title:'Night Study',start:'21:00',end:'22:30',type:'study',day:'all'},
+    {title:'Sleep',start:'23:00',end:'05:00',type:'sleep',day:'all'},
   ],
-  student2:[
+  university:[
     {title:'Fajr Prayer',start:'05:00',end:'05:30',type:'prayer',day:'all'},
-    {title:'Morning Study',start:'06:00',end:'07:45',type:'study',day:'all'},
+    {title:'Morning Prep',start:'06:30',end:'07:45',type:'study',day:'all'},
     {title:'Breakfast',start:'07:45',end:'08:00',type:'meal',day:'all'},
-    {title:'1st Period',start:'08:00',end:'08:50',type:'class',day:'Sat'},
-    {title:'2nd Period',start:'08:50',end:'09:40',type:'class',day:'Sat'},
-    {title:'3rd Period',start:'09:40',end:'10:30',type:'class',day:'Sat'},
-    {title:'Classes',start:'08:00',end:'13:00',type:'class',day:'Sun'},
-    {title:'Classes',start:'08:00',end:'13:00',type:'class',day:'Mon'},
-    {title:'Classes',start:'08:00',end:'13:00',type:'class',day:'Tue'},
-    {title:'Classes',start:'08:00',end:'13:00',type:'class',day:'Wed'},
+    {title:'Morning Classes',start:'08:00',end:'13:00',type:'class',day:'Sat'},
+    {title:'Morning Classes',start:'08:00',end:'13:00',type:'class',day:'Sun'},
+    {title:'Morning Classes',start:'08:00',end:'13:00',type:'class',day:'Mon'},
+    {title:'Morning Classes',start:'08:00',end:'13:00',type:'class',day:'Tue'},
+    {title:'Morning Classes',start:'08:00',end:'13:00',type:'class',day:'Wed'},
     {title:'Dhuhr Prayer',start:'13:00',end:'13:20',type:'prayer',day:'all'},
-    {title:'Lunch + Rest',start:'13:20',end:'15:00',type:'meal',day:'all'},
+    {title:'Lunch',start:'13:20',end:'14:30',type:'meal',day:'all'},
     {title:'Asr Prayer',start:'15:30',end:'15:50',type:'prayer',day:'all'},
-    {title:'Evening Study',start:'16:00',end:'19:00',type:'study',day:'all'},
+    {title:'Study / Assignment',start:'16:00',end:'19:00',type:'study',day:'all'},
     {title:'Maghrib Prayer',start:'18:30',end:'18:50',type:'prayer',day:'all'},
+    {title:'Dinner',start:'19:30',end:'20:00',type:'meal',day:'all'},
     {title:'Isha Prayer',start:'20:00',end:'20:20',type:'prayer',day:'all'},
     {title:'Night Study',start:'20:30',end:'22:30',type:'study',day:'all'},
-    {title:'Sleep',start:'22:30',end:'05:00',type:'sleep',day:'all'},
+    {title:'Sleep',start:'23:00',end:'05:00',type:'sleep',day:'all'},
   ],
   professional:[
-    {title:'Morning Routine',start:'06:00',end:'07:30',type:'exercise',day:'all'},
-    {title:'Breakfast',start:'07:30',end:'08:00',type:'meal',day:'all'},
-    {title:'Work Session 1',start:'09:00',end:'12:00',type:'study',day:'all'},
+    {title:'Morning Exercise',start:'06:00',end:'07:00',type:'exercise',day:'all'},
+    {title:'Breakfast',start:'07:00',end:'07:30',type:'meal',day:'all'},
+    {title:'Deep Work',start:'09:00',end:'12:00',type:'study',day:'all'},
     {title:'Lunch Break',start:'12:00',end:'13:00',type:'meal',day:'all'},
     {title:'Work Session 2',start:'13:00',end:'17:00',type:'study',day:'all'},
     {title:'Evening Walk',start:'17:30',end:'18:00',type:'exercise',day:'all'},
-    {title:'Dinner',start:'20:00',end:'20:30',type:'meal',day:'all'},
+    {title:'Dinner',start:'19:30',end:'20:00',type:'meal',day:'all'},
+    {title:'Reading / Skill',start:'20:30',end:'22:00',type:'study',day:'all'},
     {title:'Sleep',start:'23:00',end:'06:00',type:'sleep',day:'all'},
   ],
   minimal:[
-    {title:'Morning',start:'07:00',end:'09:00',type:'study',day:'all'},
+    {title:'Morning Routine',start:'07:00',end:'08:00',type:'exercise',day:'all'},
+    {title:'Breakfast',start:'08:00',end:'08:30',type:'meal',day:'all'},
+    {title:'Work / Study',start:'09:00',end:'13:00',type:'study',day:'all'},
+    {title:'Lunch',start:'13:00',end:'14:00',type:'meal',day:'all'},
     {title:'Afternoon Work',start:'14:00',end:'17:00',type:'study',day:'all'},
-    {title:'Evening',start:'19:00',end:'21:00',type:'break',day:'all'},
+    {title:'Dinner',start:'19:00',end:'19:30',type:'meal',day:'all'},
+    {title:'Evening Wind Down',start:'21:00',end:'22:00',type:'break',day:'all'},
     {title:'Sleep',start:'23:00',end:'07:00',type:'sleep',day:'all'},
   ]
 };
@@ -214,30 +368,73 @@ function getUserKey(base){
 function loadExtra(){ try{return JSON.parse(localStorage.getItem(getUserKey('voice_extra'))||'{}');}catch(e){return {};} }
 function saveExtra(data){ localStorage.setItem(getUserKey('voice_extra'),JSON.stringify(data)); }
 
-function applyTemplate(name, btn){
-  document.querySelectorAll('.tmpl-btn').forEach(function(b){ b.classList.remove('selected'); });
-  if(btn) btn.classList.add('selected');
-  slots = (TEMPLATES[name]||[]).slice();
-  renderPreview();
-  // Show confirmation
-  var warn = document.getElementById('emptyWarn');
-  if(warn) warn.style.display='none';
-  var preview = document.getElementById('previewSection');
-  if(preview && preview.style.display!=='none'){
-    setTimeout(function(){ preview.scrollIntoView({behavior:'smooth'}); }, 100);
-  }
-  // Show toast
-  showToast(slots.length + ' slots loaded! Tap "Done" to continue.');
+function showSetup(){
+  document.getElementById('welcomePage').classList.remove('active');
+  document.getElementById('setupPage').classList.add('active');
 }
 
-function showToast(msg){
-  var t = document.getElementById('setupToast');
-  if(!t){ t=document.createElement('div'); t.id='setupToast';
-    t.style='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#f5c542;color:#0a0905;padding:10px 18px;border-radius:20px;font-size:0.82rem;font-weight:700;font-family:Inter,sans-serif;z-index:999;box-shadow:0 4px 16px #00000060;transition:opacity 0.3s;';
-    document.body.appendChild(t);
+function toggleAI(){
+  var btn = document.getElementById('aiToggle');
+  var body = document.getElementById('aiBody');
+  btn.classList.toggle('open');
+  body.classList.toggle('show');
+}
+
+function setPrompt(btn){
+  document.getElementById('aiPrompt').value = btn.textContent;
+}
+
+async function generateSchedule(){
+  var prompt = document.getElementById('aiPrompt').value.trim();
+  if(!prompt){ alert('Please describe your routine first.'); return; }
+
+  var btn = document.getElementById('aiGenBtn');
+  var status = document.getElementById('aiStatus');
+  btn.disabled=true;
+  status.style.display='block';
+  status.textContent='🤖 AI is analyzing your routine...';
+
+  try{
+    var response = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:2000,
+        messages:[{
+          role:'user',
+          content: 'You are a schedule builder for a productivity app. Based on the user routine description below, create a realistic daily schedule as a JSON array.\n\nRules:\n- Each slot must have: title (string), start (HH:MM 24h), end (HH:MM 24h), type (study/class/prayer/meal/exercise/break/sleep/python/video), day ("all" or specific day: "Sat","Sun","Mon","Tue","Wed","Thu","Fri")\n- Use "all" for daily activities, specific days only when clearly mentioned\n- Prayer times: Fajr ~5am, Dhuhr ~1pm, Asr ~4pm, Maghrib ~6:30pm, Isha ~8pm (adjust based on description)\n- Make sleep realistic (7-8 hours)\n- Include meals if not mentioned (breakfast, lunch, dinner)\n- Order slots by start time\n- Title should be clear and short (max 25 chars)\n- Return ONLY a valid JSON array, no markdown, no explanation\n\nUser routine: '+prompt
+        }]
+      })
+    });
+    var data = await response.json();
+    var text = data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    var generated = JSON.parse(text);
+    if(Array.isArray(generated)&&generated.length){
+      slots = generated;
+      renderPreview();
+      document.getElementById('aiBody').classList.remove('show');
+      document.getElementById('aiToggle').classList.remove('open');
+      status.textContent='✅ '+generated.length+' slots generated!';
+      setTimeout(function(){ status.style.display='none'; }, 3000);
+    }else{
+      throw new Error('Invalid response');
+    }
+  }catch(e){
+    status.textContent='❌ Failed. Try again or use a template.';
+    setTimeout(function(){ status.style.display='none'; }, 3000);
   }
-  t.textContent=msg; t.style.opacity='1'; t.style.display='block';
-  clearTimeout(t._t); t._t=setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.style.display='none'; },300); },3000);
+  btn.disabled=false;
+}
+
+function applyTemplate(name,btn){
+  document.querySelectorAll('.tmpl-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  slots = (TEMPLATES[name]||[]).slice();
+  renderPreview();
+  document.getElementById('emptyWarn').style.display='none';
+  var preview = document.getElementById('previewSection');
+  if(preview) setTimeout(function(){ preview.scrollIntoView({behavior:'smooth',block:'start'}); },100);
 }
 
 function addSlot(){
@@ -246,7 +443,7 @@ function addSlot(){
   var end = document.getElementById('slotEnd').value;
   var day = document.getElementById('slotDay').value;
   var type = document.getElementById('slotType').value;
-  if(!title){ alert('Please enter a slot title.'); return; }
+  if(!title){ document.getElementById('slotTitle').focus(); return; }
   if(!start||!end){ alert('Please select start and end time.'); return; }
   slots.push({title:title,start:start,end:end,type:type,day:day});
   document.getElementById('slotTitle').value='';
@@ -260,33 +457,25 @@ function removeSlot(i){
 }
 
 function renderPreview(){
-  var list = document.getElementById('slotList');
   var section = document.getElementById('previewSection');
-  var label = document.getElementById('previewLabel');
+  var list = document.getElementById('slotList');
+  var count = document.getElementById('previewCount');
   if(!slots.length){ section.style.display='none'; return; }
   section.style.display='block';
-  label.textContent = 'Your Slots ('+slots.length+')';
+  count.textContent=slots.length+' slot'+(slots.length>1?'s':'')+' ready';
   list.innerHTML = slots.map(function(s,i){
+    var bg = TYPE_COLORS[s.type]||'#1c2535';
+    var icon = TYPE_ICONS[s.type]||'📌';
+    var dayLabel = s.day==='all'?'Every day':s.day;
     return '<div class="slot-item">'+
-      '<span style="font-size:1.1rem;">'+(TYPE_ICONS[s.type]||'📌')+'</span>'+
+      '<div class="slot-icon-wrap" style="background:'+bg+'">'+icon+'</div>'+
       '<div class="slot-info">'+
-        '<div class="slot-title">'+s.title+'</div>'+
-        '<div class="slot-meta">'+s.start+' – '+s.end+' &nbsp;·&nbsp; '+(s.day==='all'?'All days':s.day)+'</div>'+
+        '<div class="slot-title-text">'+s.title+'</div>'+
+        '<div class="slot-meta">'+s.start+' – '+s.end+' &nbsp;·&nbsp; '+dayLabel+'</div>'+
       '</div>'+
-      '<button class="del-btn" onclick="removeSlot('+i+')">🗑</button>'+
+      '<button class="slot-del" onclick="removeSlot('+i+')" title="Remove">✕</button>'+
     '</div>';
   }).join('');
-}
-
-function finish(){
-  if(!slots.length){
-    document.getElementById('emptyWarn').style.display='block';
-    document.getElementById('emptyWarn').scrollIntoView({behavior:'smooth'});
-    return;
-  }
-  saveSlots();
-  localStorage.setItem(getUserKey('voice_setup_done'),'yes');
-  window.location.href='app_V4.html';
 }
 
 function saveSlots(){
@@ -301,60 +490,26 @@ function saveSlots(){
         title: s.title,
         type: s.type,
         icon: TYPE_ICONS[s.type]||'📌',
-        id: 'setup_'+Date.now()+'_'+Math.random().toString(36).slice(2)
+        id: 'setup_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)
       });
     });
   });
   saveExtra(extraState);
 }
 
-function toggleAI(){
-  var wrap = document.getElementById('aiInputWrap');
-  wrap.style.display = wrap.style.display==='none'||!wrap.style.display ? 'block' : 'none';
-}
-
-async function generateWithAI(){
-  var prompt = document.getElementById('aiPromptText').value.trim();
-  if(!prompt){ alert('Please describe your routine first.'); return; }
-  var loading = document.getElementById('aiLoading');
-  var btn = document.querySelector('.ai-gen-btn');
-  loading.style.display='block';
-  btn.disabled=true; btn.textContent='Generating...';
-  try{
-    var response = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        messages:[{
-          role:'user',
-          content:'Based on this person\'s routine description, generate a JSON array of daily time slots. Each slot must have: title (string), start (HH:MM 24h format), end (HH:MM 24h format), type (one of: study/class/prayer/meal/exercise/break/sleep/python/video), day ("all" or day name like "Sat","Sun","Mon","Tue","Wed","Thu","Fri"). Return ONLY valid JSON array, no markdown, no explanation.\n\nRoutine description:\n'+prompt
-        }]
-      })
-    });
-    var data = await response.json();
-    var text = data.content[0].text.trim();
-    text = text.replace(/```json|```/g,'').trim();
-    var generated = JSON.parse(text);
-    if(Array.isArray(generated) && generated.length){
-      slots = generated;
-      renderPreview();
-      document.getElementById('aiInputWrap').style.display='none';
-    } else {
-      alert('Could not parse AI response. Try again.');
-    }
-  } catch(e){
-    alert('AI generation failed. Try a template instead.');
+function finish(){
+  if(!slots.length){
+    document.getElementById('emptyWarn').style.display='block';
+    document.getElementById('emptyWarn').scrollIntoView({behavior:'smooth'});
+    return;
   }
-  loading.style.display='none';
-  btn.disabled=false; btn.textContent='⚡ Generate Schedule';
+  saveSlots();
+  localStorage.setItem(getUserKey('voice_setup_done'),'yes');
+  window.location.href='app_V4.html';
 }
 
-// Check auth
 window.addEventListener('DOMContentLoaded',function(){
-  var user = localStorage.getItem('db_user');
-  if(!user){ window.location.href='index_V4.html'; }
+  if(!localStorage.getItem('db_user')){ window.location.href='index_V4.html'; }
 });
 </script>
 </body>
