@@ -108,6 +108,17 @@
     <div class="feat"><span class="feat-icon">&#128221;</span><span class="feat-name">Notes</span></div>
   </div>
 
+  <!-- Feedback -->
+  <div style="width:100%;max-width:340px;margin-bottom:20px;">
+    <div style="background:#0d1018;border:1px solid #1c2535;border-radius:14px;padding:18px 16px;">
+      <div style="font-size:0.7rem;color:#f5c542;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">💬 Send Feedback</div>
+      <textarea id="feedbackText" placeholder="Share your thoughts, suggestions, or report a bug..." style="width:100%;background:#080b10;border:1px solid #1c2535;border-radius:8px;padding:10px 12px;color:#e6edf8;font-size:0.82rem;font-family:'Inter',sans-serif;resize:none;height:80px;box-sizing:border-box;outline:none;margin-bottom:8px;"></textarea>
+      <input id="feedbackEmail" placeholder="Your email (optional)" style="width:100%;background:#080b10;border:1px solid #1c2535;border-radius:8px;padding:9px 12px;color:#e6edf8;font-size:0.82rem;font-family:'Inter',sans-serif;box-sizing:border-box;outline:none;margin-bottom:10px;" />
+      <button onclick="sendFeedback()" style="width:100%;background:#f5c542;border:none;color:#0a0905;border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.83rem;">Send Feedback</button>
+      <div id="feedbackMsg" style="display:none;font-size:0.75rem;color:#4ade80;text-align:center;margin-top:8px;"></div>
+    </div>
+  </div>
+
   <div class="footer">
     <a href="terms_V4.html">Privacy Policy</a>
     <a href="terms_V4.html">Terms &amp; Conditions</a>
@@ -207,6 +218,40 @@ function continueAsGuest(){
 
 function showLoading(msg){ document.getElementById('loadingText').textContent=msg||'Loading...'; document.getElementById('loadingScreen').classList.add('show'); }
 function hideLoading(){ document.getElementById('loadingScreen').classList.remove('show'); }
+
+function sendFeedback(){
+  var text = document.getElementById('feedbackText').value.trim();
+  var email = document.getElementById('feedbackEmail').value.trim();
+  var msg = document.getElementById('feedbackMsg');
+  if(!text){ alert('Please write your feedback first.'); return; }
+
+  // Use mailto as fallback (works offline too)
+  var subject = encodeURIComponent('Daily Balance Feedback');
+  var body = encodeURIComponent('Feedback:\n'+text+'\n\nFrom: '+(email||'Anonymous'));
+  
+  // Try fetch to a form service first, fallback to mailto
+  fetch('https://formsubmit.co/ajax/voicelessvoice00@gmail.com', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    body: JSON.stringify({
+      feedback: text,
+      email: email || 'Anonymous',
+      _subject: 'Daily Balance Feedback',
+      _captcha: 'false'
+    })
+  }).then(function(r){ return r.json(); })
+    .then(function(data){
+      msg.textContent = '✅ Feedback sent! Thank you.';
+      msg.style.display = 'block';
+      document.getElementById('feedbackText').value = '';
+      document.getElementById('feedbackEmail').value = '';
+      setTimeout(function(){ msg.style.display='none'; }, 4000);
+    })
+    .catch(function(){
+      // Fallback: open mailto
+      window.location.href = 'mailto:voicelessvoice00@gmail.com?subject='+subject+'&body='+body;
+    });
+}
 </script>
 </body>
 </html>
