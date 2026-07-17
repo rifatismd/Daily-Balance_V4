@@ -2476,8 +2476,8 @@ const NOTE_CAT_LABELS = {study:'📚 Study',class:'🏫 Class',idea:'💡 Idea',
 function renderNotes(){
   const el = document.getElementById('notesList'); if(!el) return;
   // Update count
-  const allNotes = Object.keys(extraState).filter(k=>k.startsWith('notes_')).reduce((acc,k)=>acc+(extraState[k]||[]).length,0);
-  const countEl = document.getElementById('notesCount'); if(countEl) countEl.textContent = allNotes+' note'+(allNotes!==1?'s':'');
+  const totalNotes = Object.keys(extraState).filter(k=>k.startsWith('notes_')).reduce((acc,k)=>acc+(extraState[k]||[]).length,0);
+  const countEl = document.getElementById('notesCount'); if(countEl) countEl.textContent = totalNotes+' note'+(totalNotes!==1?'s':'');
   const search = (document.getElementById('noteSearch')?.value||'').toLowerCase().trim();
   // Collect all notes with their day keys
   const allNotes = [];
