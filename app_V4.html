@@ -671,6 +671,16 @@
     <div style="display:flex;gap:6px;justify-content:space-between;margin-top:4px;" id="waterHistoryLabels"></div>
   </div>
 
+  <!-- ═══ FEEDBACK ═══ -->
+  <div class="settings-card" style="margin-bottom:8px;">
+    <div class="settings-section-title">💬 Send Feedback</div>
+    <div style="font-size:0.73rem;color:var(--muted);margin-bottom:12px;">Found a bug? Have a suggestion? We'd love to hear from you.</div>
+    <textarea id="appFeedbackText" placeholder="Share your thoughts, report a bug, or suggest a feature..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;resize:none;height:80px;box-sizing:border-box;outline:none;margin-bottom:8px;"></textarea>
+    <input id="appFeedbackEmail" placeholder="Your email (optional)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;box-sizing:border-box;outline:none;margin-bottom:10px;" />
+    <button onclick="sendAppFeedback()" style="width:100%;background:var(--accent);border:none;color:#0a0905;border-radius:9px;padding:11px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">📤 Send Feedback</button>
+    <div id="appFeedbackMsg" style="display:none;font-size:0.75rem;color:var(--accent2);text-align:center;margin-top:8px;"></div>
+  </div>
+
 </div>
 
 <!-- MEDICINE TAB -->
@@ -699,7 +709,14 @@
       </div>
     </div>
     <div style="font-size:0.68rem;color:var(--muted);margin-bottom:5px;">Notes (optional)</div>
-    <input id="medNote" placeholder="e.g. After meal" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:12px;" />
+    <input id="medNote" placeholder="e.g. After meal, with water" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;" />
+    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:6px;">When to take:</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medMorning" style="accent-color:var(--accent);"> 🌅 Morning</label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medAfternoon" style="accent-color:var(--accent);"> ☀️ Afternoon</label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medEvening" style="accent-color:var(--accent);"> 🌆 Evening</label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medNight" style="accent-color:var(--accent);"> 🌙 Night</label>
+    </div>
     <div style="display:flex;gap:8px;">
       <button onclick="addMedicine()" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">Save</button>
       <button onclick="toggleAddMed()" style="background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:10px 16px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Cancel</button>
@@ -712,17 +729,11 @@
 <!-- SKILLS TAB -->
 <div id="skillsView" class="view-panel" style="display:none;">
 
-  <!-- Header + Edit button -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-    <div style="font-family:'DM Serif Display',serif;font-size:1.05rem;">📈 Skills</div>
-    <div style="display:flex;gap:6px;">
-      <button onclick="addNewSkill()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:700;">+ Add Skill</button>
-      <button onclick="toggleSkillEdit()" id="skillEditBtn" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.75rem;">✏️ Edit</button>
-    </div>
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;">📈 Skills</div>
+    <button onclick="addNewSkill()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;">+ Add Skill</button>
   </div>
-
-  <!-- Dynamic skill cards -->
-  <div id="skillCardsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;"></div>
 
   <!-- Level up toast -->
   <div id="levelUpToast" style="display:none;background:linear-gradient(135deg,#1a2a0a,#0a1a10);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin-bottom:14px;text-align:center;">
@@ -730,26 +741,35 @@
     <div id="levelUpMsg" style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--accent);"></div>
   </div>
 
-  <!-- Dynamic +XP buttons -->
-  <div id="skillXPBtns" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;"></div>
+  <!-- Skill cards (fully dynamic) -->
+  <div id="skillCardsGrid" style="margin-bottom:16px;"></div>
 
-  <!-- Skill edit panel (shown when Edit pressed) -->
-  <div id="skillEditPanel" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:14px;">
-    <div style="font-size:0.72rem;color:var(--accent);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:10px;">Edit Skills</div>
-    <div id="skillEditList"></div>
-    <button onclick="toggleSkillEdit()" style="width:100%;margin-top:8px;background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:9px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Done</button>
+  <!-- Add skill form -->
+  <div id="addSkillForm" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;">
+    <div style="font-size:0.72rem;color:var(--accent);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:12px;">New Skill</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input id="newSkillIcon" maxlength="2" placeholder="📚" style="width:50px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:1.2rem;font-family:'Inter',sans-serif;" />
+      <input id="newSkillName" placeholder="Skill name (e.g. Graphic Design)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" />
+    </div>
+    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:6px;">Not sure what to learn? Pick a category:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="skillSuggestions">
+      <button onclick="suggestSkill('🐍','Python')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🐍 Python</button>
+      <button onclick="suggestSkill('🎬','Video Editing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🎬 Video Editing</button>
+      <button onclick="suggestSkill('🎨','Graphic Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🎨 Graphic Design</button>
+      <button onclick="suggestSkill('🖋️','Logo Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🖋️ Logo Design</button>
+      <button onclick="suggestSkill('🌐','Web Dev')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🌐 Web Dev</button>
+      <button onclick="suggestSkill('📱','UI/UX Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📱 UI/UX Design</button>
+      <button onclick="suggestSkill('📊','Data Analysis')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📊 Data Analysis</button>
+      <button onclick="suggestSkill('✍️','Content Writing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">✍️ Content Writing</button>
+      <button onclick="suggestSkill('📸','Photography')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📸 Photography</button>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="saveNewSkill()" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">Add Skill</button>
+      <button onclick="document.getElementById('addSkillForm').style.display='none'" style="background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:10px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Cancel</button>
+    </div>
   </div>
 
-  <!-- Topics + playlists (legacy, kept below) -->
-  <div class="stat-card" style="margin-bottom:16px;">
-    <div style="font-weight:700;font-size:0.9rem;margin-bottom:12px;" id="skill1TopicHeader">🐍 Python Topics</div>
-    <div id="pythonTopicList"></div>
-  </div>
-  <div class="stat-card" style="margin-bottom:16px;">
-    <div style="font-weight:700;font-size:0.9rem;margin-bottom:12px;" id="skill2TopicHeader">🎬 Video Editing Topics</div>
-    <div id="videoTopicList"></div>
-  </div>
-
+  <!-- YouTube Playlists -->
   <div style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">▶️ Learning Playlists</div>
   <div id="ytCards"></div>
   <button class="yt-add-btn" onclick="showYTInput()">+ Add YouTube Link or Playlist</button>
@@ -837,7 +857,8 @@
       <div class="streak-icon">🔥</div>
       <div>
         <div class="streak-num" id="streakNum">0</div>
-        <div class="streak-lbl">day streak <span style="font-size:0.65rem;color:var(--muted);cursor:pointer;" onclick="alert('Day streak counts how many consecutive days you completed at least one slot. Check off your daily slots to maintain your streak!')">ℹ️</span></div>
+        <div class="streak-lbl">day streak</div>
+      <div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Complete any slot daily to maintain 🔥</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
@@ -852,6 +873,11 @@
 
   <!-- Best day / avg completion mini-insight -->
   <div id="monthInsight" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.78rem;color:var(--muted);"></div>
+
+  <!-- Streak how-to -->
+  <div style="background:#1a1a0a;border:1px solid #2a2800;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.73rem;color:var(--muted);line-height:1.6;">
+    🔥 <strong style="color:var(--accent);">How streak works:</strong> Check off at least one slot every day to keep your streak alive. Missing a day resets it to 0.
+  </div>
 
   <!-- Heatmap scale legend -->
   <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-bottom:6px;">
@@ -1558,108 +1584,123 @@ function getSkills(){
 }
 function saveSkills(skills){ extraState.skills = skills; saveExtra(); }
 
-function addNewSkill(){
-  const skills = getSkills();
-  skills.push({id:'skill_'+Date.now(), icon:'⭐', name:'New Skill', xp:0});
-  saveSkills(skills);
-  renderSkills();
-  toggleSkillEdit(true); // open edit panel
-}
-function deleteSkill(id){
-  if(!confirm('Delete this skill?')) return;
-  extraState.skills = getSkills().filter(s=>s.id!==id);
-  saveExtra(); renderSkills();
-}
-function updateSkill(id){
-  const skills = getSkills();
-  const s = skills.find(x=>x.id===id); if(!s) return;
-  const prevLvl = getSkillLevel(s.xp).level;
-  const xpGain = window._xpOverride || appSettings.xpPerSession || XP_PER_SESSION;
-  s.xp = (s.xp||0) + xpGain;
-  if(id==='python') extraState.pythonXP = s.xp;
-  if(id==='video')  extraState.videoXP  = s.xp;
-  saveSkills(skills);
-  const newLvl = getSkillLevel(s.xp).level;
-  if(newLvl > prevLvl) showLevelUp(s);
-  renderSkills();
-}
-function showLevelUp(skill){
-  const toast = document.getElementById('levelUpToast');
-  const msg   = document.getElementById('levelUpMsg');
-  if(!toast||!msg) return;
-  msg.textContent = `${skill.icon} ${skill.name} leveled up! You reached ${SKILL_LEVELS[Math.min(getSkillLevel(skill.xp).level, SKILL_LEVELS.length-1)]}`;
-  toast.style.display='block';
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(()=>{ toast.style.display='none'; }, 4000);
-}
+
+
 function renderSkills(){
   const skills = getSkills();
   const grid = document.getElementById('skillCardsGrid');
-  const btns = document.getElementById('skillXPBtns');
-  if(!grid||!btns) return;
+  if(!grid) return;
 
-  // Set grid cols based on count
-  grid.style.gridTemplateColumns = skills.length === 1 ? '1fr' : '1fr 1fr';
+  if(!skills.length){
+    grid.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">📈</div><div style="font-size:0.88rem;margin-bottom:14px;">No skills yet.<br/>Add a skill to start tracking your progress.</div></div>';
+    return;
+  }
 
   grid.innerHTML = skills.map((s,i)=>{
     const xp = s.xp||0;
     const lvl = getSkillLevel(xp);
     const prog = getXPProgress(xp);
     const col = SKILL_COLORS[i % SKILL_COLORS.length];
-    const bg  = SKILL_BG_COLORS[i % SKILL_BG_COLORS.length];
-    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:radial-gradient(circle at top right,${bg},transparent 70%);"></div>
-      <div style="font-size:1.4rem;margin-bottom:6px;">${s.icon}</div>
-      <div style="font-size:0.65rem;color:${col};font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:2px;">${lvl.name} · Lv.${lvl.level+1}</div>
-      <div style="font-size:1.6rem;font-family:'DM Serif Display',serif;font-weight:400;color:var(--text);line-height:1;">${xp}</div>
-      <div style="font-size:0.62rem;color:var(--muted);margin-bottom:8px;">XP earned</div>
-      <div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:6px;">
-        <div style="height:100%;width:${prog.pct}%;background:${col};border-radius:3px;transition:width 0.6s cubic-bezier(.4,0,.2,1);"></div>
+    const bg = SKILL_BG_COLORS[i % SKILL_BG_COLORS.length];
+    const resources = getSkillResources(s.name);
+    const xpLabel = window._xpOverride || appSettings.xpPerSession || XP_PER_SESSION;
+
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right,${bg},transparent 70%);"></div>
+
+      <!-- Header row -->
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <div style="font-size:1.6rem;">${s.icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:0.65rem;color:${col};font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">${lvl.name} · Lv.${lvl.level+1}</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--text);">${s.name}</div>
+          <div style="font-size:0.62rem;color:var(--muted);">${xp} XP earned</div>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <button onclick="editSkill('${s.id}')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;" title="Edit">✏️</button>
+          <button onclick="deleteSkill('${s.id}')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;" title="Delete">🗑</button>
+        </div>
       </div>
-      <div style="font-size:0.62rem;color:var(--muted);">${prog.isMax?'Max level!':prog.inLevel+' / '+prog.needed+' to next level'}</div>
+
+      <!-- XP Bar -->
+      <div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;">
+        <div style="height:100%;width:${prog.pct}%;background:${col};border-radius:3px;transition:width 0.6s;"></div>
+      </div>
+      <div style="font-size:0.62rem;color:var(--muted);margin-bottom:12px;">${prog.isMax?'Max level!':prog.inLevel+' / '+prog.needed+' XP to next level'}</div>
+
+      <!-- +XP Button -->
+      <button onclick="updateSkill('${s.id}')" style="width:100%;background:var(--bg);border:1px solid ${col}40;color:${col};border-radius:9px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;margin-bottom:12px;">${s.icon} +${xpLabel} XP — Log a session</button>
+
+      <!-- Learning Resources -->
+      <div style="border-top:1px solid var(--border);padding-top:10px;">
+        <div style="font-size:0.65rem;color:var(--muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">📚 How to learn ${s.name}</div>
+        ${resources.slice(0,3).map(r=>`<div style="font-size:0.75rem;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;"><span>${r}</span></div>`).join('')}
+      </div>
+
+      <!-- Edit panel (hidden by default) -->
+      <div id="editPanel_${s.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input id="editIcon_${s.id}" value="${s.icon}" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;font-family:'Inter',sans-serif;" />
+          <input id="editName_${s.id}" value="${s.name}" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" />
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="saveSkillEdit('${s.id}')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:8px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;">Save</button>
+          <button onclick="document.getElementById('editPanel_${s.id}').style.display='none'" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.82rem;">Cancel</button>
+        </div>
+      </div>
     </div>`;
   }).join('');
-
-  const xpLabel = window._xpOverride || appSettings.xpPerSession || XP_PER_SESSION;
-  btns.innerHTML = skills.map((s,i)=>{
-    const col = SKILL_COLORS[i % SKILL_COLORS.length];
-    return `<button onclick="updateSkill('${s.id}')" style="flex:1;min-width:80px;background:var(--surface2);border:1px solid var(--border);color:${col};border-radius:10px;padding:12px 6px;cursor:pointer;font-size:0.82rem;font-family:'Inter',sans-serif;font-weight:700;">${s.icon} +${xpLabel} XP</button>`;
-  }).join('');
-
-  // legacy IDs still used by other functions
-  const s0=skills[0], s1=skills[1];
-  if(s0){ const th=document.getElementById('skill1TopicHeader'); if(th) th.textContent=s0.icon+' '+s0.name+' Topics'; }
-  if(s1){ const th=document.getElementById('skill2TopicHeader'); if(th) th.textContent=s1.icon+' '+s1.name+' Topics'; }
 }
 
-function toggleSkillEdit(forceOpen){
-  const panel = document.getElementById('skillEditPanel');
-  if(!panel) return;
-  const opening = forceOpen || panel.style.display==='none';
-  panel.style.display = opening ? 'block' : 'none';
-  if(opening) renderSkillEditList();
+function addNewSkill(){
+  var form = document.getElementById('addSkillForm');
+  if(form){ form.style.display = form.style.display==='none'?'block':'none'; }
 }
-function renderSkillEditList(){
-  const list = document.getElementById('skillEditList'); if(!list) return;
-  const skills = getSkills();
-  list.innerHTML = skills.map((s,i)=>`
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-      <input value="${s.icon}" maxlength="2" onchange="updateSkillField('${s.id}','icon',this.value)"
-        style="width:40px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 4px;color:var(--text);font-size:1rem;font-family:'Inter',sans-serif;" />
-      <input value="${s.name}" onchange="updateSkillField('${s.id}','name',this.value)"
-        style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.83rem;font-family:'Inter',sans-serif;" />
-      <button onclick="deleteSkill('${s.id}')" style="background:transparent;border:1px solid #7a2020;color:#f87171;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:0.8rem;font-family:'Inter',sans-serif;">🗑</button>
-    </div>`).join('');
+function suggestSkill(icon, name){
+  var ic = document.getElementById('newSkillIcon');
+  var nm = document.getElementById('newSkillName');
+  if(ic) ic.value = icon;
+  if(nm) nm.value = name;
 }
-function updateSkillField(id, field, val){
-  const skills = getSkills();
-  const s = skills.find(x=>x.id===id); if(!s) return;
-  s[field] = val;
+function saveNewSkill(){
+  var icon = document.getElementById('newSkillIcon')?.value.trim()||'📌';
+  var name = document.getElementById('newSkillName')?.value.trim();
+  if(!name){ alert('Please enter a skill name.'); return; }
+  var skills = getSkills();
+  skills.push({id:'skill_'+Date.now(), icon:icon, name:name, xp:0});
   saveSkills(skills);
+  document.getElementById('newSkillIcon').value='';
+  document.getElementById('newSkillName').value='';
+  document.getElementById('addSkillForm').style.display='none';
   renderSkills();
 }
-// stub — no longer needed but kept so old calls don't break
-function toggleSkillEdit2(){}
+
+// Learning resources per skill type
+var SKILL_RESOURCES = {
+  'Python': ['🐍 freeCodeCamp Python','📘 Python.org Docs','▶️ CS50P Harvard','📱 SoloLearn Python'],
+  'Video Editing': ['▶️ Premiere Pro Tutorial','▶️ DaVinci Resolve Free','📺 YouTube Creators Academy','🎬 CapCut Guide'],
+  'Graphic Design': ['🎨 Canva Design School','▶️ Adobe Express Tutorials','📘 Graphic Design Basics','🖼️ Dribbble Inspiration'],
+  'Logo Design': ['🖋️ Logo Design Tutorial','▶️ Illustrator Basics','📘 Logo Design Principles','🎨 LogoMaker Free'],
+  'Web Dev': ['🌐 freeCodeCamp Web','📘 MDN Web Docs','▶️ The Odin Project','💻 CSS Tricks'],
+  'UI/UX Design': ['📱 Figma Free Course','▶️ Google UX Design','📘 UX Collective','🎨 Dribbble UI'],
+  'Data Analysis': ['📊 Kaggle Free Courses','▶️ Excel/Sheets Tutorial','🐍 Pandas Docs','📈 Google Data Analytics'],
+  'Content Writing': ['✍️ Copyblogger','📘 HubSpot Writing','▶️ Content Marketing','📝 Hemingway App'],
+  'Photography': ['📸 Photography Basics','▶️ Lightroom Tutorial','📘 Digital Photography School','🖼️ 500px Inspiration'],
+};
+
+function getSkillResources(name){
+  // Try exact match first, then partial
+  if(SKILL_RESOURCES[name]) return SKILL_RESOURCES[name];
+  var lower = name.toLowerCase();
+  for(var key in SKILL_RESOURCES){
+    if(lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)){
+      return SKILL_RESOURCES[key];
+    }
+  }
+  return ['🔍 Search on YouTube: '+name+' tutorial','📘 Search on Google: learn '+name,'▶️ freeCodeCamp on YouTube'];
+}
+
+
 function saveSkillNames(){}
 function previewSkillNames(){}
 function applySkillNames(){}
@@ -2348,19 +2389,62 @@ function importData(e){
   reader.readAsText(file);
 }
 function confirmReset(){
-  if(confirm('Delete YOUR data only? Other accounts will not be affected.')){
-    // Get current user's exact keys and delete only those
-    var keys = [
-      getUserKey('voice_done'),
-      getUserKey('voice_extra'),
-      getUserKey('voice_settings'),
-      getUserKey('voice_cancelled'),
-      getUserKey('voice_setup_done')
-    ];
-    keys.forEach(function(k){ localStorage.removeItem(k); });
-    showDataMsg('Your data cleared. Going to setup...');
-    setTimeout(function(){ window.location.href='setup_V4.html'; },800);
+  if(!confirm('Delete YOUR data only? Other accounts will not be affected. This cannot be undone.')) return;
+  // Delete ALL localStorage keys belonging to current user
+  var userSuffix = getUserKey('_').replace('_','');
+  var toDelete = [];
+  for(var i=0; i<localStorage.length; i++){
+    var k = localStorage.key(i);
+    if(k && (
+      k === getUserKey('voice_done') ||
+      k === getUserKey('voice_extra') ||
+      k === getUserKey('voice_settings') ||
+      k === getUserKey('voice_cancelled') ||
+      k === getUserKey('voice_setup_done') ||
+      k.endsWith(userSuffix)
+    )) toDelete.push(k);
   }
+  toDelete.forEach(function(k){ localStorage.removeItem(k); });
+
+  // Ask about sign out
+  var wantSignOut = confirm('Data cleared! Do you want to sign out too?\n\nYes = Go to login page\nNo = Go to setup (stay logged in)');
+  if(wantSignOut){
+    localStorage.removeItem('db_user');
+    sessionStorage.removeItem('gdrive_token');
+    window.location.href = 'index_V4.html';
+  } else {
+    window.location.href = 'setup_V4.html';
+  }
+}
+function sendAppFeedback(){
+  var text = document.getElementById('appFeedbackText')?.value.trim();
+  var email = document.getElementById('appFeedbackEmail')?.value.trim();
+  var msg = document.getElementById('appFeedbackMsg');
+  if(!text){ alert('Please write your feedback first.'); return; }
+  var user = JSON.parse(localStorage.getItem('db_user')||'null');
+  var userInfo = user ? (user.email||user.name||'Anonymous') : 'Anonymous';
+  fetch('https://formsubmit.co/ajax/voicelessvoice00@gmail.com',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({
+      message: text,
+      from: email||userInfo,
+      _subject: 'Daily Balance App Feedback',
+      _captcha: 'false'
+    })
+  }).then(function(r){ return r.json(); })
+    .then(function(){
+      if(msg){ msg.textContent='✅ Feedback sent! Thank you.'; msg.style.display='block'; }
+      document.getElementById('appFeedbackText').value='';
+      document.getElementById('appFeedbackEmail').value='';
+      setTimeout(function(){ if(msg) msg.style.display='none'; },4000);
+    })
+    .catch(function(){
+      // Fallback: mailto
+      var sub = encodeURIComponent('Daily Balance Feedback');
+      var body = encodeURIComponent('From: '+(email||userInfo)+'\n\n'+text);
+      window.open('mailto:voicelessvoice00@gmail.com?subject='+sub+'&body='+body);
+    });
 }
 function showDataMsg(msg){
   const el=document.getElementById('dataMsg'); if(!el) return;
@@ -2961,13 +3045,21 @@ function addMedicine(){
   const dose=document.getElementById('medDose')?.value.trim();
   const times=parseInt(document.getElementById('medTimes')?.value)||1;
   const note=document.getElementById('medNote')?.value.trim();
+  const timeSlots=[];
+  ['Morning','Afternoon','Evening','Night'].forEach(t=>{
+    const el=document.getElementById('med'+t);
+    if(el&&el.checked) timeSlots.push(el.value);
+  });
   if(!name) return;
   if(!extraState.medicines) extraState.medicines=[];
-  extraState.medicines.push({id:Date.now(), name, dose, times, note, active:true});
+  extraState.medicines.push({id:Date.now(), name, dose, times, note, timeSlots, active:true});
   saveExtra();
   document.getElementById('medName').value='';
   document.getElementById('medDose').value='';
   document.getElementById('medNote').value='';
+  ['medMorning','medAfternoon','medEvening','medNight'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.checked=false;
+  });
   document.getElementById('addMedForm').style.display='none';
   renderMedList();
 }
@@ -3000,7 +3092,7 @@ function renderMedList(){
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
         <div>
           <div style="font-size:0.88rem;font-weight:600;color:var(--text);">💊 ${m.name}</div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${m.dose?m.dose+' · ':''}${m.times}x daily${m.note?' · '+m.note:''}</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">\${m.dose?m.dose+' · ':''}\${m.times}x daily\${m.timeSlots&&m.timeSlots.length?' · '+m.timeSlots.map(t=>t==='morning'?'🌅':t==='afternoon'?'☀️':t==='evening'?'🌆':'🌙').join(' '):''}\${m.note?' · '+m.note:''}</div>
         </div>
         <button onclick="deleteMedicine(${m.id})" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">🗑</button>
       </div>
@@ -3105,4 +3197,20 @@ window.addEventListener('DOMContentLoaded',function(){
 
 </script>
 </body>
-</html>
+
+function editSkill(id){
+  // Toggle edit panel
+  var panel = document.getElementById('editPanel_'+id);
+  if(panel) panel.style.display = panel.style.display==='none'?'block':'none';
+}
+function saveSkillEdit(id){
+  var icon = document.getElementById('editIcon_'+id)?.value.trim()||'📌';
+  var name = document.getElementById('editName_'+id)?.value.trim();
+  if(!name) return;
+  var skills = getSkills();
+  var s = skills.find(x=>x.id===id); if(!s) return;
+  s.icon = icon; s.name = name;
+  saveSkills(skills); renderSkills();
+}
+
+>
