@@ -1583,74 +1583,6 @@ function getSkills(){
 }
 function saveSkills(skills){ extraState.skills = skills; saveExtra(); }
 
-
-
-function renderSkills(){
-  const skills = getSkills();
-  const grid = document.getElementById('skillCardsGrid');
-  if(!grid) return;
-
-  if(!skills.length){
-    grid.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">📈</div><div style="font-size:0.88rem;margin-bottom:14px;">No skills yet.<br/>Add a skill to start tracking your progress.</div></div>';
-    return;
-  }
-
-  grid.innerHTML = skills.map((s,i)=>{
-    const xp = s.xp||0;
-    const lvl = getSkillLevel(xp);
-    const prog = getXPProgress(xp);
-    const col = SKILL_COLORS[i % SKILL_COLORS.length];
-    const bg = SKILL_BG_COLORS[i % SKILL_BG_COLORS.length];
-    const resources = getSkillResources(s.name);
-    const xpLabel = window._xpOverride || appSettings.xpPerSession || XP_PER_SESSION;
-
-    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right,${bg},transparent 70%);"></div>
-
-      <!-- Header row -->
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <div style="font-size:1.6rem;">${s.icon}</div>
-        <div style="flex:1;">
-          <div style="font-size:0.65rem;color:${col};font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">${lvl.name} · Lv.${lvl.level+1}</div>
-          <div style="font-size:1rem;font-weight:700;color:var(--text);">${s.name}</div>
-          <div style="font-size:0.62rem;color:var(--muted);">${xp} XP earned</div>
-        </div>
-        <div style="display:flex;gap:4px;">
-          <button onclick="editSkill('${s.id}')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;" title="Edit">✏️</button>
-          <button onclick="deleteSkill('${s.id}')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;" title="Delete">🗑</button>
-        </div>
-      </div>
-
-      <!-- XP Bar -->
-      <div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;">
-        <div style="height:100%;width:${prog.pct}%;background:${col};border-radius:3px;transition:width 0.6s;"></div>
-      </div>
-      <div style="font-size:0.62rem;color:var(--muted);margin-bottom:12px;">${prog.isMax?'Max level!':prog.inLevel+' / '+prog.needed+' XP to next level'}</div>
-
-      <!-- +XP Button -->
-      <button onclick="updateSkill('${s.id}')" style="width:100%;background:var(--bg);border:1px solid ${col}40;color:${col};border-radius:9px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;margin-bottom:12px;">${s.icon} +${xpLabel} XP — Log a session</button>
-
-      <!-- Learning Resources -->
-      <div style="border-top:1px solid var(--border);padding-top:10px;">
-        <div style="font-size:0.65rem;color:var(--muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">📚 How to learn ${s.name}</div>
-        ${resources.slice(0,3).map(r=>`<div style="font-size:0.75rem;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;"><span>${r}</span></div>`).join('')}
-      </div>
-
-      <!-- Edit panel (hidden by default) -->
-      <div id="editPanel_${s.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <div style="display:flex;gap:8px;margin-bottom:8px;">
-          <input id="editIcon_${s.id}" value="${s.icon}" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;font-family:'Inter',sans-serif;" />
-          <input id="editName_${s.id}" value="${s.name}" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" />
-        </div>
-        <div style="display:flex;gap:8px;">
-          <button onclick="saveSkillEdit('${s.id}')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:8px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;">Save</button>
-          <button onclick="document.getElementById('editPanel_${s.id}').style.display='none'" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.82rem;">Cancel</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
 function addNewSkill(){
   var form = document.getElementById('addSkillForm');
   if(form){ form.style.display = form.style.display==='none'?'block':'none'; }
@@ -1661,6 +1593,68 @@ function suggestSkill(icon, name){
   if(ic) ic.value = icon;
   if(nm) nm.value = name;
 }
+function closeEditPanel(btn){
+  var p=btn.parentNode; while(p&&!p.id.startsWith('ep_')) p=p.parentNode; if(p) p.style.display='none';
+}
+function renderSkills(){
+  var skills=getSkills();
+  var grid=document.getElementById('skillCardsGrid'); if(!grid) return;
+  if(!skills.length){
+    grid.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">&#128200;</div><div>No skills yet. Add one!</div></div>';
+    return;
+  }
+  var cols=['#f5c542','#34d9c3','#fb923c','#a78bfa','#f87171','#4ade80']; var bgs=['#1a140a','#0a1a18','#1a0f0a','#120a1a','#1a0a0a','#0a1a0a'];
+  var xpLabel=appSettings.xpPerSession||XP_PER_SESSION;
+  grid.innerHTML=skills.map(function(s,i){
+    var xp=s.xp||0; var lvl=getSkillLevel(xp); var prog=getXPProgress(xp);
+    var col=cols[i%cols.length]; var bg=bgs[i%bgs.length];
+    var resources=getSkillResources(s.name); var sid=s.id;
+    var resHtml=resources.slice(0,3).map(function(r){ return '<div style="font-size:0.75rem;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border);">'+r+'</div>'; }).join('');
+    var progTxt=prog.isMax?'Max level!':prog.inLevel+' / '+prog.needed+' XP to next level';
+    var h='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">';
+    h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">';
+    h+='<div style="font-size:1.6rem;">'+s.icon+'</div>';
+    h+='<div style="flex:1;"><div style="font-size:0.65rem;color:'+col+';font-weight:700;text-transform:uppercase;">'+lvl.name+' &middot; Lv.'+(lvl.level+1)+'</div>';
+    h+='<div style="font-size:1rem;font-weight:700;color:var(--text);">'+s.name+'</div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);">'+xp+' XP</div></div>';
+    h+='<div style="display:flex;gap:4px;">';
+    h+='<button onclick="editSkill(this)" data-id="'+sid+'" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;">&#9998;</button>';
+    h+='<button onclick="deleteSkill(this)" data-id="'+sid+'" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;">&#128465;</button>';
+    h+='</div></div>';
+    h+='<div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+prog.pct+'%;background:'+col+';border-radius:3px;"></div></div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);margin-bottom:12px;">'+progTxt+'</div>';
+    h+='<button onclick="updateSkill(this)" data-id="'+sid+'" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-weight:700;font-size:0.82rem;margin-bottom:12px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log session</button>';
+    h+='<div style="border-top:1px solid var(--border);padding-top:10px;"><div style="font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">&#128218; How to learn '+s.name+'</div>'+resHtml+'</div>';
+    h+='<div id="ep_'+sid+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
+    h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+    h+='<input id="ei_'+sid+'" value="'+s.icon+'" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;" />';
+    h+='<input id="en_'+sid+'" value="'+s.name+'" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;" /></div>';
+    h+='<div style="display:flex;gap:8px;">';
+    h+='<button onclick="saveSkillEdit(this)" data-id="'+sid+'" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:8px;cursor:pointer;font-weight:700;font-size:0.82rem;">Save</button>';
+    h+='<button onclick="closeEditPanel(this)" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:8px 12px;cursor:pointer;font-size:0.82rem;">Cancel</button>';
+    h+='</div></div></div>';
+    return h;
+  }).join('');
+}
+
+function editSkill(id){
+  // Toggle edit panel
+  var panel = document.getElementById('editPanel_'+id);
+  if(panel) panel.style.display = panel.style.display==='none'?'block':'none';
+}
+function saveSkillEdit(btn){
+  var id=btn.dataset.id;
+  var icon=(document.getElementById('ei_'+id)||{}).value||'📌';
+  var name=(document.getElementById('en_'+id)||{}).value||'';
+  if(!name.trim()) return;
+  var skills=getSkills();
+  var s=skills.find(function(x){return x.id===id;}); if(!s) return;
+  s.icon=icon.trim(); s.name=name.trim();
+  saveSkills(skills); renderSkills();
+}
+
+
+
 function saveNewSkill(){
   var icon = document.getElementById('newSkillIcon')?.value.trim()||'📌';
   var name = document.getElementById('newSkillName')?.value.trim();
@@ -3080,27 +3074,29 @@ function renderMedList(){
     return;
   }
   const dk=getActiveDK();
-  el.innerHTML=meds.map(m=>{
-    const doses=Array.from({length:m.times},(_,i)=>{
-      const taken=extraState['med_'+dk+'_'+m.id+'_'+i]||false;
-      return `<button onclick="takeMed(${m.id},${i})" style="flex:1;background:${taken?'var(--accent2)':'var(--surface)'};border:1px solid ${taken?'var(--accent2)':'var(--border)'};color:${taken?'#0a0905':'var(--muted)'};border-radius:8px;padding:7px 4px;cursor:pointer;font-size:0.78rem;font-family:'Inter',sans-serif;font-weight:${taken?700:400};transition:all 0.15s;">${taken?'✓ Taken':'Take'}</button>`;
+  el.innerHTML = meds.map(function(m,mi){
+    var taken=(extraState['medTaken_'+dk]||{})[mi]||[];
+    var timeArr=[];
+    for(var i=0;i<m.times;i++) timeArr.push(i);
+    var btns = timeArr.map(function(i){
+      var isTaken = taken.indexOf(i)>=0;
+      return '<button onclick="takeMed('+mi+','+i+')" style="flex:1;min-width:60px;padding:8px;border-radius:8px;border:none;background:'+(isTaken?'var(--accent2)':'var(--border)')+';color:'+(isTaken?'#0a0905':'var(--muted)')+';cursor:pointer;font-family:Inter,sans-serif;font-size:0.78rem;font-weight:'+(isTaken?'700':'400')+';">'+(isTaken?'Done':'Take')+'</button>';
     }).join('');
-    const takenCount=(extraState.medicines||[]).length>0 ? Array.from({length:m.times},(_,i)=>extraState['med_'+dk+'_'+m.id+'_'+i]||false).filter(Boolean).length : 0;
-    const allDone=takenCount===m.times;
-    return `<div style="background:var(--bg);border:1px solid ${allDone?'var(--accent2)':'var(--border)'};border-radius:10px;padding:12px 14px;margin-bottom:8px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
-        <div>
-          <div style="font-size:0.88rem;font-weight:600;color:var(--text);">💊 ${m.name}</div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">\${m.dose?m.dose+' · ':''}\${m.times}x daily\${m.timeSlots&&m.timeSlots.length?' · '+m.timeSlots.map(t=>t==='morning'?'🌅':t==='afternoon'?'☀️':t==='evening'?'🌆':'🌙').join(' '):''}\${m.note?' · '+m.note:''}</div>
-        </div>
-        <button onclick="deleteMedicine(${m.id})" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">🗑</button>
-      </div>
-      <div style="display:flex;gap:6px;">${doses}</div>
-      <div style="font-size:0.65rem;color:${allDone?'var(--accent2)':'var(--muted)'};margin-top:6px;text-align:right;">${takenCount}/${m.times} taken today</div>
-    </div>`;
+    var slots = (m.timeSlots&&m.timeSlots.length)?' &middot; '+m.timeSlots.join(', '):'';
+    var meta = (m.dose?m.dose+' &middot; ':'')+m.times+'x daily'+slots+(m.note?' &middot; '+m.note:'');
+    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">'+
+        '<div>'+
+          '<div style="font-size:0.9rem;font-weight:700;color:var(--text);">&#128138; '+m.name+'</div>'+
+          '<div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">'+meta+'</div>'+
+        '</div>'+
+        '<button onclick="deleteMed('+mi+')" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">&#128465;</button>'+
+      '</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">'+btns+'</div>'+
+      '<div style="font-size:0.65rem;color:var(--muted);text-align:right;">'+taken.length+'/'+m.times+' taken today</div>'+
+    '</div>';
   }).join('');
 }
-
 
 function toggleModal(id){
   const m=document.getElementById(id);
@@ -3196,20 +3192,4 @@ window.addEventListener('DOMContentLoaded',function(){
 
 </script>
 </body>
-
-function editSkill(id){
-  // Toggle edit panel
-  var panel = document.getElementById('editPanel_'+id);
-  if(panel) panel.style.display = panel.style.display==='none'?'block':'none';
-}
-function saveSkillEdit(id){
-  var icon = document.getElementById('editIcon_'+id)?.value.trim()||'📌';
-  var name = document.getElementById('editName_'+id)?.value.trim();
-  if(!name) return;
-  var skills = getSkills();
-  var s = skills.find(x=>x.id===id); if(!s) return;
-  s.icon = icon; s.name = name;
-  saveSkills(skills); renderSkills();
-}
-
->
+</html>
