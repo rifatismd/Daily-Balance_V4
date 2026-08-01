@@ -56,6 +56,7 @@
     .return-name{font-size:0.88rem;font-weight:600;color:#e6edf8;margin-bottom:2px;}
     .return-sub{font-size:0.68rem;color:#3a5a3a;}
     .return-btn{background:#f5c542;border:none;color:#0a0905;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;flex-shrink:0;}
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap');
   :root {
     --bg:#080b10;--surface:#0e1219;--surface2:#141b25;--border:#1c2535;--border2:#243048;
     --accent:#f5c542;--accent2:#34d9c3;--warn:#fb923c;--rose:#f87171;
@@ -533,6 +534,14 @@
   </style>
 </head>
 <body>
+<div id="_errBox" style="display:none;position:fixed;top:0;left:0;right:0;background:#f87171;color:#fff;padding:12px;font-size:0.75rem;font-family:monospace;z-index:9999;word-break:break-all;"></div>
+<script>
+window.onerror = function(msg, src, line, col, err){
+  var box = document.getElementById('_errBox');
+  if(box){ box.style.display='block'; box.textContent = 'ERROR: '+msg+' | Line: '+line+' | '+src; }
+  return false;
+};
+</script>
 <div id="appPage" class="page active" style="background:var(--bg,#080b10);">
 <header>
   <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -727,55 +736,43 @@
 
 <!-- SKILLS TAB -->
 <div id="skillsView" class="view-panel" style="display:none;">
-
-  <!-- Header -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;">📈 Skills</div>
-    <button onclick="addNewSkill()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;">+ Add Skill</button>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;">&#128200; Skills</div>
+    <button onclick="showAddSkill()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;">+ Add Skill</button>
   </div>
-
-  <!-- Level up toast -->
-  <div id="levelUpToast" style="display:none;background:linear-gradient(135deg,#1a2a0a,#0a1a10);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin-bottom:14px;text-align:center;">
-    <div style="font-size:1.5rem;margin-bottom:4px;">🎉</div>
+  <div id="levelUpToast" style="display:none;background:linear-gradient(135deg,#1a2a0a,#0a1a10);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;">
+    <div style="font-size:1.5rem;margin-bottom:4px;">&#127881;</div>
     <div id="levelUpMsg" style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--accent);"></div>
   </div>
-
-  <!-- Skill cards (fully dynamic) -->
   <div id="skillCardsGrid" style="margin-bottom:16px;"></div>
-
-  <!-- Add skill form -->
-  <div id="addSkillForm" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;">
-    <div style="font-size:0.72rem;color:var(--accent);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:12px;">New Skill</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <input id="newSkillIcon" maxlength="2" placeholder="📚" style="width:50px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:1.2rem;font-family:'Inter',sans-serif;" />
-      <input id="newSkillName" placeholder="Skill name (e.g. Graphic Design)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" />
+  <div id="addSkillPanel" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;">
+    <div style="font-size:0.72rem;color:var(--accent);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:12px;">Add New Skill</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <input id="newSkillIcon" maxlength="2" placeholder="&#128218;" style="width:50px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:1.2rem;font-family:'Inter',sans-serif;" />
+      <input id="newSkillName" placeholder="e.g. Graphic Design, Web Dev..." style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" />
     </div>
-    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:6px;">Not sure what to learn? Pick a category:</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="skillSuggestions">
-      <button onclick="suggestSkill('🐍','Python')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🐍 Python</button>
-      <button onclick="suggestSkill('🎬','Video Editing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🎬 Video Editing</button>
-      <button onclick="suggestSkill('🎨','Graphic Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🎨 Graphic Design</button>
-      <button onclick="suggestSkill('🖋️','Logo Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🖋️ Logo Design</button>
-      <button onclick="suggestSkill('🌐','Web Dev')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🌐 Web Dev</button>
-      <button onclick="suggestSkill('📱','UI/UX Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📱 UI/UX Design</button>
-      <button onclick="suggestSkill('📊','Data Analysis')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📊 Data Analysis</button>
-      <button onclick="suggestSkill('✍️','Content Writing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">✍️ Content Writing</button>
-      <button onclick="suggestSkill('📸','Photography')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📸 Photography</button>
+    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:8px;">Quick pick:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button onclick="pickSkill('&#128014;','Python')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">&#128014; Python</button>
+      <button onclick="pickSkill('&#127909;','Video Editing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">&#127909; Video Editing</button>
+      <button onclick="pickSkill('&#127912;','Graphic Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">&#127912; Graphic Design</button>
+      <button onclick="pickSkill('&#128247;','Logo Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">Logo Design</button>
+      <button onclick="pickSkill('&#127760;','Web Dev')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">&#127760; Web Dev</button>
+      <button onclick="pickSkill('&#128241;','UI/UX Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">&#128241; UI/UX</button>
+      <button onclick="pickSkill('&#128202;','Data Analysis')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">&#128202; Data Analysis</button>
+      <button onclick="pickSkill('&#9999;','Content Writing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">&#9999; Writing</button>
     </div>
     <div style="display:flex;gap:8px;">
       <button onclick="saveNewSkill()" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">Add Skill</button>
-      <button onclick="document.getElementById('addSkillForm').style.display='none'" style="background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:10px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Cancel</button>
+      <button onclick="document.getElementById('addSkillPanel').style.display='none'" style="background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:10px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Cancel</button>
     </div>
   </div>
-
-  <!-- YouTube Playlists -->
-  <div style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">▶️ Learning Playlists</div>
+  <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;color:var(--muted);">&#9654;&#65039; Learning Playlists</div>
   <div id="ytCards"></div>
-  <button class="yt-add-btn" onclick="showYTInput()">+ Add YouTube Link or Playlist</button>
+  <button class="yt-add-btn" onclick="showYTInput()">+ Add YouTube Link</button>
   <div class="yt-input-wrap" id="ytInputWrap">
-    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Paste YouTube video or playlist URL:</div>
-    <input class="yt-input" id="ytUrlInput" placeholder="https://youtube.com/watch?v=..." />
-    <input class="yt-input" id="ytLabelInput" placeholder="Label (e.g. Python Full Course)" />
+    <input class="yt-input" id="ytUrlInput" placeholder="https://youtube.com/..." />
+    <input class="yt-input" id="ytLabelInput" placeholder="Label (e.g. Python Course)" />
     <button class="yt-save-btn" onclick="saveYTLink()">Save</button>
     <button onclick="hideYTInput()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;font-size:0.82rem;margin-left:8px;">Cancel</button>
   </div>
@@ -1275,14 +1272,195 @@
   <div id="customSlotList"></div>
 
 </div>
-<script>
+<script>function renderSkills(){
+  var grid=document.getElementById('skillCardsGrid'); if(!grid) return;
+  var skills=getSkills();
+  if(!skills.length){
+    grid.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">&#128200;</div><div style="font-size:0.85rem;">No skills yet.<br/>Tap + Add Skill to start.</div></div>';
+    return;
+  }
+  var xpLabel=(typeof appSettings!=='undefined'&&appSettings.xpPerSession)||XP_PER_SESSION;
+  grid.innerHTML=skills.map(function(s,i){
+    var xp=s.xp||0;
+    var lvl=getSkillLvl(xp);
+    var prog=getSkillProg(xp);
+    var col=SKILL_COLS[i%SKILL_COLS.length];
+    var sid=s.id;
+    var res=getSkillRes(s.name);
+    var resHtml=res.slice(0,3).map(function(r){
+      return '<div style="font-size:0.75rem;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);">'+r+'</div>';
+    }).join('');
+    var progTxt=prog.isMax?'Max level!':prog.inLevel+'/'+prog.needed+' XP to next level';
+    var h='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">';
+    h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">';
+    h+='<div style="font-size:1.6rem;">'+s.icon+'</div>';
+    h+='<div style="flex:1;">';
+    h+='<div style="font-size:0.65rem;color:'+col+';font-weight:700;text-transform:uppercase;">'+lvl.name+' &middot; Lv.'+(lvl.level+1)+'</div>';
+    h+='<div style="font-size:0.95rem;font-weight:700;color:var(--text);">'+s.name+'</div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);">'+xp+' XP total</div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:4px;">';
+    h+='<button onclick="skillEdit(\''+sid+'\')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.8rem;">&#9998;</button>';
+    h+='<button onclick="skillDel(\''+sid+'\')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.8rem;">&#128465;</button>';
+    h+='</div></div>';
+    h+='<div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+prog.pct+'%;background:'+col+';border-radius:3px;"></div></div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);margin-bottom:10px;">'+progTxt+'</div>';
+    h+='<button onclick="skillXP(\''+sid+'\')" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-family:Inter,sans-serif;font-weight:700;font-size:0.82rem;margin-bottom:10px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log a session</button>';
+    h+='<div style="border-top:1px solid var(--border);padding-top:10px;">';
+    h+='<div style="font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">&#128218; How to learn</div>';
+    h+=resHtml+'</div>';
+    h+='<div id="sep_'+sid+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
+    h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+    h+='<input id="sei_'+sid+'" value="'+s.icon+'" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;font-family:Inter,sans-serif;"/>';
+    h+='<input id="sen_'+sid+'" value="'+s.name+'" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;font-family:Inter,sans-serif;"/>';
+    h+='</div><div style="display:flex;gap:8px;">';
+    h+='<button onclick="skillSave(\''+sid+'\')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:9px;cursor:pointer;font-family:Inter,sans-serif;font-weight:700;font-size:0.82rem;">Save</button>';
+    h+='<button onclick="skillCancelEdit(\''+sid+'\')" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:9px 14px;cursor:pointer;font-family:Inter,sans-serif;font-size:0.82rem;">Cancel</button>';
+    h+='</div></div></div>';
+    return h;
+  }).join('');
+}
+
+// ═══ SKILLS MODULE ═══
+var XP_PER_SESSION = 25;
+var XP_THRESHOLDS = [0, 100, 300, 600, 1000, 1500];
+var SKILL_LEVELS = ['Beginner','Learner','Intermediate','Advanced','Expert','Master'];
+var SKILL_COLS = ['#f5c542','#34d9c3','#fb923c','#a78bfa','#f87171','#4ade80'];
+var SKILL_RES = {
+  'Python':['🐍 freeCodeCamp Python','📘 python.org/docs','▶️ CS50P Harvard Free'],
+  'Video Editing':['🎬 DaVinci Resolve Free','▶️ Premiere Pro Tutorial','📺 YT Creator Academy'],
+  'Graphic Design':['🎨 Canva Design School','▶️ Adobe Express','📘 Graphic Design Basics'],
+  'Logo Design':['🖋️ Logo Design Tutorial','▶️ Illustrator Basics','📘 Logo Principles'],
+  'Web Dev':['🌐 freeCodeCamp Web','📘 MDN Web Docs','▶️ The Odin Project'],
+  'UI/UX Design':['📱 Figma Free Course','▶️ Google UX Certificate','📘 UX Collective'],
+  'Data Analysis':['📊 Kaggle Free Courses','▶️ Excel Tutorial','🐍 Pandas Docs'],
+  'Content Writing':['✍️ Copyblogger','📘 HubSpot Writing','▶️ Content Writing Guide'],
+  'Photography':['📸 Photography Basics','▶️ Lightroom Tutorial','📘 Digital Photo School'],
+};
+
+function getSkillRes(name){
+  if(SKILL_RES[name]) return SKILL_RES[name];
+  var lo=name.toLowerCase();
+  for(var k in SKILL_RES){ if(lo.includes(k.toLowerCase())||k.toLowerCase().includes(lo)) return SKILL_RES[k]; }
+  return ['🔍 Search: '+name+' tutorial on YouTube','📘 Google: learn '+name+' free','▶️ freeCodeCamp on YouTube'];
+}
+
+function getSkills(){
+  try{ return JSON.parse(localStorage.getItem(getUserKey('voice_skills'))||'[]'); }catch(e){ return []; }
+}
+function saveSkills(s){
+  localStorage.setItem(getUserKey('voice_skills'), JSON.stringify(s));
+}
+function getSkillLvl(xp){
+  var l=0;
+  for(var i=0;i<XP_THRESHOLDS.length;i++){ if(xp>=XP_THRESHOLDS[i]) l=i; }
+  return {level:l, name:SKILL_LEVELS[l]||'Master'};
+}
+function getSkillProg(xp){
+  var lvl=getSkillLvl(xp); var l=lvl.level;
+  var cur=XP_THRESHOLDS[l]||0; var next=XP_THRESHOLDS[l+1];
+  if(!next) return {pct:100,inLevel:xp-cur,needed:0,isMax:true};
+  var inLvl=xp-cur; var needed=next-cur;
+  return {pct:Math.round(inLvl/needed*100),inLevel:inLvl,needed:needed,isMax:false};
+}
+
+function showAddSkill(){
+  var p=document.getElementById('addSkillPanel');
+  if(p) p.style.display=p.style.display==='none'?'block':'none';
+}
+function pickSkill(icon,name){
+  var ic=document.getElementById('newSkillIcon'); var nm=document.getElementById('newSkillName');
+  if(ic) ic.value=icon; if(nm) nm.value=name;
+}
+function saveNewSkill(){
+  var icon=(document.getElementById('newSkillIcon')||{}).value||'📌';
+  var name=((document.getElementById('newSkillName')||{}).value||'').trim();
+  if(!name){alert('Please enter a skill name.');return;}
+  var skills=getSkills();
+  skills.push({id:'sk_'+Date.now(),icon:icon,name:name,xp:0});
+  saveSkills(skills);
+  document.getElementById('newSkillIcon').value='';
+  document.getElementById('newSkillName').value='';
+  document.getElementById('addSkillPanel').style.display='none';
+  renderSkills();
+}
+
+
+
+function skillEdit(id){ var p=document.getElementById('sep_'+id); if(p) p.style.display=p.style.display==='none'?'block':'none'; }
+function skillCancelEdit(id){ var p=document.getElementById('sep_'+id); if(p) p.style.display='none'; }
+function skillDel(id){
+  if(!confirm('Delete this skill and all XP?')) return;
+  saveSkills(getSkills().filter(function(x){ return x.id!==id; }));
+  renderSkills();
+}
+function skillSave(id){
+  var icon=(document.getElementById('sei_'+id)||{}).value||'📌';
+  var name=((document.getElementById('sen_'+id)||{}).value||'').trim();
+  if(!name) return;
+  var skills=getSkills();
+  var s=skills.find(function(x){ return x.id===id; });
+  if(!s) return;
+  s.icon=icon.trim(); s.name=name;
+  saveSkills(skills); renderSkills();
+}
+function skillXP(id){
+  var skills=getSkills();
+  var s=skills.find(function(x){ return x.id===id; });
+  if(!s) return;
+  var prev=getSkillLvl(s.xp).level;
+  s.xp=(s.xp||0)+((typeof appSettings!=='undefined'&&appSettings.xpPerSession)||XP_PER_SESSION);
+  var curr=getSkillLvl(s.xp).level;
+  saveSkills(skills); renderSkills();
+  if(curr>prev){
+    var toast=document.getElementById('levelUpToast');
+    var msg=document.getElementById('levelUpMsg');
+    if(toast&&msg){
+      msg.textContent='Level Up! '+s.name+' is now '+SKILL_LEVELS[curr];
+      toast.style.display='block';
+      setTimeout(function(){ toast.style.display='none'; },3000);
+    }
+  }
+}
+
+// YT Playlists
+function showYTInput(){ var w=document.getElementById('ytInputWrap'); if(w) w.style.display='block'; }
+function hideYTInput(){ var w=document.getElementById('ytInputWrap'); if(w) w.style.display='none'; }
+function saveYTLink(){
+  var url=((document.getElementById('ytUrlInput')||{}).value||'').trim();
+  var label=((document.getElementById('ytLabelInput')||{}).value||'').trim()||'Playlist';
+  if(!url) return;
+  var links=extraState.ytLinks||[];
+  links.push({url:url,label:label});
+  extraState.ytLinks=links; saveExtra(); renderYTCards(); hideYTInput();
+  document.getElementById('ytUrlInput').value='';
+  document.getElementById('ytLabelInput').value='';
+}
+function renderYTCards(){
+  var el=document.getElementById('ytCards'); if(!el) return;
+  var links=extraState.ytLinks||[];
+  if(!links.length){ el.innerHTML=''; return; }
+  el.innerHTML=links.map(function(l,i){
+    return '<div style="display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:8px;">'+
+      '<span style="font-size:1.1rem;">&#9654;&#65039;</span>'+
+      '<a href="'+l.url+'" target="_blank" style="flex:1;font-size:0.82rem;color:var(--accent2);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+l.label+'</a>'+
+      '<button onclick="delYT('+i+')" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">&#128465;</button>'+
+    '</div>';
+  }).join('');
+}
+function delYT(i){
+  var l=extraState.ytLinks||[];
+  l.splice(i,1);
+  extraState.ytLinks=l; saveExtra(); renderYTCards();
+}
+
+
 function getUserKey(base){
   try{
     var u=JSON.parse(localStorage.getItem('db_user')||'null');
     if(u&&u.email&&u.authType==='google') return base+'_'+u.email.replace(/[^a-z0-9]/gi,'_');
   }catch(e){}
   return base+'_guest';
-}
 
 function getUserData() {
   try { return JSON.parse(localStorage.getItem('db_user')||'null'); } catch(e) { return null; }
@@ -1520,8 +1698,8 @@ function renderGoalItems(){
     </div>`;
   }).join('');
 }
-const SKILL_LEVELS=['Beginner','Apprentice','Intermediate','Advanced','Expert','Master'];
-const XP_THRESHOLDS = [0, 100, 250, 500, 800, 1200];
+
+
 
 // toggleSkillEdit defined below
 
@@ -1554,144 +1732,18 @@ function applySkillNames(){
   // Level up toast uses names too — stored in extraState so showLevelUp picks it up automatically
 }
 
-const XP_PER_SESSION = 10;
-const SKILL_COLORS = ['var(--accent)','var(--rose)','var(--accent2)','#a78bfa','#fb923c','#6ee7b7'];
-const SKILL_BG_COLORS = ['#f5c54215','#f8717115','#1abc9c15','#a78bfa15','#fb923c15','#6ee7b715'];
-
-function getSkillLevel(xp){
-  let lvl=0;
-  for(let i=0;i<XP_THRESHOLDS.length;i++){if(xp>=XP_THRESHOLDS[i])lvl=i;else break;}
-  return {level:lvl, name:SKILL_LEVELS[Math.min(lvl,SKILL_LEVELS.length-1)]};
-}
-function getXPProgress(xp){
-  const {level}=getSkillLevel(xp);
-  const cur=XP_THRESHOLDS[level]||0;
-  const nxt=XP_THRESHOLDS[level+1]||(xp+1);
-  const inLevel=xp-cur, needed=nxt-cur;
-  return {inLevel, needed, pct:Math.min(Math.round(inLevel/needed*100),100), isMax:level>=SKILL_LEVELS.length-1};
-}
-
-function getSkills(){
-  // Default 2 skills if none saved
-  if(!extraState.skills || !extraState.skills.length){
-    extraState.skills = [
-      {id:'python', icon:'🐍', name:'Python', xp:extraState.pythonXP||0},
-      {id:'video',  icon:'🎬', name:'Video Editing', xp:extraState.videoXP||0},
-    ];
-  }
-  return extraState.skills;
-}
-function saveSkills(skills){ extraState.skills = skills; saveExtra(); }
-
-function addNewSkill(){
-  var form = document.getElementById('addSkillForm');
-  if(form){ form.style.display = form.style.display==='none'?'block':'none'; }
-}
-function suggestSkill(icon, name){
-  var ic = document.getElementById('newSkillIcon');
-  var nm = document.getElementById('newSkillName');
-  if(ic) ic.value = icon;
-  if(nm) nm.value = name;
-}
-function closeEditPanel(btn){
-  var p=btn.parentNode; while(p&&!p.id.startsWith('ep_')) p=p.parentNode; if(p) p.style.display='none';
-}
-function renderSkills(){
-  var skills=getSkills();
-  var grid=document.getElementById('skillCardsGrid'); if(!grid) return;
-  if(!skills.length){
-    grid.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">&#128200;</div><div>No skills yet. Add one!</div></div>';
-    return;
-  }
-  var cols=['#f5c542','#34d9c3','#fb923c','#a78bfa','#f87171','#4ade80']; var bgs=['#1a140a','#0a1a18','#1a0f0a','#120a1a','#1a0a0a','#0a1a0a'];
-  var xpLabel=appSettings.xpPerSession||XP_PER_SESSION;
-  grid.innerHTML=skills.map(function(s,i){
-    var xp=s.xp||0; var lvl=getSkillLevel(xp); var prog=getXPProgress(xp);
-    var col=cols[i%cols.length]; var bg=bgs[i%bgs.length];
-    var resources=getSkillResources(s.name); var sid=s.id;
-    var resHtml=resources.slice(0,3).map(function(r){ return '<div style="font-size:0.75rem;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border);">'+r+'</div>'; }).join('');
-    var progTxt=prog.isMax?'Max level!':prog.inLevel+' / '+prog.needed+' XP to next level';
-    var h='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">';
-    h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">';
-    h+='<div style="font-size:1.6rem;">'+s.icon+'</div>';
-    h+='<div style="flex:1;"><div style="font-size:0.65rem;color:'+col+';font-weight:700;text-transform:uppercase;">'+lvl.name+' &middot; Lv.'+(lvl.level+1)+'</div>';
-    h+='<div style="font-size:1rem;font-weight:700;color:var(--text);">'+s.name+'</div>';
-    h+='<div style="font-size:0.62rem;color:var(--muted);">'+xp+' XP</div></div>';
-    h+='<div style="display:flex;gap:4px;">';
-    h+='<button onclick="editSkill(this)" data-id="'+sid+'" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;">&#9998;</button>';
-    h+='<button onclick="deleteSkill(this)" data-id="'+sid+'" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;">&#128465;</button>';
-    h+='</div></div>';
-    h+='<div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+prog.pct+'%;background:'+col+';border-radius:3px;"></div></div>';
-    h+='<div style="font-size:0.62rem;color:var(--muted);margin-bottom:12px;">'+progTxt+'</div>';
-    h+='<button onclick="updateSkill(this)" data-id="'+sid+'" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-weight:700;font-size:0.82rem;margin-bottom:12px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log session</button>';
-    h+='<div style="border-top:1px solid var(--border);padding-top:10px;"><div style="font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">&#128218; How to learn '+s.name+'</div>'+resHtml+'</div>';
-    h+='<div id="ep_'+sid+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
-    h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
-    h+='<input id="ei_'+sid+'" value="'+s.icon+'" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;" />';
-    h+='<input id="en_'+sid+'" value="'+s.name+'" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;" /></div>';
-    h+='<div style="display:flex;gap:8px;">';
-    h+='<button onclick="saveSkillEdit(this)" data-id="'+sid+'" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:8px;cursor:pointer;font-weight:700;font-size:0.82rem;">Save</button>';
-    h+='<button onclick="closeEditPanel(this)" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:8px 12px;cursor:pointer;font-size:0.82rem;">Cancel</button>';
-    h+='</div></div></div>';
-    return h;
-  }).join('');
-}
-
-function editSkill(id){
-  // Toggle edit panel
-  var panel = document.getElementById('editPanel_'+id);
-  if(panel) panel.style.display = panel.style.display==='none'?'block':'none';
-}
-function saveSkillEdit(btn){
-  var id=btn.dataset.id;
-  var icon=(document.getElementById('ei_'+id)||{}).value||'📌';
-  var name=(document.getElementById('en_'+id)||{}).value||'';
-  if(!name.trim()) return;
-  var skills=getSkills();
-  var s=skills.find(function(x){return x.id===id;}); if(!s) return;
-  s.icon=icon.trim(); s.name=name.trim();
-  saveSkills(skills); renderSkills();
-}
 
 
 
-function saveNewSkill(){
-  var icon = document.getElementById('newSkillIcon')?.value.trim()||'📌';
-  var name = document.getElementById('newSkillName')?.value.trim();
-  if(!name){ alert('Please enter a skill name.'); return; }
-  var skills = getSkills();
-  skills.push({id:'skill_'+Date.now(), icon:icon, name:name, xp:0});
-  saveSkills(skills);
-  document.getElementById('newSkillIcon').value='';
-  document.getElementById('newSkillName').value='';
-  document.getElementById('addSkillForm').style.display='none';
-  renderSkills();
-}
+
+
+
+
+
 
 // Learning resources per skill type
-var SKILL_RESOURCES = {
-  'Python': ['🐍 freeCodeCamp Python','📘 Python.org Docs','▶️ CS50P Harvard','📱 SoloLearn Python'],
-  'Video Editing': ['▶️ Premiere Pro Tutorial','▶️ DaVinci Resolve Free','📺 YouTube Creators Academy','🎬 CapCut Guide'],
-  'Graphic Design': ['🎨 Canva Design School','▶️ Adobe Express Tutorials','📘 Graphic Design Basics','🖼️ Dribbble Inspiration'],
-  'Logo Design': ['🖋️ Logo Design Tutorial','▶️ Illustrator Basics','📘 Logo Design Principles','🎨 LogoMaker Free'],
-  'Web Dev': ['🌐 freeCodeCamp Web','📘 MDN Web Docs','▶️ The Odin Project','💻 CSS Tricks'],
-  'UI/UX Design': ['📱 Figma Free Course','▶️ Google UX Design','📘 UX Collective','🎨 Dribbble UI'],
-  'Data Analysis': ['📊 Kaggle Free Courses','▶️ Excel/Sheets Tutorial','🐍 Pandas Docs','📈 Google Data Analytics'],
-  'Content Writing': ['✍️ Copyblogger','📘 HubSpot Writing','▶️ Content Marketing','📝 Hemingway App'],
-  'Photography': ['📸 Photography Basics','▶️ Lightroom Tutorial','📘 Digital Photography School','🖼️ 500px Inspiration'],
-};
 
-function getSkillResources(name){
-  // Try exact match first, then partial
-  if(SKILL_RESOURCES[name]) return SKILL_RESOURCES[name];
-  var lower = name.toLowerCase();
-  for(var key in SKILL_RESOURCES){
-    if(lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)){
-      return SKILL_RESOURCES[key];
-    }
-  }
-  return ['🔍 Search on YouTube: '+name+' tutorial','📘 Search on Google: learn '+name,'▶️ freeCodeCamp on YouTube'];
-}
+
 
 
 function saveSkillNames(){}
@@ -1858,32 +1910,10 @@ function renderDayTabs(){
 function getYTVideoId(url){
   try{const u=new URL(url);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1);return u.searchParams.get('v')||null;}catch(e){return null;}
 }
-function renderYTCards(){
-  const links=extraState.ytLinks||[];
-  const el=document.getElementById('ytCards');if(!el)return;
-  if(!links.length){el.innerHTML='<div style="color:var(--muted);font-size:0.8rem;margin-bottom:10px;">No playlists added yet.</div>';return;}
-  el.innerHTML=links.map((lnk,i)=>{
-    const vid=getYTVideoId(lnk.url);
-    const thumb=vid?`https://img.youtube.com/vi/${vid}/hqdefault.jpg`:null;
-    return `<div class="yt-card" onclick="window.open('${lnk.url}','_blank')">
-      ${thumb?`<div class="yt-thumb-wrap"><img class="yt-thumb" src="${thumb}" /><div class="yt-play"></div></div>`:'<div style="height:80px;background:#111;display:flex;align-items:center;justify-content:center;color:#f00;font-size:2rem;">▶</div>'}
-      <div class="yt-info"><div class="yt-title">${lnk.label||lnk.url}</div><div class="yt-sub">${lnk.url.length>40?lnk.url.slice(0,40)+'...':lnk.url}</div></div>
-    </div>`;
-  }).join('');
-}
-function showYTInput(){document.getElementById('ytInputWrap').style.display='block';}
-function hideYTInput(){document.getElementById('ytInputWrap').style.display='none';}
-function saveYTLink(){
-  const url=document.getElementById('ytUrlInput').value.trim();
-  const label=document.getElementById('ytLabelInput').value.trim();
-  if(!url)return;
-  if(!extraState.ytLinks)extraState.ytLinks=[];
-  extraState.ytLinks.push({url,label});
-  saveExtra();renderYTCards();
-  document.getElementById('ytUrlInput').value='';
-  document.getElementById('ytLabelInput').value='';
-  hideYTInput();
-}
+
+
+
+
 function selectAll(){
   const dn=getDayName(activeDailyDate.y,activeDailyDate.m,activeDailyDate.d);
   const slots=buildDay(dn).filter(s=>!s.section);
@@ -2106,20 +2136,7 @@ function dtSetMood(v){
 const PYTHON_TOPICS_LIST = ['Variables & Data Types','Input/Output','Operators & Conditionals','Loops (for/while)','Functions','Lists, Tuples, Dicts','File Handling','NumPy Basics','Pandas Basics','Mini Project'];
 const VIDEO_TOPICS_LIST  = ['Basic Cuts & Trim','Transitions','Text & Titles','Color Grading','Audio Sync','Effects & Filters','Export Settings','Advanced Editing','Short Film Edit','Final Project'];
 
-function renderTopicLists(){
-  ['python','video'].forEach(type=>{
-    const topics = type==='python'?PYTHON_TOPICS_LIST:VIDEO_TOPICS_LIST;
-    const el = document.getElementById(type+'TopicList');
-    if(!el)return;
-    el.innerHTML = topics.map((t,i)=>{
-      const done = (extraState[type+'Topics']||{})[i];
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
-        <div onclick="toggleTopic('${type}',${i})" style="width:20px;height:20px;border-radius:50%;border:2px solid ${done?'var(--accent2)':'var(--border)'};background:${done?'var(--accent2)':'transparent'};cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#000;flex-shrink:0;">${done?'✓':''}</div>
-        <div style="font-size:0.85rem;color:${done?'var(--muted)':'var(--text)'};${done?'text-decoration:line-through':''}">${t}</div>
-      </div>`;
-    }).join('');
-  });
-}
+
 function toggleTopic(type,i){
   if(!extraState[type+'Topics'])extraState[type+'Topics']={};
   extraState[type+'Topics'][i]=!extraState[type+'Topics'][i];
@@ -3074,29 +3091,27 @@ function renderMedList(){
     return;
   }
   const dk=getActiveDK();
-  el.innerHTML = meds.map(function(m,mi){
-    var taken=(extraState['medTaken_'+dk]||{})[mi]||[];
-    var timeArr=[];
-    for(var i=0;i<m.times;i++) timeArr.push(i);
-    var btns = timeArr.map(function(i){
-      var isTaken = taken.indexOf(i)>=0;
-      return '<button onclick="takeMed('+mi+','+i+')" style="flex:1;min-width:60px;padding:8px;border-radius:8px;border:none;background:'+(isTaken?'var(--accent2)':'var(--border)')+';color:'+(isTaken?'#0a0905':'var(--muted)')+';cursor:pointer;font-family:Inter,sans-serif;font-size:0.78rem;font-weight:'+(isTaken?'700':'400')+';">'+(isTaken?'Done':'Take')+'</button>';
+  el.innerHTML=meds.map(m=>{
+    const doses=Array.from({length:m.times},(_,i)=>{
+      const taken=extraState['med_'+dk+'_'+m.id+'_'+i]||false;
+      return `<button onclick="takeMed(${m.id},${i})" style="flex:1;background:${taken?'var(--accent2)':'var(--surface)'};border:1px solid ${taken?'var(--accent2)':'var(--border)'};color:${taken?'#0a0905':'var(--muted)'};border-radius:8px;padding:7px 4px;cursor:pointer;font-size:0.78rem;font-family:'Inter',sans-serif;font-weight:${taken?700:400};transition:all 0.15s;">${taken?'✓ Taken':'Take'}</button>`;
     }).join('');
-    var slots = (m.timeSlots&&m.timeSlots.length)?' &middot; '+m.timeSlots.join(', '):'';
-    var meta = (m.dose?m.dose+' &middot; ':'')+m.times+'x daily'+slots+(m.note?' &middot; '+m.note:'');
-    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">'+
-        '<div>'+
-          '<div style="font-size:0.9rem;font-weight:700;color:var(--text);">&#128138; '+m.name+'</div>'+
-          '<div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">'+meta+'</div>'+
-        '</div>'+
-        '<button onclick="deleteMed('+mi+')" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">&#128465;</button>'+
-      '</div>'+
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">'+btns+'</div>'+
-      '<div style="font-size:0.65rem;color:var(--muted);text-align:right;">'+taken.length+'/'+m.times+' taken today</div>'+
-    '</div>';
+    const takenCount=(extraState.medicines||[]).length>0 ? Array.from({length:m.times},(_,i)=>extraState['med_'+dk+'_'+m.id+'_'+i]||false).filter(Boolean).length : 0;
+    const allDone=takenCount===m.times;
+    return `<div style="background:var(--bg);border:1px solid ${allDone?'var(--accent2)':'var(--border)'};border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
+        <div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);">💊 ${m.name}</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">\${m.dose?m.dose+' · ':''}\${m.times}x daily\${m.timeSlots&&m.timeSlots.length?' · '+m.timeSlots.map(t=>t==='morning'?'🌅':t==='afternoon'?'☀️':t==='evening'?'🌆':'🌙').join(' '):''}\${m.note?' · '+m.note:''}</div>
+        </div>
+        <button onclick="deleteMedicine(${m.id})" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">🗑</button>
+      </div>
+      <div style="display:flex;gap:6px;">${doses}</div>
+      <div style="font-size:0.65rem;color:${allDone?'var(--accent2)':'var(--muted)'};margin-top:6px;text-align:right;">${takenCount}/${m.times} taken today</div>
+    </div>`;
   }).join('');
 }
+
 
 function toggleModal(id){
   const m=document.getElementById(id);
@@ -3189,6 +3204,31 @@ window.addEventListener('DOMContentLoaded',function(){
   if(!localStorage.getItem('db_user')){ window.location.href='index_V4.html'; return; }
   initUserGreeting();
 });
+
+
+// ═══ SKILLS (Clean) ═══
+  if(!next) return {pct:100,inLevel:xp-cur,needed:0,isMax:true};
+  var inLvl=xp-cur; var needed=next-cur;
+  return {pct:Math.round(inLvl/needed*100),inLevel:inLvl,needed:needed,isMax:false};
+}
+
+
+
+
+
+
+
+
+
+
+// YT Playlists
+
+
+
+
+
+
+
 
 </script>
 </body>
