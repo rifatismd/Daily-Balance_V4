@@ -541,6 +541,208 @@ window.onerror = function(msg, src, line, col, err){
   if(box){ box.style.display='block'; box.textContent = 'ERROR: '+msg+' | Line: '+line+' | '+src; }
   return false;
 };
+
+// ── Pre-defined globals (available before main script) ──
+var currentView = 'daily';
+var activeDailyDate = (function(){ var d=new Date(); return {y:d.getFullYear(),m:d.getMonth(),d:d.getDate()}; })();
+var DAYS_OF_WEEK = ['Sat','Sun','Mon','Tue','Wed','Thu','Fri'];
+var extraState = {};
+var doneState = {};
+var appSettings = {};
+
+function switchView(v){
+  currentView=v;
+  ['daily','monthly','pomo','tracker','medicine','skills','goals','notes','slots','settings'].forEach(t=>{
+    const el=document.getElementById(t+'View');
+    if(el) el.style.display=v===t?'block':'none';
+    const tab=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(tab)tab.classList.toggle('active',v===t);
+  });
+  if(v==='daily'){renderTimeline();}
+  if(v==='monthly'){renderCalendar();}
+  if(v==='pomo'){pomoUpdateUI();}
+  if(v==='tracker'){initWater();initMood();renderMoodHistory();renderWaterHistory();}
+  if(v==='medicine'){renderMedList();}
+  if(v==='skills'){renderSkills();renderTopicLists();renderYTCards();}
+  if(v==='goals'){initGoal();renderFajrStreak();renderWeekProgress();}
+  if(v==='notes'){
+    const nd=document.getElementById('notesDate'); if(nd) nd.textContent=activeDailyDate.d+'/'+(activeDailyDate.m+1)+'/'+activeDailyDate.y;
+    renderNotes();
+  }
+  if(v==='settings'){initSettings();}
+  if(v==='slots'){
+    renderSlotManager();
+    const rsd=document.getElementById('removeSlotDate');
+    if(rsd&&!rsd.value){
+      const t=new Date();
+      rsd.value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+      loadRemoveSlots();
+    }
+  }
+}
+function getActiveDK(){return dateKey(activeDailyDate.y,activeDailyDate.m,activeDailyDate.d);}
+function getDayName(y,m,d){return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(y,m,d).getDay()];}
+function pomoUpdateUI(){
+  const m=Math.floor(pomoLeft/60), s=pomoLeft%60;
+  document.getElementById('pomoTime').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const circumference=2*Math.PI*80; // r=80
+  const pct=pomoLeft/pomoTotal;
+  document.getElementById('pomoRing').style.strokeDasharray=circumference;
+  document.getElementById('pomoRing').style.strokeDashoffset=circumference*pct;
+}
+function renderTimeline(){
+  const dn=getDayName(activeDailyDate.y,activeDailyDate.m,activeDailyDate.d);
+  const slots=buildDay(dn);
+  const dk=getActiveDK();
+  const dd=doneState[dk]||{};
+  const tl=document.getElementById('timeline');
+  tl.innerHTML='';
+  // Filter out removed slots
+  const removedKeys = extraState['removedSlots']||[];
+  const visibleSlots = slots.filter(s=>s.section||!removedKeys.includes(dk+'_'+s.time));
+
+  // Empty state for new users
+  if(!visibleSlots.length){
+    tl.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:14px;">
+      <div style="font-size:3rem;opacity:0.3;">🗓️</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--muted);text-align:center;">No slots for this day</div>
+      <div style="font-size:0.78rem;color:var(--muted);text-align:center;max-width:220px;line-height:1.6;">Add your daily schedule from the Slots tab.</div>
+      <button onclick="switchView('slots')" style="background:var(--accent);border:none;color:#0a0905;border-radius:10px;padding:12px 24px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;margin-top:4px;">+ Add Slots</button>
+    </div>`;
+    return;
+  }
+
+  // Current time in minutes
+  const now=new Date();
+  const nowMins=now.getHours()*60+now.getMinutes();
+  const isToday=(activeDailyDate.y===now.getFullYear()&&activeDailyDate.m===now.getMonth()&&activeDailyDate.d===now.getDate());
+
+  let realIdx=0;
+  let nowInserted=false;
+
+  visibleSlots.forEach((s,si)=>{
+    if(s.section){
+      const lbl=document.createElement('div');
+      lbl.className='section-label';lbl.textContent=s.section;tl.appendChild(lbl);return;
+    }
+    const idx=realIdx++;
+    const isDone=!!dd[idx];
+    const customName = getSlotName(dn, s.time);
+    const displayTitle = s.title==='' ? (customName||'— unnamed slot —') : s.title;
+
+    // Determine if this is the current slot
+    const slotMins = toMinutes(s.time);
+    const nextSlot = visibleSlots.slice(si+1).find(x=>!x.section);
+    const nextMins = nextSlot ? toMinutes(nextSlot.time) : 24*60;
+    const isCurrent = isToday && !nowInserted && slotMins <= nowMins && nowMins < nextMins;
+
+    // Insert "NOW" line before this slot if it's current
+    if(isToday && !nowInserted && slotMins > nowMins) {
+      nowInserted=true;
+      const nl=document.createElement('div');
+      nl.className='now-line';
+      const nowH=now.getHours(),nowM=now.getMinutes();
+      const nowFmt=(appSettings.timeFormat||'24')==='24'
+        ? nowH+':'+String(nowM).padStart(2,'0')
+        : (nowH===0?12:nowH>12?nowH-12:nowH)+':'+String(nowM).padStart(2,'0')+(nowH<12?'AM':'PM');
+      nl.innerHTML=`<div class="now-dot"></div><div class="now-label">Now · ${nowFmt}</div><div class="now-bar"></div>`;
+      tl.appendChild(nl);
+    }
+
+    const el=document.createElement('div');
+    const isCancelled = !!(cancelledState[dk] && cancelledState[dk][idx]);
+    el.className=`slot ${s.type}${isDone?' done':''}${isCancelled?' cancelled':''}${isCurrent?' current-slot':''}`;
+    el.innerHTML=`
+      <div class="slot-rail"><div class="slot-rail-dot"></div></div>
+      <div class="slot-card">
+        <div class="slot-icon">${s.icon}</div>
+        <div class="slot-body">
+          <div class="slot-time">${formatTimeStr(s.time)}</div>
+          <div class="slot-title">${displayTitle}${s.optional?'<span style="font-size:0.58rem;color:var(--muted);background:var(--border);border-radius:4px;padding:1px 5px;margin-left:6px;font-weight:600;">Optional</span>':''}${isCancelled?'<span class="cancelled-badge">Cancelled</span>':''}</div>
+          ${s.sub?`<div class="slot-sub">${s.sub}</div>`:''}
+        </div>
+        ${s.type==='class'?`<button class="cancel-btn${isCancelled?' cancelled':''}" onclick="event.stopPropagation();toggleCancel('${dk}',${idx})">${isCancelled?'Undo':'Cancel'}</button>`:''}
+        <div class="slot-check">${isDone&&!isCancelled?'✓':''}</div>
+      </div>`;
+    el.addEventListener('click',()=>{
+      if(!doneState[dk])doneState[dk]={};
+      doneState[dk][idx]=!doneState[dk][idx];
+      saveState();renderTimeline();
+    });
+    tl.appendChild(el);
+
+    if(isCurrent) nowInserted=true;
+  });
+  renderDailyStats();
+}
+function renderDayTabs(){
+  const tabs=document.getElementById('dayTabs');tabs.innerHTML='';
+  getDaysOfWeek().forEach(day=>{
+    const btn=document.createElement('button');
+    const isActive=day===getDayName(activeDailyDate.y,activeDailyDate.m,activeDailyDate.d);
+    btn.className=`day-tab${isActive?' active':''}`;
+    btn.dataset.day=day;
+    btn.textContent=day+((classSchedule[day]||[]).length>0?' 📅':'');
+    btn.addEventListener('click',()=>{
+      const jsTarget=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(day);
+      let d=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+      for(let i=0;i<7;i++){if(d.getDay()===jsTarget)break;d.setDate(d.getDate()+1);}
+      activeDailyDate={y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};
+      renderDayTabs();renderTimeline();
+    });
+    tabs.appendChild(btn);
+  });
+}
+function selectAll(){
+  const dn=getDayName(activeDailyDate.y,activeDailyDate.m,activeDailyDate.d);
+  const slots=buildDay(dn).filter(s=>!s.section);
+  const dk=getActiveDK();
+  if(!doneState[dk])doneState[dk]={};
+  slots.forEach((_,i)=>{doneState[dk][i]=true;});
+  saveState();renderTimeline();
+}
+function unselectAll(){
+  const dk=getActiveDK();
+  doneState[dk]={};
+  saveState();renderTimeline();
+}
+function buildDay(dayName) {
+  const custom = extraState['customSlots_'+dayName]||[];
+  const slots = custom.map(cs=>({
+    type:cs.type, icon:cs.icon||'📌', time:cs.time,
+    title:cs.title, sub:cs.sub||'', isCustom:true
+  }));
+  // Sort by time
+  slots.sort((a,b)=>{
+    function toMins(t){
+      if(!t) return 9999;
+      const start=t.split('–')[0].trim().replace(/AM|PM/gi,'').trim();
+      const parts=start.split(':');
+      let h=parseInt(parts[0]||0), m=parseInt(parts[1]||0);
+      const orig=t.split('–')[0].trim();
+      if(/PM/i.test(orig)&&h!==12) h+=12;
+      if(/AM/i.test(orig)&&h===12) h=0;
+      return h*60+m;
+    }
+    return toMins(a.time)-toMins(b.time);
+  });
+  return slots;
+}
+function toMinutes(t){
+  if(!t)return 9999;
+  const start=t.split('–')[0].trim();
+  if(start.includes('AM')||start.includes('PM')){
+    const clean=start.replace('AM','').replace('PM','').trim();
+    const parts=clean.split(':');
+    let h=parseInt(parts[0]),m=parseInt(parts[1]||0);
+    if(start.includes('PM')&&h!==12)h+=12;
+    if(start.includes('AM')&&h===12)h=0;
+    return h*60+m;
+  }
+  const parts=start.split(':');
+  return parseInt(parts[0])*60+parseInt(parts[1]||0);
+}
+function renderTopicLists(){ /* removed - skills module handles this */ }
 </script>
 <div id="appPage" class="page active" style="background:var(--bg,#080b10);">
 <header>
