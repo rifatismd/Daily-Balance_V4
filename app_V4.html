@@ -56,8 +56,7 @@
     .return-name{font-size:0.88rem;font-weight:600;color:#e6edf8;margin-bottom:2px;}
     .return-sub{font-size:0.68rem;color:#3a5a3a;}
     .return-btn{background:#f5c542;border:none;color:#0a0905;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;flex-shrink:0;}
-1&family=Inter:wght@300;400;500;600;700&display=swap');
-  :root {
+:root {
     --bg:#080b10;--surface:#0e1219;--surface2:#141b25;--border:#1c2535;--border2:#243048;
     --accent:#f5c542;--accent2:#34d9c3;--warn:#fb923c;--rose:#f87171;
     --text:#e6edf8;--muted:#5e728c;--muted2:#3a4d62;
@@ -534,7 +533,14 @@
   </style>
 </head>
 <body>
-<script>
+<script>function renderSkills(){}
+var activeNoteCategory = 'all';
+var pomoLeft = 0;
+var pomoRunning = false;
+var SLOT_TYPES = [];
+var pomoTotal = 25*60;
+var currentView = 'daily';
+
 // Safe stubs - replaced by main script after load
 var _mainLoaded = false;
 function addCustomSlot(){ try{if(window.__real_addCustomSlot__)window.__real_addCustomSlot__.apply(this,arguments);}catch(e){} }
@@ -597,6 +603,8 @@ function unskipMood(){ try{if(window.__real_unskipMood__)window.__real_unskipMoo
 function updateGoalProgress(){ try{if(window.__real_updateGoalProgress__)window.__real_updateGoalProgress__.apply(this,arguments);}catch(e){} }
 function updateSkill(){ try{if(window.__real_updateSkill__)window.__real_updateSkill__.apply(this,arguments);}catch(e){} }
 
+function initSettings(){ try{if(window.__real_initSettings__)window.__real_initSettings__();}catch(e){} }
+
 document.addEventListener('DOMContentLoaded', function(){
   // Wait for main script then re-bind real functions
   setTimeout(function(){
@@ -658,6 +666,10 @@ document.addEventListener('DOMContentLoaded', function(){
     if(typeof window.unselectAll==='function' && !window.__real_unselectAll__) window.__real_unselectAll__ = window.unselectAll;
     if(typeof window.unskipMood==='function' && !window.__real_unskipMood__) window.__real_unskipMood__ = window.unskipMood;
     if(typeof window.updateGoalProgress==='function' && !window.__real_updateGoalProgress__) window.__real_updateGoalProgress__ = window.updateGoalProgress;
+    if(typeof window.updateSkill==='function' && !window.__real_updateSkill__) window.__real_updateSkill__ = window.updateSkill;
+  }, 100);
+});
+;
     if(typeof window.updateSkill==='function' && !window.__real_updateSkill__) window.__real_updateSkill__ = window.updateSkill;
   }, 100);
 });
