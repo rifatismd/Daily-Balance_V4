@@ -56,7 +56,6 @@
     .return-name{font-size:0.88rem;font-weight:600;color:#e6edf8;margin-bottom:2px;}
     .return-sub{font-size:0.68rem;color:#3a5a3a;}
     .return-btn{background:#f5c542;border:none;color:#0a0905;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;flex-shrink:0;}
-1&family=Inter:wght@300;400;500;600;700&display=swap');
   :root {
     --bg:#080b10;--surface:#0e1219;--surface2:#141b25;--border:#1c2535;--border2:#243048;
     --accent:#f5c542;--accent2:#34d9c3;--warn:#fb923c;--rose:#f87171;
@@ -1175,6 +1174,19 @@ function suggestSkill(){}
     <div id="dataMsg" style="margin-top:8px;font-size:0.75rem;color:var(--accent2);display:none;"></div>
   </div>
 
+  <!-- Custom Reset Confirmation Modal -->
+  <div id="resetConfirmModal" style="display:none;position:fixed;inset:0;background:#080b10cc;backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;padding:24px;">
+    <div style="width:100%;max-width:320px;background:var(--surface2);border:1px solid #7a2020;border-radius:16px;padding:22px 20px;">
+      <div style="font-size:1.6rem;text-align:center;margin-bottom:10px;">⚠️</div>
+      <div style="font-size:0.95rem;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;">Delete ALL data?</div>
+      <div style="font-size:0.8rem;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.5;">This cannot be undone. All your routines, skills, notes and settings will be erased.</div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="closeResetModal()" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:11px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;">No, cancel</button>
+        <button onclick="doReset()" style="flex:1;background:#f87171;border:none;color:#0a0905;border-radius:9px;padding:11px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:700;">Yes, delete</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ ABOUT ═══ -->
   <div style="background:linear-gradient(135deg,var(--surface2),var(--surface));border:1px solid var(--border);border-radius:16px;padding:20px 18px;margin-bottom:8px;text-align:center;position:relative;overflow:hidden;">
     <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,#f5c54215,transparent 70%);"></div>
@@ -1770,20 +1782,20 @@ function renderSkills(){
     h+='<div style="font-size:0.95rem;font-weight:700;color:var(--text);">'+s.name+'</div>';
     h+='<div style="font-size:0.62rem;color:var(--muted);">'+xp+' XP</div></div>';
     h+='<div style="display:flex;gap:4px;">';
-    h+='<button onclick="skillEdit('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#9998;</button>';
-    h+='<button onclick="skillDel('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#128465;</button>';
+    h+='<button onclick="skillEdit(\''+(sid)+'\')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#9998;</button>';
+    h+='<button onclick="skillDel(\''+(sid)+'\')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#128465;</button>';
     h+='</div></div>';
     h+='<div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:3px;"></div></div>';
     h+='<div style="font-size:0.62rem;color:var(--muted);margin-bottom:10px;">'+progTxt+'</div>';
-    h+='<button onclick="skillXP('+(sid)+')" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-weight:700;font-size:0.82rem;margin-bottom:10px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log session</button>';
+    h+='<button onclick="skillXP(\''+(sid)+'\')" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-weight:700;font-size:0.82rem;margin-bottom:10px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log session</button>';
     h+='<div style="border-top:1px solid var(--border);padding-top:10px;"><div style="font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">&#128218; How to learn</div>'+resHtml+'</div>';
     h+='<div id="sep_'+sid+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
     h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
     h+='<input id="sei_'+sid+'" value="'+s.icon+'" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;"/>';
     h+='<input id="sen_'+sid+'" value="'+s.name+'" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;"/>';
     h+='</div><div style="display:flex;gap:8px;">';
-    h+='<button onclick="skillSave('+(sid)+')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:9px;cursor:pointer;font-weight:700;">Save</button>';
-    h+='<button onclick="skillCancelEdit('+(sid)+')" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:9px 14px;cursor:pointer;">Cancel</button>';
+    h+='<button onclick="skillSave(\''+(sid)+'\')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:9px;cursor:pointer;font-weight:700;">Save</button>';
+    h+='<button onclick="skillCancelEdit(\''+(sid)+'\')" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:9px 14px;cursor:pointer;">Cancel</button>';
     h+='</div></div></div>';
     return h;
   }).join('');
@@ -2509,9 +2521,16 @@ function importData(e){
   reader.readAsText(file);
 }
 function confirmReset(){
-  if(confirm('⚠️ Delete ALL data? This cannot be undone.')){
-    localStorage.clear(); showDataMsg('🗑️ Cleared. Refreshing...'); setTimeout(()=>location.reload(),1000);
-  }
+  const m=document.getElementById('resetConfirmModal');
+  if(m) m.style.display='flex';
+}
+function closeResetModal(){
+  const m=document.getElementById('resetConfirmModal');
+  if(m) m.style.display='none';
+}
+function doReset(){
+  closeResetModal();
+  localStorage.clear(); showDataMsg('🗑️ Cleared. Refreshing...'); setTimeout(()=>location.reload(),1000);
 }
 function showDataMsg(msg){
   const el=document.getElementById('dataMsg'); if(!el) return;
