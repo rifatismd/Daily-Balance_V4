@@ -56,7 +56,7 @@
     .return-name{font-size:0.88rem;font-weight:600;color:#e6edf8;margin-bottom:2px;}
     .return-sub{font-size:0.68rem;color:#3a5a3a;}
     .return-btn{background:#f5c542;border:none;color:#0a0905;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;flex-shrink:0;}
-:root {
+  :root {
     --bg:#080b10;--surface:#0e1219;--surface2:#141b25;--border:#1c2535;--border2:#243048;
     --accent:#f5c542;--accent2:#34d9c3;--warn:#fb923c;--rose:#f87171;
     --text:#e6edf8;--muted:#5e728c;--muted2:#3a4d62;
@@ -533,147 +533,75 @@
   </style>
 </head>
 <body>
-<script>function renderSkills(){}
-var activeNoteCategory = 'all';
-var pomoLeft = 0;
-var pomoRunning = false;
-var SLOT_TYPES = [];
-var pomoTotal = 25*60;
-var currentView = 'daily';
-
-// Safe stubs - replaced by main script after load
-var _mainLoaded = false;
-function addCustomSlot(){ try{if(window.__real_addCustomSlot__)window.__real_addCustomSlot__.apply(this,arguments);}catch(e){} }
-function addGoalItem(){ try{if(window.__real_addGoalItem__)window.__real_addGoalItem__.apply(this,arguments);}catch(e){} }
-function addMedicine(){ try{if(window.__real_addMedicine__)window.__real_addMedicine__.apply(this,arguments);}catch(e){} }
-function addNewSkill(){ try{if(window.__real_addNewSkill__)window.__real_addNewSkill__.apply(this,arguments);}catch(e){} }
-function addNote(){ try{if(window.__real_addNote__)window.__real_addNote__.apply(this,arguments);}catch(e){} }
-function backupToDrive(){ try{if(window.__real_backupToDrive__)window.__real_backupToDrive__.apply(this,arguments);}catch(e){} }
-function changeMonth(){ try{if(window.__real_changeMonth__)window.__real_changeMonth__.apply(this,arguments);}catch(e){} }
-function closeDetail(){ try{if(window.__real_closeDetail__)window.__real_closeDetail__.apply(this,arguments);}catch(e){} }
-function confirmReset(){ try{if(window.__real_confirmReset__)window.__real_confirmReset__.apply(this,arguments);}catch(e){} }
-function deleteCustomSlot(){ try{if(window.__real_deleteCustomSlot__)window.__real_deleteCustomSlot__.apply(this,arguments);}catch(e){} }
-function deleteGoalItem(){ try{if(window.__real_deleteGoalItem__)window.__real_deleteGoalItem__.apply(this,arguments);}catch(e){} }
-function deleteMedicine(){ try{if(window.__real_deleteMedicine__)window.__real_deleteMedicine__.apply(this,arguments);}catch(e){} }
-function deleteNote(){ try{if(window.__real_deleteNote__)window.__real_deleteNote__.apply(this,arguments);}catch(e){} }
-function deleteSkill(){ try{if(window.__real_deleteSkill__)window.__real_deleteSkill__.apply(this,arguments);}catch(e){} }
-function editSkill(){ try{if(window.__real_editSkill__)window.__real_editSkill__.apply(this,arguments);}catch(e){} }
-function exportData(){ try{if(window.__real_exportData__)window.__real_exportData__.apply(this,arguments);}catch(e){} }
-function hideYTInput(){ try{if(window.__real_hideYTInput__)window.__real_hideYTInput__.apply(this,arguments);}catch(e){} }
-function importDataClick(){ try{if(window.__real_importDataClick__)window.__real_importDataClick__.apply(this,arguments);}catch(e){} }
-function markFajr(){ try{if(window.__real_markFajr__)window.__real_markFajr__.apply(this,arguments);}catch(e){} }
-function nameBlankSlot(){ try{if(window.__real_nameBlankSlot__)window.__real_nameBlankSlot__.apply(this,arguments);}catch(e){} }
-function pinBackspace(){ try{if(window.__real_pinBackspace__)window.__real_pinBackspace__.apply(this,arguments);}catch(e){} }
-function pinPress(){ try{if(window.__real_pinPress__)window.__real_pinPress__.apply(this,arguments);}catch(e){} }
-function pomoReset(){ try{if(window.__real_pomoReset__)window.__real_pomoReset__.apply(this,arguments);}catch(e){} }
-function pomoToggle(){ try{if(window.__real_pomoToggle__)window.__real_pomoToggle__.apply(this,arguments);}catch(e){} }
-function removePIN(){ try{if(window.__real_removePIN__)window.__real_removePIN__.apply(this,arguments);}catch(e){} }
-function restoreFromDrive(){ try{if(window.__real_restoreFromDrive__)window.__real_restoreFromDrive__.apply(this,arguments);}catch(e){} }
-function saveNewSkill(){ try{if(window.__real_saveNewSkill__)window.__real_saveNewSkill__.apply(this,arguments);}catch(e){} }
-function savePIN(){ try{if(window.__real_savePIN__)window.__real_savePIN__.apply(this,arguments);}catch(e){} }
-function saveSkillEdit(){ try{if(window.__real_saveSkillEdit__)window.__real_saveSkillEdit__.apply(this,arguments);}catch(e){} }
-function saveYTLink(){ try{if(window.__real_saveYTLink__)window.__real_saveYTLink__.apply(this,arguments);}catch(e){} }
-function selectAll(){ try{if(window.__real_selectAll__)window.__real_selectAll__.apply(this,arguments);}catch(e){} }
-function sendAppFeedback(){ try{if(window.__real_sendAppFeedback__)window.__real_sendAppFeedback__.apply(this,arguments);}catch(e){} }
-function setAccent(){ try{if(window.__real_setAccent__)window.__real_setAccent__.apply(this,arguments);}catch(e){} }
-function setFontSize(){ try{if(window.__real_setFontSize__)window.__real_setFontSize__.apply(this,arguments);}catch(e){} }
-function setLang(){ try{if(window.__real_setLang__)window.__real_setLang__.apply(this,arguments);}catch(e){} }
-function setNoteCategory(){ try{if(window.__real_setNoteCategory__)window.__real_setNoteCategory__.apply(this,arguments);}catch(e){} }
-function setSlotType(){ try{if(window.__real_setSlotType__)window.__real_setSlotType__.apply(this,arguments);}catch(e){} }
-function setTheme(){ try{if(window.__real_setTheme__)window.__real_setTheme__.apply(this,arguments);}catch(e){} }
-function setTimeFormat(){ try{if(window.__real_setTimeFormat__)window.__real_setTimeFormat__.apply(this,arguments);}catch(e){} }
-function setUnifiedDay(){ try{if(window.__real_setUnifiedDay__)window.__real_setUnifiedDay__.apply(this,arguments);}catch(e){} }
-function setXP(){ try{if(window.__real_setXP__)window.__real_setXP__.apply(this,arguments);}catch(e){} }
-function showYTInput(){ try{if(window.__real_showYTInput__)window.__real_showYTInput__.apply(this,arguments);}catch(e){} }
-function signOut(){ try{if(window.__real_signOut__)window.__real_signOut__.apply(this,arguments);}catch(e){} }
-function skipMood(){ try{if(window.__real_skipMood__)window.__real_skipMood__.apply(this,arguments);}catch(e){} }
-function suggestSkill(){ try{if(window.__real_suggestSkill__)window.__real_suggestSkill__.apply(this,arguments);}catch(e){} }
-function switchView(){ try{if(window.__real_switchView__)window.__real_switchView__.apply(this,arguments);}catch(e){} }
-function takeMed(){ try{if(window.__real_takeMed__)window.__real_takeMed__.apply(this,arguments);}catch(e){} }
-function toggleAddGoal(){ try{if(window.__real_toggleAddGoal__)window.__real_toggleAddGoal__.apply(this,arguments);}catch(e){} }
-function toggleAddMed(){ try{if(window.__real_toggleAddMed__)window.__real_toggleAddMed__.apply(this,arguments);}catch(e){} }
-function toggleGoalDone(){ try{if(window.__real_toggleGoalDone__)window.__real_toggleGoalDone__.apply(this,arguments);}catch(e){} }
-function toggleMood(){ try{if(window.__real_toggleMood__)window.__real_toggleMood__.apply(this,arguments);}catch(e){} }
-function toggleRemoveSlot(){ try{if(window.__real_toggleRemoveSlot__)window.__real_toggleRemoveSlot__.apply(this,arguments);}catch(e){} }
-function toggleTopic(){ try{if(window.__real_toggleTopic__)window.__real_toggleTopic__.apply(this,arguments);}catch(e){} }
-function toggleUserMenu(){ try{if(window.__real_toggleUserMenu__)window.__real_toggleUserMenu__.apply(this,arguments);}catch(e){} }
-function unifiedRemoveSlot(){ try{if(window.__real_unifiedRemoveSlot__)window.__real_unifiedRemoveSlot__.apply(this,arguments);}catch(e){} }
-function unselectAll(){ try{if(window.__real_unselectAll__)window.__real_unselectAll__.apply(this,arguments);}catch(e){} }
-function unskipMood(){ try{if(window.__real_unskipMood__)window.__real_unskipMood__.apply(this,arguments);}catch(e){} }
-function updateGoalProgress(){ try{if(window.__real_updateGoalProgress__)window.__real_updateGoalProgress__.apply(this,arguments);}catch(e){} }
-function updateSkill(){ try{if(window.__real_updateSkill__)window.__real_updateSkill__.apply(this,arguments);}catch(e){} }
-
-function initSettings(){ try{if(window.__real_initSettings__)window.__real_initSettings__();}catch(e){} }
-
-document.addEventListener('DOMContentLoaded', function(){
-  // Wait for main script then re-bind real functions
-  setTimeout(function(){
-    if(typeof window.addCustomSlot==='function' && !window.__real_addCustomSlot__) window.__real_addCustomSlot__ = window.addCustomSlot;
-    if(typeof window.addGoalItem==='function' && !window.__real_addGoalItem__) window.__real_addGoalItem__ = window.addGoalItem;
-    if(typeof window.addMedicine==='function' && !window.__real_addMedicine__) window.__real_addMedicine__ = window.addMedicine;
-    if(typeof window.addNewSkill==='function' && !window.__real_addNewSkill__) window.__real_addNewSkill__ = window.addNewSkill;
-    if(typeof window.addNote==='function' && !window.__real_addNote__) window.__real_addNote__ = window.addNote;
-    if(typeof window.backupToDrive==='function' && !window.__real_backupToDrive__) window.__real_backupToDrive__ = window.backupToDrive;
-    if(typeof window.changeMonth==='function' && !window.__real_changeMonth__) window.__real_changeMonth__ = window.changeMonth;
-    if(typeof window.closeDetail==='function' && !window.__real_closeDetail__) window.__real_closeDetail__ = window.closeDetail;
-    if(typeof window.confirmReset==='function' && !window.__real_confirmReset__) window.__real_confirmReset__ = window.confirmReset;
-    if(typeof window.deleteCustomSlot==='function' && !window.__real_deleteCustomSlot__) window.__real_deleteCustomSlot__ = window.deleteCustomSlot;
-    if(typeof window.deleteGoalItem==='function' && !window.__real_deleteGoalItem__) window.__real_deleteGoalItem__ = window.deleteGoalItem;
-    if(typeof window.deleteMedicine==='function' && !window.__real_deleteMedicine__) window.__real_deleteMedicine__ = window.deleteMedicine;
-    if(typeof window.deleteNote==='function' && !window.__real_deleteNote__) window.__real_deleteNote__ = window.deleteNote;
-    if(typeof window.deleteSkill==='function' && !window.__real_deleteSkill__) window.__real_deleteSkill__ = window.deleteSkill;
-    if(typeof window.editSkill==='function' && !window.__real_editSkill__) window.__real_editSkill__ = window.editSkill;
-    if(typeof window.exportData==='function' && !window.__real_exportData__) window.__real_exportData__ = window.exportData;
-    if(typeof window.hideYTInput==='function' && !window.__real_hideYTInput__) window.__real_hideYTInput__ = window.hideYTInput;
-    if(typeof window.importDataClick==='function' && !window.__real_importDataClick__) window.__real_importDataClick__ = window.importDataClick;
-    if(typeof window.markFajr==='function' && !window.__real_markFajr__) window.__real_markFajr__ = window.markFajr;
-    if(typeof window.nameBlankSlot==='function' && !window.__real_nameBlankSlot__) window.__real_nameBlankSlot__ = window.nameBlankSlot;
-    if(typeof window.pinBackspace==='function' && !window.__real_pinBackspace__) window.__real_pinBackspace__ = window.pinBackspace;
-    if(typeof window.pinPress==='function' && !window.__real_pinPress__) window.__real_pinPress__ = window.pinPress;
-    if(typeof window.pomoReset==='function' && !window.__real_pomoReset__) window.__real_pomoReset__ = window.pomoReset;
-    if(typeof window.pomoToggle==='function' && !window.__real_pomoToggle__) window.__real_pomoToggle__ = window.pomoToggle;
-    if(typeof window.removePIN==='function' && !window.__real_removePIN__) window.__real_removePIN__ = window.removePIN;
-    if(typeof window.restoreFromDrive==='function' && !window.__real_restoreFromDrive__) window.__real_restoreFromDrive__ = window.restoreFromDrive;
-    if(typeof window.saveNewSkill==='function' && !window.__real_saveNewSkill__) window.__real_saveNewSkill__ = window.saveNewSkill;
-    if(typeof window.savePIN==='function' && !window.__real_savePIN__) window.__real_savePIN__ = window.savePIN;
-    if(typeof window.saveSkillEdit==='function' && !window.__real_saveSkillEdit__) window.__real_saveSkillEdit__ = window.saveSkillEdit;
-    if(typeof window.saveYTLink==='function' && !window.__real_saveYTLink__) window.__real_saveYTLink__ = window.saveYTLink;
-    if(typeof window.selectAll==='function' && !window.__real_selectAll__) window.__real_selectAll__ = window.selectAll;
-    if(typeof window.sendAppFeedback==='function' && !window.__real_sendAppFeedback__) window.__real_sendAppFeedback__ = window.sendAppFeedback;
-    if(typeof window.setAccent==='function' && !window.__real_setAccent__) window.__real_setAccent__ = window.setAccent;
-    if(typeof window.setFontSize==='function' && !window.__real_setFontSize__) window.__real_setFontSize__ = window.setFontSize;
-    if(typeof window.setLang==='function' && !window.__real_setLang__) window.__real_setLang__ = window.setLang;
-    if(typeof window.setNoteCategory==='function' && !window.__real_setNoteCategory__) window.__real_setNoteCategory__ = window.setNoteCategory;
-    if(typeof window.setSlotType==='function' && !window.__real_setSlotType__) window.__real_setSlotType__ = window.setSlotType;
-    if(typeof window.setTheme==='function' && !window.__real_setTheme__) window.__real_setTheme__ = window.setTheme;
-    if(typeof window.setTimeFormat==='function' && !window.__real_setTimeFormat__) window.__real_setTimeFormat__ = window.setTimeFormat;
-    if(typeof window.setUnifiedDay==='function' && !window.__real_setUnifiedDay__) window.__real_setUnifiedDay__ = window.setUnifiedDay;
-    if(typeof window.setXP==='function' && !window.__real_setXP__) window.__real_setXP__ = window.setXP;
-    if(typeof window.showYTInput==='function' && !window.__real_showYTInput__) window.__real_showYTInput__ = window.showYTInput;
-    if(typeof window.signOut==='function' && !window.__real_signOut__) window.__real_signOut__ = window.signOut;
-    if(typeof window.skipMood==='function' && !window.__real_skipMood__) window.__real_skipMood__ = window.skipMood;
-    if(typeof window.suggestSkill==='function' && !window.__real_suggestSkill__) window.__real_suggestSkill__ = window.suggestSkill;
-    if(typeof window.switchView==='function' && !window.__real_switchView__) window.__real_switchView__ = window.switchView;
-    if(typeof window.takeMed==='function' && !window.__real_takeMed__) window.__real_takeMed__ = window.takeMed;
-    if(typeof window.toggleAddGoal==='function' && !window.__real_toggleAddGoal__) window.__real_toggleAddGoal__ = window.toggleAddGoal;
-    if(typeof window.toggleAddMed==='function' && !window.__real_toggleAddMed__) window.__real_toggleAddMed__ = window.toggleAddMed;
-    if(typeof window.toggleGoalDone==='function' && !window.__real_toggleGoalDone__) window.__real_toggleGoalDone__ = window.toggleGoalDone;
-    if(typeof window.toggleMood==='function' && !window.__real_toggleMood__) window.__real_toggleMood__ = window.toggleMood;
-    if(typeof window.toggleRemoveSlot==='function' && !window.__real_toggleRemoveSlot__) window.__real_toggleRemoveSlot__ = window.toggleRemoveSlot;
-    if(typeof window.toggleTopic==='function' && !window.__real_toggleTopic__) window.__real_toggleTopic__ = window.toggleTopic;
-    if(typeof window.toggleUserMenu==='function' && !window.__real_toggleUserMenu__) window.__real_toggleUserMenu__ = window.toggleUserMenu;
-    if(typeof window.unifiedRemoveSlot==='function' && !window.__real_unifiedRemoveSlot__) window.__real_unifiedRemoveSlot__ = window.unifiedRemoveSlot;
-    if(typeof window.unselectAll==='function' && !window.__real_unselectAll__) window.__real_unselectAll__ = window.unselectAll;
-    if(typeof window.unskipMood==='function' && !window.__real_unskipMood__) window.__real_unskipMood__ = window.unskipMood;
-    if(typeof window.updateGoalProgress==='function' && !window.__real_updateGoalProgress__) window.__real_updateGoalProgress__ = window.updateGoalProgress;
-    if(typeof window.updateSkill==='function' && !window.__real_updateSkill__) window.__real_updateSkill__ = window.updateSkill;
-  }, 100);
-});
-;
-    if(typeof window.updateSkill==='function' && !window.__real_updateSkill__) window.__real_updateSkill__ = window.updateSkill;
-  }, 100);
-});
+<script>
+function getUserKey(b){try{var u=JSON.parse(localStorage.getItem('db_user')||'null');if(u&&u.email&&u.authType==='google')return b+'_'+u.email.replace(/[^a-z0-9]/gi,'_');}catch(e){}return b+'_guest';}
+function switchView(v){}
+function selectAll(){}
+function unselectAll(){}
+function toggleAddSlot(){}
+function renderSkills(){}
+function pomoToggle(){}
+function pomoReset(){}
+function markFajr(){}
+function addNote(){}
+function addGoalItem(){}
+function toggleAddGoal(){}
+function addMedicine(){}
+function setNoteCategory(){}
+function setTheme(){}
+function setAccent(){}
+function setFontSize(){}
+function toggleCompact(){}
+function setLang(){}
+function setWeekStart(){}
+function setTimeFormat(){}
+function setDefaultDay(){}
+function toggleTab(){}
+function toggleDailyOpt(){}
+function exportData(){}
+function importData(){}
+function confirmReset(){}
+function pinPress(){}
+function pinBackspace(){}
+function toggleBackupReminder(){}
+function renderYTCards(){}
+function showYTInput(){}
+function hideYTInput(){}
+function saveYTLink(){}
+function showAddSkill(){}
+function saveNewSkill(){}
+function pickSkill(){}
+function skillEdit(){}
+function skillDel(){}
+function skillSave(){}
+function skillXP(){}
+function skillCancelEdit(){}
+function signOut(){}
+function showUserMenu(){}
+function takeMed(){}
+function deleteMed(){}
+function deleteGoalItem(){}
+function toggleGoalDone(){}
+function updateGoalProgress(){}
+function cancelSlot(){}
+function doneSlot(){}
+function deleteCustomSlot(){}
+function editCustomSlot(){}
+function saveCustomSlotEdit(){}
+function cancelCustomSlotEdit(){}
+function deleteNote(){}
+function switchDay(){}
+function prevDay(){}
+function nextDay(){}
+function prevMonth(){}
+function nextMonth(){}
+function renderSlotManager(){}
+function toggleSlotManager(){}
+function showAddMed(){}
+function initSettings(){}
+function renderTopicLists(){}
 </script>
+
 <div id="appPage" class="page active" style="background:var(--bg,#080b10);">
 <header>
   <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -1416,6 +1344,7 @@ document.addEventListener('DOMContentLoaded', function(){
   <div id="customSlotList"></div>
 
 </div>
+
 <script>
 function getUserKey(base){
   try{
@@ -3267,73 +3196,60 @@ window.addEventListener('DOMContentLoaded',function(){
   initUserGreeting();
 });
 
-</script>
-</body>
-</htmlfunction renderSkills(){
-  const skills = getSkills();
-  const grid = document.getElementById('skillCardsGrid');
-  if(!grid) return;
 
+
+function renderSkills(){
+  var grid=document.getElementById('skillCardsGrid'); if(!grid) return;
+  var skills=getSkills();
   if(!skills.length){
-    grid.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">📈</div><div style="font-size:0.88rem;margin-bottom:14px;">No skills yet.<br/>Add a skill to start tracking your progress.</div></div>';
+    grid.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">&#128200;</div><div style="font-size:0.85rem;">No skills yet.<br/>Tap + Add Skill.</div></div>';
     return;
   }
-
-  grid.innerHTML = skills.map((s,i)=>{
-    const xp = s.xp||0;
-    const lvl = getSkillLevel(xp);
-    const prog = getXPProgress(xp);
-    const col = SKILL_COLORS[i % SKILL_COLORS.length];
-    const bg = SKILL_BG_COLORS[i % SKILL_BG_COLORS.length];
-    const resources = getSkillResources(s.name);
-    const xpLabel = window._xpOverride || appSettings.xpPerSession || XP_PER_SESSION;
-
-    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right,${bg},transparent 70%);"></div>
-
-      <!-- Header row -->
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <div style="font-size:1.6rem;">${s.icon}</div>
-        <div style="flex:1;">
-          <div style="font-size:0.65rem;color:${col};font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">${lvl.name} · Lv.${lvl.level+1}</div>
-          <div style="font-size:1rem;font-weight:700;color:var(--text);">${s.name}</div>
-          <div style="font-size:0.62rem;color:var(--muted);">${xp} XP earned</div>
-        </div>
-        <div style="display:flex;gap:4px;">
-          <button onclick="editSkill('${s.id}')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;" title="Edit">✏️</button>
-          <button onclick="deleteSkill('${s.id}')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;" title="Delete">🗑</button>
-        </div>
-      </div>
-
-      <!-- XP Bar -->
-      <div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;">
-        <div style="height:100%;width:${prog.pct}%;background:${col};border-radius:3px;transition:width 0.6s;"></div>
-      </div>
-      <div style="font-size:0.62rem;color:var(--muted);margin-bottom:12px;">${prog.isMax?'Max level!':prog.inLevel+' / '+prog.needed+' XP to next level'}</div>
-
-      <!-- +XP Button -->
-      <button onclick="updateSkill('${s.id}')" style="width:100%;background:var(--bg);border:1px solid ${col}40;color:${col};border-radius:9px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;margin-bottom:12px;">${s.icon} +${xpLabel} XP — Log a session</button>
-
-      <!-- Learning Resources -->
-      <div style="border-top:1px solid var(--border);padding-top:10px;">
-        <div style="font-size:0.65rem;color:var(--muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">📚 How to learn ${s.name}</div>
-        ${resources.slice(0,3).map(r=>`<div style="font-size:0.75rem;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;"><span>${r}</span></div>`).join('')}
-      </div>
-
-      <!-- Edit panel (hidden by default) -->
-      <div id="editPanel_${s.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <div style="display:flex;gap:8px;margin-bottom:8px;">
-          <input id="editIcon_${s.id}" value="${s.icon}" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;font-family:'Inter',sans-serif;" />
-          <input id="editName_${s.id}" value="${s.name}" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" />
-        </div>
-        <div style="display:flex;gap:8px;">
-          <button onclick="saveSkillEdit('${s.id}')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:8px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;">Save</button>
-          <button onclick="document.getElementById('editPanel_${s.id}').style.display='none'" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.82rem;">Cancel</button>
-        </div>
-      </div>
-    </div>`;
+  var COLS=['#f5c542','#34d9c3','#fb923c','#a78bfa','#f87171','#4ade80'];
+  var xpLabel=(appSettings&&appSettings.xpPerSession)||25;
+  var LVLS=['Beginner','Learner','Intermediate','Advanced','Expert','Master'];
+  var THRS=[0,100,300,600,1000,1500];
+  var RES={'Python':['&#128014; freeCodeCamp Python','&#128218; python.org/docs','&#9654; CS50P Harvard'],'Video Editing':['&#127909; DaVinci Resolve Free','&#9654; Premiere Pro Tutorial'],'Graphic Design':['&#127912; Canva Design School','&#9654; Adobe Express'],'Logo Design':['&#9654; Logo Design Tutorial','&#9654; Illustrator Basics'],'Web Dev':['&#127760; freeCodeCamp','&#128218; MDN Web Docs'],'UI/UX Design':['&#128241; Figma Free','&#9654; Google UX Certificate'],'Data Analysis':['&#128202; Kaggle Courses','&#128218; Pandas Docs']};
+  function getRes(n){if(RES[n])return RES[n];var lo=n.toLowerCase();for(var k in RES){if(lo.includes(k.toLowerCase()))return RES[k];}return ['Search: '+n+' tutorial on YouTube'];}
+  grid.innerHTML=skills.map(function(s,i){
+    var xp=s.xp||0;
+    var lvl=0; for(var j=0;j<THRS.length;j++){if(xp>=THRS[j])lvl=j;}
+    var cur=THRS[lvl]||0; var nxt=THRS[lvl+1];
+    var pct=nxt?Math.round((xp-cur)/(nxt-cur)*100):100;
+    var progTxt=nxt?(xp-cur)+'/'+(nxt-cur)+' XP to next':'Max level!';
+    var col=COLS[i%COLS.length]; var sid=s.id;
+    var res=getRes(s.name);
+    var resHtml=res.slice(0,3).map(function(r){return '<div style="font-size:0.75rem;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);">'+r+'</div>';}).join('');
+    var h='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">';
+    h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">';
+    h+='<div style="font-size:1.6rem;">'+s.icon+'</div>';
+    h+='<div style="flex:1;"><div style="font-size:0.65rem;color:'+col+';font-weight:700;text-transform:uppercase;">'+LVLS[lvl]+' &middot; Lv.'+(lvl+1)+'</div>';
+    h+='<div style="font-size:0.95rem;font-weight:700;color:var(--text);">'+s.name+'</div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);">'+xp+' XP total</div></div>';
+    h+='<div style="display:flex;gap:4px;">';
+    h+='<button onclick="skillEdit('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#9998;</button>';
+    h+='<button onclick="skillDel('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#128465;</button>';
+    h+='</div></div>';
+    h+='<div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:3px;"></div></div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);margin-bottom:10px;">'+progTxt+'</div>';
+    h+='<button onclick="skillXP('+(sid)+')" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-weight:700;font-size:0.82rem;margin-bottom:10px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log session</button>';
+    h+='<div style="border-top:1px solid var(--border);padding-top:10px;"><div style="font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">&#128218; How to learn</div>'+resHtml+'</div>';
+    h+='<div id="sep_'+sid+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
+    h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+    h+='<input id="sei_'+sid+'" value="'+s.icon+'" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;"/>';
+    h+='<input id="sen_'+sid+'" value="'+s.name+'" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;"/>';
+    h+='</div><div style="display:flex;gap:8px;">';
+    h+='<button onclick="skillSave('+(sid)+')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:9px;cursor:pointer;font-weight:700;font-size:0.82rem;">Save</button>';
+    h+='<button onclick="skillCancelEdit('+(sid)+')" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:9px 14px;cursor:pointer;font-size:0.82rem;">Cancel</button>';
+    h+='</div></div></div>';
+    return h;
   }).join('');
 }
+function skillEdit(id){var p=document.getElementById('sep_'+id);if(p)p.style.display=p.style.display==='none'?'block':'none';}
+function skillCancelEdit(id){var p=document.getElementById('sep_'+id);if(p)p.style.display='none';}
+function skillDel(id){if(!confirm('Delete this skill?'))return;saveSkills(getSkills().filter(function(x){return x.id!==id;}));renderSkills();}
+function skillSave(id){var icon=(document.getElementById('sei_'+id)||{}).value||'&#128204;';var name=((document.getElementById('sen_'+id)||{}).value||'').trim();if(!name)return;var skills=getSkills();var sk=skills.find(function(x){return x.id===id;});if(!sk)return;sk.icon=icon.trim();sk.name=name;saveSkills(skills);renderSkills();}
+function skillXP(id){var skills=getSkills();var sk=skills.find(function(x){return x.id===id;});if(!sk)return;sk.xp=(sk.xp||0)+((appSettings&&appSettings.xpPerSession)||25);saveSkills(skills);renderSkills();}
 
 function editSkill(id){
   // Toggle edit panel
@@ -3350,4 +3266,5 @@ function saveSkillEdit(id){
   saveSkills(skills); renderSkills();
 }
 
->
+</script>
+</body>
