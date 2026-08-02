@@ -70,6 +70,7 @@
   <div class="app-icon">📋</div>
   <div class="heading">Daily <em>Balance</em></div>
   <div class="sub">Track · Grow · Achieve</div>
+  <div style="font-size:0.68rem;color:#2a3a50;margin-bottom:16px;text-align:center;">✅ Works offline &nbsp;·&nbsp; 🌐 AI features need internet</div>
 
   <div class="stats">
     <div class="stat"><div class="stat-num">6+</div><div class="stat-lbl">Features</div></div>
@@ -96,7 +97,7 @@
     </button>
     <div class="divider-row"><div class="divider-line"></div><div class="divider-text">or</div><div class="divider-line"></div></div>
     <button class="guest-btn" onclick="continueAsGuest()">&#128100; Continue as Guest</button>
-    <div class="terms-note">By continuing, you agree to our<br/><a href="terms_V4.html">Terms &amp; Conditions</a> and <a href="terms.html#privacy">Privacy Policy</a></div>
+    <div class="terms-note">By continuing, you agree to our<br/><a href="terms_V4.html">Terms &amp; Conditions</a> and <a href="terms_V4.html#privacy">Privacy Policy</a></div>
   </div>
 
   <div class="features">
@@ -166,7 +167,7 @@ function openApp(){
   var user = getUser();
   var setupDone = localStorage.getItem(getUserKey('voice_setup_done'));
   if(setupDone){
-    window.location.href = 'app_V4.html';
+    window.location.href = 'app_V4a.html';
   } else {
     window.location.href = 'setup_V4.html';
   }
@@ -197,7 +198,7 @@ function signInWithGoogle(){
           setTimeout(function(){
             hideLoading();
             var setupDone = localStorage.getItem(getUserKey('voice_setup_done'));
-            window.location.href = setupDone ? 'app_V4.html' : 'setup_V4.html';
+            window.location.href = setupDone ? 'app_V4a.html' : 'setup_V4.html';
           }, 800);
         })
         .catch(function(){ hideLoading(); alert('Could not fetch profile. Try again.'); });
@@ -212,7 +213,7 @@ function continueAsGuest(){
   setTimeout(function(){
     hideLoading();
     var setupDone = localStorage.getItem(getUserKey('voice_setup_done'));
-    window.location.href = setupDone ? 'app_V4.html' : 'setup_V4.html';
+    window.location.href = setupDone ? 'app_V4a.html' : 'setup_V4.html';
   }, 500);
 }
 

@@ -386,13 +386,20 @@ function setPrompt(btn){
 
 async function generateSchedule(){
   var prompt = document.getElementById('aiPrompt').value.trim();
-  if(!prompt){ alert('Please describe your routine first.'); return; }
+  if(!prompt){
+    alert('Please describe your routine first.\n\nExample: I am a university student. Classes 8am-2pm on weekdays. I pray 5 times daily. Study in evenings, sleep by 11pm.');
+    return;
+  }
+  if(prompt.length < 20){
+    alert('Please provide more details for better results.');
+    return;
+  }
 
   var btn = document.getElementById('aiGenBtn');
   var status = document.getElementById('aiStatus');
   btn.disabled=true;
   status.style.display='block';
-  status.textContent='🤖 AI is analyzing your routine...';
+  status.textContent='🤖 Building your schedule... (requires internet)';
 
   try{
     var response = await fetch('https://api.anthropic.com/v1/messages',{
@@ -403,26 +410,35 @@ async function generateSchedule(){
         max_tokens:2000,
         messages:[{
           role:'user',
-          content: 'You are a schedule builder for a productivity app. Based on the user routine description below, create a realistic daily schedule as a JSON array.\n\nRules:\n- Each slot must have: title (string), start (HH:MM 24h), end (HH:MM 24h), type (study/class/prayer/meal/exercise/break/sleep/python/video), day ("all" or specific day: "Sat","Sun","Mon","Tue","Wed","Thu","Fri")\n- Use "all" for daily activities, specific days only when clearly mentioned\n- Prayer times: Fajr ~5am, Dhuhr ~1pm, Asr ~4pm, Maghrib ~6:30pm, Isha ~8pm (adjust based on description)\n- Make sleep realistic (7-8 hours)\n- Include meals if not mentioned (breakfast, lunch, dinner)\n- Order slots by start time\n- Title should be clear and short (max 25 chars)\n- Return ONLY a valid JSON array, no markdown, no explanation\n\nUser routine: '+prompt
+          content:'Create a daily schedule JSON array. Return ONLY valid JSON, no text before or after, no markdown.\n\nEach item must have: title (string, max 25 chars), start (HH:MM 24hr), end (HH:MM 24hr), type (study/class/prayer/meal/exercise/break/sleep/python/video), day ("all" or Sat/Sun/Mon/Tue/Wed/Thu/Fri)\n\nAlways include sleep 7-8hrs, 3 meals, any prayers mentioned. Use "all" for daily recurring items.\n\nRoutine: '+prompt+'\n\nRespond with JSON array only:'
         }]
       })
     });
+
+    if(!response.ok) throw new Error('HTTP '+response.status);
     var data = await response.json();
-    var text = data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    var text = (data.content[0].text||'').trim().replace(/```json|```/g,'').trim();
+    var start = text.indexOf('[');
+    var end = text.lastIndexOf(']');
+    if(start>=0 && end>start) text = text.slice(start, end+1);
     var generated = JSON.parse(text);
-    if(Array.isArray(generated)&&generated.length){
-      slots = generated;
-      renderPreview();
-      document.getElementById('aiBody').classList.remove('show');
-      document.getElementById('aiToggle').classList.remove('open');
-      status.textContent='✅ '+generated.length+' slots generated!';
-      setTimeout(function(){ status.style.display='none'; }, 3000);
-    }else{
-      throw new Error('Invalid response');
-    }
+    var valid = generated.filter(function(s){ return s.title&&s.start&&s.end&&s.type&&s.day; });
+    if(!valid.length) throw new Error('No valid slots');
+    slots = valid;
+    renderPreview();
+    document.getElementById('aiBody').classList.remove('show');
+    document.getElementById('aiToggle').classList.remove('open');
+    status.textContent='✅ '+valid.length+' slots generated! Review below.';
+    setTimeout(function(){ status.style.display='none'; },4000);
+    var preview = document.getElementById('previewSection');
+    if(preview) setTimeout(function(){ preview.scrollIntoView({behavior:'smooth'}); },300);
   }catch(e){
-    status.textContent='❌ Failed. Try again or use a template.';
-    setTimeout(function(){ status.style.display='none'; }, 3000);
+    if(!navigator.onLine){
+      status.textContent='❌ No internet. Use a template instead.';
+    } else {
+      status.textContent='❌ Failed. Add more details or use a template.';
+    }
+    setTimeout(function(){ status.style.display='none'; },5000);
   }
   btn.disabled=false;
 }
@@ -505,7 +521,7 @@ function finish(){
   }
   saveSlots();
   localStorage.setItem(getUserKey('voice_setup_done'),'yes');
-  window.location.href='app_V4.html';
+  window.location.href='app_V4a.html';
 }
 
 window.addEventListener('DOMContentLoaded',function(){
