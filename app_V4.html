@@ -56,6 +56,7 @@
     .return-name{font-size:0.88rem;font-weight:600;color:#e6edf8;margin-bottom:2px;}
     .return-sub{font-size:0.68rem;color:#3a5a3a;}
     .return-btn{background:#f5c542;border:none;color:#0a0905;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;flex-shrink:0;}
+1&family=Inter:wght@300;400;500;600;700&display=swap');
   :root {
     --bg:#080b10;--surface:#0e1219;--surface2:#141b25;--border:#1c2535;--border2:#243048;
     --accent:#f5c542;--accent2:#34d9c3;--warn:#fb923c;--rose:#f87171;
@@ -505,7 +506,7 @@
   .pin-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:12px;width:64px;height:64px;font-size:1.3rem;font-family:'DM Serif Display',serif;cursor:pointer;transition:all 0.15s;}
   .pin-btn:active{background:var(--accent);color:#0a0905;transform:scale(0.95);}
   /* Light theme */
-  body.light-theme{--bg:#f5f5f0;--surface:#ffffff;--surface2:#eeede8;--text:#1a1a14;--muted:#888880;--border:#d8d7d0;--border2:#c8c7c0;}
+  body.light-theme{--bg:#f5f5f0;--surface:#ffffff;--surface2:#eeede8;--text:#1a1a14;--muted:#888880;--border:#d8d7d0;--border2:#c8c7c0;--accent:#c07818;}
 
   /* SETTINGS */
   .accent-swatch{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all 0.18s;flex-shrink:0;}
@@ -538,7 +539,6 @@ function getUserKey(b){try{var u=JSON.parse(localStorage.getItem('db_user')||'nu
 function switchView(v){}
 function selectAll(){}
 function unselectAll(){}
-function toggleAddSlot(){}
 function renderSkills(){}
 function pomoToggle(){}
 function pomoReset(){}
@@ -595,13 +595,14 @@ function prevDay(){}
 function nextDay(){}
 function prevMonth(){}
 function nextMonth(){}
-function renderSlotManager(){}
-function toggleSlotManager(){}
+function toggleAddSlot(){}
 function showAddMed(){}
 function initSettings(){}
 function renderTopicLists(){}
+function toggleSkillEdit(){}
+function addCustomSlot(){}
+function suggestSkill(){}
 </script>
-
 <div id="appPage" class="page active" style="background:var(--bg,#080b10);">
 <header>
   <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -739,16 +740,6 @@ function renderTopicLists(){}
     <div style="display:flex;gap:6px;justify-content:space-between;margin-top:4px;" id="waterHistoryLabels"></div>
   </div>
 
-  <!-- ═══ FEEDBACK ═══ -->
-  <div class="settings-card" style="margin-bottom:8px;">
-    <div class="settings-section-title">💬 Send Feedback</div>
-    <div style="font-size:0.73rem;color:var(--muted);margin-bottom:12px;">Found a bug? Have a suggestion? We'd love to hear from you.</div>
-    <textarea id="appFeedbackText" placeholder="Share your thoughts, report a bug, or suggest a feature..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;resize:none;height:80px;box-sizing:border-box;outline:none;margin-bottom:8px;"></textarea>
-    <input id="appFeedbackEmail" placeholder="Your email (optional)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;box-sizing:border-box;outline:none;margin-bottom:10px;" />
-    <button onclick="sendAppFeedback()" style="width:100%;background:var(--accent);border:none;color:#0a0905;border-radius:9px;padding:11px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">📤 Send Feedback</button>
-    <div id="appFeedbackMsg" style="display:none;font-size:0.75rem;color:var(--accent2);text-align:center;margin-top:8px;"></div>
-  </div>
-
 </div>
 
 <!-- MEDICINE TAB -->
@@ -777,14 +768,7 @@ function renderTopicLists(){}
       </div>
     </div>
     <div style="font-size:0.68rem;color:var(--muted);margin-bottom:5px;">Notes (optional)</div>
-    <input id="medNote" placeholder="e.g. After meal, with water" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;" />
-    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:6px;">When to take:</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
-      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medMorning" style="accent-color:var(--accent);"> 🌅 Morning</label>
-      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medAfternoon" style="accent-color:var(--accent);"> ☀️ Afternoon</label>
-      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medEvening" style="accent-color:var(--accent);"> 🌆 Evening</label>
-      <label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--muted);cursor:pointer;"><input type="checkbox" id="medNight" style="accent-color:var(--accent);"> 🌙 Night</label>
-    </div>
+    <input id="medNote" placeholder="e.g. After meal" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:12px;" />
     <div style="display:flex;gap:8px;">
       <button onclick="addMedicine()" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">Save</button>
       <button onclick="toggleAddMed()" style="background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:10px 16px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Cancel</button>
@@ -797,11 +781,17 @@ function renderTopicLists(){}
 <!-- SKILLS TAB -->
 <div id="skillsView" class="view-panel" style="display:none;">
 
-  <!-- Header -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;">📈 Skills</div>
-    <button onclick="addNewSkill()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;">+ Add Skill</button>
+  <!-- Header + Edit button -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <div style="font-family:'DM Serif Display',serif;font-size:1.05rem;">📈 Skills</div>
+    <div style="display:flex;gap:6px;">
+      <button onclick="addNewSkill()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:700;">+ Add Skill</button>
+      <button onclick="toggleSkillEdit()" id="skillEditBtn" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.75rem;">✏️ Edit</button>
+    </div>
   </div>
+
+  <!-- Dynamic skill cards -->
+  <div id="skillCardsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;"></div>
 
   <!-- Level up toast -->
   <div id="levelUpToast" style="display:none;background:linear-gradient(135deg,#1a2a0a,#0a1a10);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin-bottom:14px;text-align:center;">
@@ -809,35 +799,26 @@ function renderTopicLists(){}
     <div id="levelUpMsg" style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--accent);"></div>
   </div>
 
-  <!-- Skill cards (fully dynamic) -->
-  <div id="skillCardsGrid" style="margin-bottom:16px;"></div>
+  <!-- Dynamic +XP buttons -->
+  <div id="skillXPBtns" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;"></div>
 
-  <!-- Add skill form -->
-  <div id="addSkillForm" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;">
-    <div style="font-size:0.72rem;color:var(--accent);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:12px;">New Skill</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <input id="newSkillIcon" maxlength="2" placeholder="📚" style="width:50px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:1.2rem;font-family:'Inter',sans-serif;" />
-      <input id="newSkillName" placeholder="Skill name (e.g. Graphic Design)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" />
-    </div>
-    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:6px;">Not sure what to learn? Pick a category:</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="skillSuggestions">
-      <button onclick="suggestSkill('🐍','Python')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🐍 Python</button>
-      <button onclick="suggestSkill('🎬','Video Editing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🎬 Video Editing</button>
-      <button onclick="suggestSkill('🎨','Graphic Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🎨 Graphic Design</button>
-      <button onclick="suggestSkill('🖋️','Logo Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🖋️ Logo Design</button>
-      <button onclick="suggestSkill('🌐','Web Dev')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">🌐 Web Dev</button>
-      <button onclick="suggestSkill('📱','UI/UX Design')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📱 UI/UX Design</button>
-      <button onclick="suggestSkill('📊','Data Analysis')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📊 Data Analysis</button>
-      <button onclick="suggestSkill('✍️','Content Writing')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">✍️ Content Writing</button>
-      <button onclick="suggestSkill('📸','Photography')" style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;">📸 Photography</button>
-    </div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="saveNewSkill()" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">Add Skill</button>
-      <button onclick="document.getElementById('addSkillForm').style.display='none'" style="background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:10px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Cancel</button>
-    </div>
+  <!-- Skill edit panel (shown when Edit pressed) -->
+  <div id="skillEditPanel" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:14px;">
+    <div style="font-size:0.72rem;color:var(--accent);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:10px;">Edit Skills</div>
+    <div id="skillEditList"></div>
+    <button onclick="toggleSkillEdit()" style="width:100%;margin-top:8px;background:var(--border);border:none;color:var(--muted);border-radius:8px;padding:9px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.83rem;">Done</button>
   </div>
 
-  <!-- YouTube Playlists -->
+  <!-- Topics + playlists (legacy, kept below) -->
+  <div class="stat-card" style="margin-bottom:16px;">
+    <div style="font-weight:700;font-size:0.9rem;margin-bottom:12px;" id="skill1TopicHeader">🐍 Python Topics</div>
+    <div id="pythonTopicList"></div>
+  </div>
+  <div class="stat-card" style="margin-bottom:16px;">
+    <div style="font-weight:700;font-size:0.9rem;margin-bottom:12px;" id="skill2TopicHeader">🎬 Video Editing Topics</div>
+    <div id="videoTopicList"></div>
+  </div>
+
   <div style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">▶️ Learning Playlists</div>
   <div id="ytCards"></div>
   <button class="yt-add-btn" onclick="showYTInput()">+ Add YouTube Link or Playlist</button>
@@ -861,6 +842,24 @@ function renderTopicLists(){}
     <button onclick="markFajr()" style="margin-left:auto;background:var(--border);border:none;color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;">✓ Done today</button>
   </div>
 
+  <!-- CGPA Target -->
+  <div style="background:linear-gradient(135deg,#0e1219,#0e1a20);border:1px solid #1e2c40;border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div style="font-weight:600;font-size:0.88rem;">🎓 CGPA Target</div>
+      <div style="font-size:0.7rem;color:var(--muted);">European scholarship</div>
+    </div>
+    <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
+      <input id="cgpaCurrentInput" type="number" min="0" max="4" step="0.01" placeholder="e.g. 3.70" oninput="updateCGPABar()" style="font-family:'DM Serif Display',serif;font-size:1.8rem;font-weight:400;color:var(--accent2);background:transparent;border:none;border-bottom:1.5px solid var(--border);width:100px;outline:none;padding-bottom:2px;" />
+      <div style="font-size:0.78rem;color:var(--muted);padding-bottom:6px;">current → <strong style="color:var(--accent);">3.80+</strong> target</div>
+    </div>
+    <div style="height:6px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:6px;">
+      <div id="cgpaBar" style="height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:3px;width:0%;transition:width 0.7s;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.63rem;color:var(--muted);">
+      <span>2.0</span><span>3.5</span><span>3.8 ✦</span><span>4.0</span>
+    </div>
+  </div>
+
   <!-- Goals List -->
   <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -871,27 +870,6 @@ function renderTopicLists(){}
     <!-- Add goal form -->
     <div id="addGoalForm" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;">
       <input id="newGoalText" placeholder="Goal description..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 10px;color:var(--text);font-size:0.83rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;" />
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <div style="flex:1;">
-          <div style="font-size:0.68rem;color:var(--muted);margin-bottom:4px;">Category</div>
-          <select id="newGoalCategory" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;box-sizing:border-box;">
-            <option value="study">📚 Study</option>
-            <option value="health">💪 Health</option>
-            <option value="career">💼 Career</option>
-            <option value="personal">🌙 Personal</option>
-            <option value="finance">💰 Finance</option>
-            <option value="other">📌 Other</option>
-          </select>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:0.68rem;color:var(--muted);margin-bottom:4px;">Priority</div>
-          <select id="newGoalPriority" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;box-sizing:border-box;">
-            <option value="high">🔴 High</option>
-            <option value="medium">🟡 Medium</option>
-            <option value="low">🟢 Low</option>
-          </select>
-        </div>
-      </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <div style="flex:1;">
           <div style="font-size:0.68rem;color:var(--muted);margin-bottom:4px;">Deadline (optional)</div>
@@ -926,7 +904,6 @@ function renderTopicLists(){}
       <div>
         <div class="streak-num" id="streakNum">0</div>
         <div class="streak-lbl">day streak</div>
-      <div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Complete any slot daily to maintain 🔥</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
@@ -941,11 +918,6 @@ function renderTopicLists(){}
 
   <!-- Best day / avg completion mini-insight -->
   <div id="monthInsight" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.78rem;color:var(--muted);"></div>
-
-  <!-- Streak how-to -->
-  <div style="background:#1a1a0a;border:1px solid #2a2800;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.73rem;color:var(--muted);line-height:1.6;">
-    🔥 <strong style="color:var(--accent);">How streak works:</strong> Check off at least one slot every day to keep your streak alive. Missing a day resets it to 0.
-  </div>
 
   <!-- Heatmap scale legend -->
   <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-bottom:6px;">
@@ -1126,7 +1098,12 @@ function renderTopicLists(){}
     <div id="tabToggles"></div>
   </div>
 
-
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="settings-card">
+    <div class="settings-section-title">📊 Dashboard (Daily Home)</div>
+    <div style="font-size:0.73rem;color:var(--muted);margin-bottom:10px;">Choose what shows on the Daily tab.</div>
+    <div id="dashboardToggles"></div>
+  </div>
 
   <!-- ═══ SKILLS & GOALS ═══ -->
   <div class="settings-card">
@@ -1216,135 +1193,6 @@ function renderTopicLists(){}
 
 </div>
 
-
-<div id="notesView" class="view-panel" style="display:none;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;">📝 Notes</div>
-    <div style="font-size:0.7rem;color:var(--muted);" id="notesCount"></div>
-  </div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;">📝 Notes</div>
-    <div style="font-size:0.78rem;color:var(--muted);" id="notesDate"></div>
-  </div>
-
-  <!-- Search bar -->
-  <div style="position:relative;margin-bottom:12px;">
-    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem;">🔍</span>
-    <input id="noteSearch" placeholder="Search notes..." oninput="renderNotes()" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px 9px 34px;color:var(--text);font-size:0.83rem;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;" />
-  </div>
-
-  <!-- Category filter pills -->
-  <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none;">
-    <button onclick="setNoteCategory(this,'all')" id="ncat_all" class="ncat-btn active-ncat">All</button>
-    <button onclick="setNoteCategory(this,'study')" id="ncat_study" class="ncat-btn">📚 Study</button>
-    <button onclick="setNoteCategory(this,'class')" id="ncat_class" class="ncat-btn">🏫 Class</button>
-    <button onclick="setNoteCategory(this,'idea')" id="ncat_idea" class="ncat-btn">💡 Idea</button>
-    <button onclick="setNoteCategory(this,'todo')" id="ncat_todo" class="ncat-btn">✅ Todo</button>
-    <button onclick="setNoteCategory(this,'personal')" id="ncat_personal" class="ncat-btn">🌙 Personal</button>
-  </div>
-
-  <!-- Note input area -->
-  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:16px;">
-    <textarea id="noteInput" placeholder="Write something..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;resize:none;height:72px;outline:none;box-sizing:border-box;margin-bottom:8px;"></textarea>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <select id="noteCatSelect" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;">
-        <option value="study">📚 Study</option>
-        <option value="class">🏫 Class</option>
-        <option value="idea">💡 Idea</option>
-        <option value="todo">✅ Todo</option>
-        <option value="personal">🌙 Personal</option>
-      </select>
-      <button onclick="addNote()" style="background:var(--accent);border:none;color:#0a0905;border-radius:8px;padding:8px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">Add</button>
-    </div>
-  </div>
-
-  <div id="notesList"></div>
-</div>
-
-<div id="slotsView" class="view-panel" style="display:none;">
-  <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;margin-bottom:14px;">⚙️ Slot Manager</div>
-
-
-
-
-  <!-- Unified Slot Manager -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;overflow:hidden;">
-
-    <!-- Find & Manage Slots box -->
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;">
-      <div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:12px;letter-spacing:0.05em;text-transform:uppercase;">🔍 Find & Manage Slots</div>
-
-      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">1. Day</div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;">
-        <button onclick="setUnifiedDay(this,'Sat')" class="stype-btn active-type" id="uDay_Sat">Sat</button>
-        <button onclick="setUnifiedDay(this,'Sun')" class="stype-btn" id="uDay_Sun">Sun</button>
-        <button onclick="setUnifiedDay(this,'Mon')" class="stype-btn" id="uDay_Mon">Mon</button>
-        <button onclick="setUnifiedDay(this,'Tue')" class="stype-btn" id="uDay_Tue">Tue</button>
-        <button onclick="setUnifiedDay(this,'Wed')" class="stype-btn" id="uDay_Wed">Wed</button>
-        <button onclick="setUnifiedDay(this,'Thu')" class="stype-btn" id="uDay_Thu">Thu</button>
-        <button onclick="setUnifiedDay(this,'Fri')" class="stype-btn" id="uDay_Fri">Fri</button>
-      </div>
-      <input type="hidden" id="unifiedDay" value="Sat" />
-      <input type="hidden" id="addSlotDay" value="Sat" />
-
-      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">2. Time Range</div>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
-        <input id="unifiedFrom" type="time" onchange="loadUnifiedSlots()" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;" />
-        <span style="color:var(--muted);font-size:0.75rem;">to</span>
-        <input id="unifiedTo" type="time" onchange="loadUnifiedSlots()" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;" />
-      </div>
-
-      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">3. Select Slot</div>
-      <select id="unifiedSlotPicker" onchange="onUnifiedSlotSelect()" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px;color:var(--text);font-size:0.82rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;">
-        <option value="">— set day & time range first —</option>
-      </select>
-      <button onclick="unifiedRemoveSlot()" style="width:100%;background:#2a1010;border:1.5px solid var(--rose);color:var(--rose);border-radius:8px;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:700;margin-bottom:10px;">🗑 Remove Selected Slot</button>
-
-      <!-- Rename panel -->
-      <div id="renamePanel" style="display:none;margin-top:8px;background:var(--surface);border-radius:10px;padding:10px;border:1px solid var(--accent);box-sizing:border-box;width:100%;">
-        <div style="font-size:0.7rem;color:var(--accent);margin-bottom:8px;font-weight:600;">✏️ Rename selected slot</div>
-        <input id="blankSlotName" placeholder="Enter new name..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;" />
-        <button onclick="nameBlankSlot()" style="width:100%;background:var(--accent);border:none;color:#fff;border-radius:8px;padding:9px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;">💾 Save Name</button>
-        <div id="blankSlotMsg" style="font-size:0.73rem;margin-top:6px;color:var(--accent2);"></div>
-      </div>
-    </div>
-
-    <!-- Divider -->
-    <div style="display:flex;align-items:center;gap:8px;margin:16px 0 12px;">
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-      <div style="font-size:0.7rem;color:var(--muted);">OR ADD NEW SLOT</div>
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-    </div>
-
-    <!-- Add new slot — boxed -->
-    <div style="background:var(--bg);border:1px solid #1a3a2e;border-radius:12px;padding:14px;">
-      <div style="font-size:0.7rem;color:var(--accent2);font-weight:700;margin-bottom:10px;letter-spacing:0.05em;text-transform:uppercase;">➕ New Slot Details</div>
-      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Time *</div>
-      <input id="newSlotTimeInput" type="time" style="width:100%;background:var(--surface);border:1px solid #1a3a2e;border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:10px;" />
-      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;">Type</div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">
-        <button onclick="setSlotType(this,'study')"  class="stype-btn active-type">📝 Study</button>
-        <button onclick="setSlotType(this,'class')"  class="stype-btn">🏫 Class</button>
-        <button onclick="setSlotType(this,'python')" class="stype-btn">🐍 Python</button>
-        <button onclick="setSlotType(this,'video')"  class="stype-btn">🎬 Video</button>
-        <button onclick="setSlotType(this,'break')"  class="stype-btn">☕ Break</button>
-        <button onclick="setSlotType(this,'meal')"   class="stype-btn">🍽️ Meal</button>
-        <button onclick="setSlotType(this,'sleep')"  class="stype-btn">😴 Sleep</button>
-      </div>
-      <input type="hidden" id="newSlotType" value="study" />
-      <input id="newSlotTitle" placeholder="Topic / Title *" style="width:100%;background:var(--surface);border:1px solid #1a3a2e;border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;" />
-      <input id="newSlotSub" placeholder="Note (optional)" style="width:100%;background:var(--surface);border:1px solid #1a3a2e;border-radius:8px;padding:8px 10px;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:12px;" />
-      <input type="hidden" id="newSlotTime" />
-      <button onclick="addCustomSlot()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#c07818);border:none;color:#0a0905;border-radius:9px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.9rem;">+ Add to Routine</button>
-      <div id="addSlotMsg" style="font-size:0.75rem;margin-top:8px;color:var(--accent2);"></div>
-    </div>
-    <div id="deleteSlotMsg" style="font-size:0.75rem;margin-top:8px;color:var(--rose);"></div>
-  </div>
-
-  <div id="customSlotList"></div>
-
-</div>
-
 <script>
 function getUserKey(base){
   try{
@@ -1383,7 +1231,7 @@ function signOut() {
   if(confirm('Sign out? Your local data will stay saved.')) {
     localStorage.removeItem('db_user'); sessionStorage.removeItem('gdrive_token');
     sessionStorage.removeItem('_goto_app');
-    window.location.href = 'index_V4.html';
+    window.location.href = 'index.html';
   }
 }
 document.addEventListener('click',function(e){
@@ -1403,42 +1251,242 @@ const DAYS_OF_WEEK = DAYS_OF_WEEK_BASE;
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const TYPE_COLORS = {class:'var(--class-b)',study:'var(--accent2)',break:'var(--break-b)',sleep:'var(--sleep-b)',meal:'var(--rose)',python:'var(--accent)',video:'var(--rose)'};
 
-const classSchedule = {}; // Removed hardcoded schedule — users set their own
+const classSchedule = {
+  Sat: [
+    {time:'8:00–8:50 AM',   title:'ChE 2103',      sub:'1st Period · Admin 306'},
+    {time:'8:50–9:40 AM',   title:'Chem 2129 (NF)', sub:'2nd Period'},
+    {time:'9:40–10:30 AM',  title:'Math 2129 (X)',  sub:'3rd Period'},
+    {time:'10:50 AM–1:20 PM',title:'ChE 2102 (MMK/X)',sub:'4th–6th Period (Long Class)'},
+  ],
+  Sun: [
+    {time:'8:00–8:50 AM',  title:'ME 2157 (MMK)',  sub:'1st Period'},
+    {time:'8:50–9:40 AM',  title:'Chem 2129 (NF)', sub:'2nd Period'},
+    {time:'9:40–10:30 AM', title:'ME 2157 (MRP)',  sub:'3rd Period'},
+  ],
+  Mon: [
+    {time:'8:00–10:30 AM',  title:'Chem 2130 (NF+MAA)', sub:'1st–3rd Period (Long Class)'},
+    {time:'10:50–11:40 AM', title:'ChE 2103 (MNR)',      sub:'4th Period'},
+    {time:'11:40–12:30 PM', title:'ChE 2101 (NTS/SA)',   sub:'5th Period'},
+    {time:'12:30–1:20 PM',title:'ChE 2101 (SA)',      sub:'6th Period'},
+  ],
+  Tue: [
+    {time:'8:00–8:50 AM',  title:'Math 2129 (X)',   sub:'1st Period'},
+    {time:'8:50–9:40 AM',  title:'ChE 2101 (NTS)',  sub:'2nd Period'},
+    {time:'9:40–10:30 AM', title:'ME 2157 (MRP)',   sub:'3rd Period'},
+    {time:'10:50 AM–1:20 PM',title:'ChE 2100 (SD)',sub:'4th–6th Period (Long Class)'},
+  ],
+  Wed: [
+    {time:'8:00–8:50 AM',  title:'ChE 2103 (MNR/X)', sub:'1st Period'},
+    {time:'8:50–9:40 AM',  title:'Math 2129 (JAY)',  sub:'2nd Period'},
+    {time:'9:40–10:30 AM', title:'Chem 2129 (MAA)',  sub:'3rd Period'},
+  ],
+  Thu: [],
+  Fri: [],
+};
+
+// Python topics per day
+const pythonTopics = {
+  Sat: 'Variables, Data Types, Input/Output',
+  Sun: 'Operators, Conditionals (if/else/elif)',
+  Mon: 'Loops — for, while, range()',
+  Tue: 'Functions & def keyword',
+  Wed: 'Lists, Tuples, Dictionaries · Longer session',
+  Thu: 'File Handling / NumPy intro',
+  Fri: 'Mini project or solve 3 coding challenges',
+};
 
 function buildDay(dayName) {
+  const classes = classSchedule[dayName] || [];
+  const isLateDay = ['Sat','Mon','Tue'].includes(dayName);
+  const slots = [];
+
+  // ── FRIDAY — Rest day ──
+  if (dayName === 'Fri') {
+    slots.push({type:'break',icon:'🌅',time:'6:00 AM',title:'Fajr Namaj + Morning',sub:'Rest day — slightly later wake up'});
+    slots.push({type:'meal', icon:'🍳',time:'7:30 AM',title:'Breakfast',sub:'Relaxed morning meal'});
+    slots.push({section:'MORNING FOCUS'});
+    slots.push({type:'study',icon:'📖',time:'8:30 AM',title:'Weekly Notes Consolidation',sub:'Summarize all subjects in 1 notebook · 1.5h'});
+    slots.push({type:'python',icon:'🐍',time:'10:00 AM',title:'Python — Big Session',sub:'Topic: '+pythonTopics['Fri']+' · 1.5h'});
+    slots.push({type:'break',icon:'🕌',time:'1:00–2:00 PM',title:'Jumma Namaj',sub:'Compulsory — do not miss'});
+    slots.push({type:'meal', icon:'🍚',time:'1:30 PM',title:'Lunch',sub:'Full meal'});
+    slots.push({section:'AFTERNOON'});
+    slots.push({type:'break',icon:'😴',time:'2:30 PM',title:'Rest / Nap',sub:'Recharge fully · 1h'});
+    slots.push({type:'study',icon:'📝',time:'3:30 PM',title:'Catch-up / Assignments',sub:'Finish pending work from this week · 1h'});
+    slots.push({type:'break',icon:'🕌',time:'4:00 PM',title:'Asor Namaj',sub:'Asr prayer'});
+    slots.push({type:'break',icon:'🏃',time:'4:15 PM',title:'Outdoor / Exercise',sub:'Walk, cricket, or sports · 1h'});
+    slots.push({section:'EVENING'});
+    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Revision',sub:'Review all topics covered this week · 30 min'});
+    slots.push({type:'video',icon:'🎬',time:'6:30 PM',title:'Video Editing Revision',sub:'Re-edit best clip of the week · 50 min'});
+    slots.push({type:'break',icon:'🕌',time:'7:00 PM',title:'Maghrib Namaj',sub:'Maghrib prayer'});
+    slots.push({type:'meal', icon:'🍽️',time:'8:00 PM',title:'Dinner',sub:'Light meal'});
+    slots.push({type:'break',icon:'🕌',time:'8:30 PM',title:'Isha Namaj',sub:'Isha prayer'});
+    slots.push({type:'break',icon:'🚿',time:'8:45 PM',title:'Night Shower',sub:'Relax before sleep · 10 min'});
+    slots.push({type:'break',icon:'📱',time:'9:00 PM',title:'Free Time',sub:'Full relax — you earned it · 1h'});
+    slots.push({type:'sleep',icon:'😴',time:'10:30 PM',title:'Sleep',sub:'Good rest for the week ahead'});
+    return slots;
+  }
+
+  // ── All other days ──
+  slots.push({type:'break',icon:'🌅',time:'5:00 AM',title:'Fajr Namaj + Morning',sub:'Wudu, prayer, freshen up'});
+  slots.push({type:'break',icon:'🧘',time:'5:20 AM',title:'Meditation',sub:'Breathing + focus · 10 min'});
+  slots.push({type:'meal', icon:'🍳',time:'6:30 AM',title:'Breakfast',sub:'Eat well before the day starts'});
+
+  if (classes.length > 0) {
+    if (dayName !== 'Thu') {
+      slots.push({type:'break',icon:'🎒',time:'7:30 AM',title:'Leave for RUET',sub:'Bag check, revise notes on the way'});
+    }
+    slots.push({section:'CLASS PERIODS'});
+    for (const c of classes) slots.push({type:'class',icon:'🏫',time:c.time,title:c.title,sub:c.sub});
+  } else {
+    slots.push({section:'NO CLASS TODAY'});
+    slots.push({type:'study',icon:'📖',time:'7:00 AM',title:'Morning Study Block',sub:'No class — use this time for deep study · 2h'});
+    slots.push({type:'study',icon:'📝',time:'9:00 AM',title:'Assignment / Revision',sub:'Catch up on pending work · 1h'});
+  }
+
+  // ── Johor Namaj — after class on late days, 1 PM otherwise ──
+  if (isLateDay) {
+    slots.push({type:"break",icon:"🕌",time:"1:20 PM",title:"Johor Namaj",sub:"Zuhr prayer — right after class"});
+    slots.push({type:"break",icon:"🚿",time:"1:25 PM",title:"Shower",sub:"Fresh up after class · 10 min"});
+    slots.push({type:'meal', icon:'🍚',time:'1:30 PM',title:'Lunch',sub:'Full meal'});
+  } else {
+    slots.push({type:'study',icon:'📖',time:'11:00 AM',title:'Morning Self-Study',sub: dayName==='Sun' ? 'Math 2129 problems · 1.5h' : dayName==='Tue' ? 'Math 2129 practice · 1h' : 'Math / ChE problems · 1h'});
+    const johorTime = dayName==='Thu' ? '1:30 PM' : '1:00 PM';
+    const showerTime = dayName==='Thu' ? '1:40 PM' : '1:05 PM';
+    slots.push({type:'break',icon:'🕌',time:johorTime,title:'Johor Namaj',sub:'Zuhr prayer'});
+    slots.push({type:"break",icon:"🚿",time:showerTime,title:"Shower",sub:"Fresh up · 10 min"});
+  }
+
+  slots.push({section:'STUDY & REVIEW'});
+
+  // Per-day study blocks
+  if (dayName === 'Sat') {
+    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2103 Notes Review',sub:"Re-read today's ChE lecture · 1h"});
+    slots.push({type:'study',icon:'🧪',time:'3:00 PM',title:'',sub:''});
+  } else if (dayName === 'Sun') {
+    slots.push({type:'study',icon:'📝',time:'2:30 PM',title:'ME 2157 Notes Review',sub:'Re-read both ME periods · 1h'});
+    slots.push({type:'study',icon:'📖',time:'3:00 PM',title:'Read Ahead — Tomorrow',sub:"Preview Mon's syllabus · 1h"});
+  } else if (dayName === 'Mon') {
+    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2101 Notes Review',sub:'Re-read both ChE 2101 periods · 1h'});
+    slots.push({type:'study',icon:'🧪',time:'3:00 PM',title:'',sub:''});
+  } else if (dayName === 'Tue') {
+    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2100 + ChE 2101 Review',sub:'Notes + assignment check · 1h'});
+    slots.push({type:'study',icon:'⚙️',time:'3:00 PM',title:'',sub:''});
+  } else if (dayName === 'Wed') {
+    slots.push({type:'study',icon:'📝',time:'2:00 PM',title:'ChE 2100 Review',sub:"Re-read today's long class notes · 1h"});
+    slots.push({type:'python',icon:'🐍',time:'3:00 PM',title:'Python — Longer Session',sub:'Topic: '+pythonTopics['Wed']+' · 1h'});
+  } else if (dayName === 'Thu') {
+    slots.push({type:'study',icon:'📐',time:'2:00 PM',title:'',sub:''});
+    slots.push({type:'study',icon:'🧪',time:'3:30 PM',title:'',sub:''});
+  }
+
+  // Asor + Afternoon free time 5:00–7:00 PM
+  slots.push({type:'break',icon:'🕌',time:'4:00 PM',title:'Asor Namaj',sub:'Asr prayer'});
+  slots.push({type:'break',icon:'😴',time:'4:15–5:00 PM',title:'Afternoon Rest',sub:'Nap or light walk · 45 min'});
+  slots.push({type:'break',icon:'🆓',time:'5:00–7:00 PM',title:'Free Time',sub:'Cricket, gaming, walk — your choice · 2h'});
+
+  slots.push({section:'EVENING'});
+
+  // Skill block — 7-day pattern
+  if (dayName === 'Sat') {
+    // Day 1 — Python only
+    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Sat']+' · 45 min'});
+    slots.push({type:'study', icon:'🔁',time:'6:45 PM',title:'Chem 2129 Revision',sub:'Review chemistry concepts · 30 min'});
+  } else if (dayName === 'Sun') {
+    // Day 2 — Python + Video Editing + Music/Podcast
+    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Sun']+' · 60 min'});
+    slots.push({type:'video', icon:'🎬',time:'7:00 PM',title:'Video Editing Practice',sub:'Cuts, transitions · 50 min'});
+    slots.push({type:'break', icon:'🎵',time:'7:10 PM',title:'Music / Podcast',sub:'Listen while cooling down · 15 min — before Maghrib'});
+  } else if (dayName === 'Mon') {
+    // Day 3 — Video Editing only
+    slots.push({type:'video',icon:'🎬',time:'6:00 PM',title:'Video Editing Practice',sub:'CapCut/DaVinci — cuts, transitions · 50 min'});
+    slots.push({type:'study',icon:'🔁',time:'6:45 PM',title:'ChE 2103 Revision',sub:'Key formulas, concepts · 30 min'});
+  } else if (dayName === 'Tue') {
+    // Day 4 — Video Editing + Python
+    slots.push({type:'video',icon:'🎬',time:'6:00 PM',title:'Video Editing Practice',sub:'Color grading, effects · 50 min'});
+    slots.push({type:'python',icon:'🐍',time:'6:50 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Tue']+' · 60 min'});
+  } else if (dayName === 'Wed') {
+    // Day 5 — Python only + Music/Podcast at night
+    slots.push({type:'python',icon:'🐍',time:'6:00 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Wed']+' · 45 min'});
+    slots.push({type:'study',icon:'🧪',time:'6:45 PM',title:'',sub:''});
+  } else if (dayName === 'Thu') {
+    // Day 6 — Video Editing + Python
+    slots.push({type:'video',icon:'🎬',time:'6:00 PM',title:'Video Editing Practice',sub:'Export, color, audio sync · 50 min'});
+    slots.push({type:'python',icon:'🐍',time:'6:50 PM',title:'Python Practice',sub:'Topic: '+pythonTopics['Thu']+' · 60 min'});
+  }
+
+  // Fixed evening
+  slots.push({type:'break',icon:'🕌',time:'7:00 PM',title:'Maghrib Namaj',sub:'Maghrib prayer'});
+  slots.push({type:'meal', icon:'🍽️',time:'8:00 PM',title:'Dinner',sub:'Light meal'});
+  slots.push({type:'break',icon:'🕌',time:'8:30 PM',title:'Isha Namaj',sub:'Isha prayer'});
+  slots.push({type:'break',icon:'🚿',time:'8:45 PM',title:'Night Shower',sub:'Optional — relax before sleep · 10 min', optional:true});
+  slots.push({type:'study',icon:'🇬🇧',time:'9:00 PM',title:'English Learning',sub:'Vocabulary, speaking or listening · 15 min'});
+  slots.push({type:'study',icon:'📚',time:'9:15 PM',title:'Night Revision',sub:'Formula sheets, key concepts · 45 min'});
+  if (dayName === 'Wed') {
+    slots.push({type:'break',icon:'🎵',time:'10:00 PM',title:'Music / Podcast',sub:'Relax with music or podcast · 15 min'});
+  }
+  slots.push({type:'sleep',icon:'😴',time:'10:30 PM',title:'Sleep',sub:'6–7h target · wake 5 AM'});
+
+  // Add custom slots for this day
   const custom = extraState['customSlots_'+dayName]||[];
-  const slots = custom.map(cs=>({
-    type:cs.type, icon:cs.icon||'📌', time:cs.time,
-    title:cs.title, sub:cs.sub||'', isCustom:true
-  }));
-  // Sort by time
-  slots.sort((a,b)=>{
-    function toMins(t){
-      if(!t) return 9999;
-      const start=t.split('–')[0].trim().replace(/AM|PM/gi,'').trim();
-      const parts=start.split(':');
-      let h=parseInt(parts[0]||0), m=parseInt(parts[1]||0);
-      const orig=t.split('–')[0].trim();
-      if(/PM/i.test(orig)&&h!==12) h+=12;
-      if(/AM/i.test(orig)&&h===12) h=0;
+  for(const cs of custom){
+    slots.push({type:cs.type,icon:cs.icon||'📌',time:cs.time,title:cs.title,sub:cs.sub||'',isCustom:true});
+  }
+  // Sort non-section slots by time, keeping sections as dividers
+  function toMins(t){
+    if(!t)return 9999;
+    // Take only start time if range like "8:00–8:50" or "10:50–1:20 PM"
+    const start = t.split('–')[0].trim();
+    if(start.includes('AM')||start.includes('PM')){
+      const clean=start.replace('AM','').replace('PM','').trim();
+      const parts=clean.split(':');
+      let h=parseInt(parts[0]),m=parseInt(parts[1]||0);
+      if(start.includes('PM')&&h!==12)h+=12;
+      if(start.includes('AM')&&h===12)h=0;
       return h*60+m;
     }
-    return toMins(a.time)-toMins(b.time);
-  });
-  return slots;
+    const parts=start.split(':');
+    const h=parseInt(parts[0]),m=parseInt(parts[1]||0);
+    // Class times: 8-13 are always AM/early PM (university hours)
+    // 8:00 = 8*60, 10:50 = 650, 12:30 = 750, 1:20 PM = 80min = treat as 13:20
+    return h*60+m;
+  }
+  // Only sort the custom slots, insert them at correct time position in existing slots
+  const builtIn = slots.filter(s=>!s.isCustom);
+  const customOnes = slots.filter(s=>s.isCustom);
+  if(!customOnes.length) return builtIn;
+  // Insert each custom slot at correct position based on time
+  const result = [...builtIn];
+  for(const cs of customOnes){
+    const csMins = toMins(cs.time);
+    let insertIdx = result.length;
+    for(let i=0;i<result.length;i++){
+      if(!result[i].section && toMins(result[i].time) > csMins){
+        insertIdx=i; break;
+      }
+    }
+    result.splice(insertIdx,0,cs);
+  }
+  return result;
 }
 
 // STATE
+function getUserKey(base){
+  try{
+    var u=JSON.parse(localStorage.getItem('db_user')||'null');
+    if(u&&u.email&&u.authType==='google') return base+'_'+u.email.replace(/[^a-z0-9]/gi,'_');
+  }catch(e){}
+  return base+'_guest';
+}
 function loadState(){try{return JSON.parse(localStorage.getItem(getUserKey('voice_done'))||'{}');}catch(e){return {};}}
 function saveState(){try{localStorage.setItem(getUserKey('voice_done'),JSON.stringify(doneState));}catch(e){}}
-let doneState=loadState();
+let doneState={};
 function loadCancelled(){try{return JSON.parse(localStorage.getItem(getUserKey('voice_cancelled'))||'{}');}catch(e){return {};}}
 function saveCancelled(){try{localStorage.setItem(getUserKey('voice_cancelled'),JSON.stringify(cancelledState));}catch(e){}}
-let cancelledState=loadCancelled();
+let cancelledState={};
 
 function loadExtra(){try{return JSON.parse(localStorage.getItem(getUserKey('voice_extra'))||'{}');}catch(e){return {};}}
 function saveExtra(){try{localStorage.setItem(getUserKey('voice_extra'),JSON.stringify(extraState));}catch(e){}}
-let extraState=loadExtra();
+let extraState={};
 
 function initWater(){
   const dk=getActiveDK(),count=extraState['water_'+dk]||0;
@@ -1519,11 +1567,9 @@ function addGoalItem(){
   const txt = document.getElementById('newGoalText')?.value.trim();
   const deadline = document.getElementById('newGoalDeadline')?.value;
   const progress = parseInt(document.getElementById('newGoalProgress')?.value)||0;
-  const category = document.getElementById('newGoalCategory')?.value||'other';
-  const priority = document.getElementById('newGoalPriority')?.value||'medium';
   if(!txt) return;
   if(!extraState.goalItems) extraState.goalItems = [];
-  extraState.goalItems.push({text: txt, deadline: deadline||'', progress: Math.min(100,Math.max(0,progress)), done: false, id: Date.now(), category, priority});
+  extraState.goalItems.push({text: txt, deadline: deadline||'', progress: Math.min(100,Math.max(0,progress)), done: false, id: Date.now()});
   saveExtra();
   document.getElementById('newGoalText').value='';
   document.getElementById('newGoalDeadline').value='';
@@ -1556,11 +1602,9 @@ function renderGoalItems(){
   const el = document.getElementById('goalItemsList'); if(!el) return;
   const goals = extraState.goalItems || [];
   if(!goals.length){
-    el.innerHTML='<div style="color:var(--muted);font-size:0.83rem;text-align:center;padding:24px 0;"><div style="font-size:2rem;margin-bottom:8px;">🎯</div>No goals yet.<br/><span style="font-size:0.75rem;">Tap + Add to set your first goal!</span></div>';
+    el.innerHTML='<div style="color:var(--muted);font-size:0.83rem;text-align:center;padding:16px 0;">No goals yet. Tap + Add to start!</div>';
     return;
   }
-  const PRIO_COLORS={high:'#f87171',medium:'#fbbf24',low:'#4ade80'};
-  const CAT_ICONS={study:'📚',health:'💪',career:'💼',personal:'🌙',finance:'💰',other:'📌'};
   const today_str = new Date().toISOString().split('T')[0];
   el.innerHTML = goals.map(g=>{
     const pct = g.progress||0;
@@ -1593,8 +1637,18 @@ function renderGoalItems(){
 const SKILL_LEVELS=['Beginner','Apprentice','Intermediate','Advanced','Expert','Master'];
 const XP_THRESHOLDS = [0, 100, 250, 500, 800, 1200];
 
-// toggleSkillEdit defined below
-
+function toggleSkillEdit(){
+  const panel = document.getElementById('skillEditPanel');
+  if(!panel) return;
+  const opening = panel.style.display === 'none';
+  panel.style.display = opening ? 'block' : 'none';
+  if(opening){
+    document.getElementById('skill1Icon').value = extraState.skill1Icon || '🐍';
+    document.getElementById('skill1Name').value = extraState.skill1Name || 'Python';
+    document.getElementById('skill2Icon').value = extraState.skill2Icon || '🎬';
+    document.getElementById('skill2Name').value = extraState.skill2Name || 'Video Editing';
+  }
+}
 function previewSkillNames(){
   // live preview while typing — optional light effect
 }
@@ -1654,54 +1708,121 @@ function getSkills(){
 function saveSkills(skills){ extraState.skills = skills; saveExtra(); }
 
 function addNewSkill(){
-  var form = document.getElementById('addSkillForm');
-  if(form){ form.style.display = form.style.display==='none'?'block':'none'; }
-}
-function suggestSkill(icon, name){
-  var ic = document.getElementById('newSkillIcon');
-  var nm = document.getElementById('newSkillName');
-  if(ic) ic.value = icon;
-  if(nm) nm.value = name;
-}
-function saveNewSkill(){
-  var icon = document.getElementById('newSkillIcon')?.value.trim()||'📌';
-  var name = document.getElementById('newSkillName')?.value.trim();
-  if(!name){ alert('Please enter a skill name.'); return; }
-  var skills = getSkills();
-  skills.push({id:'skill_'+Date.now(), icon:icon, name:name, xp:0});
+  const skills = getSkills();
+  skills.push({id:'skill_'+Date.now(), icon:'⭐', name:'New Skill', xp:0});
   saveSkills(skills);
-  document.getElementById('newSkillIcon').value='';
-  document.getElementById('newSkillName').value='';
-  document.getElementById('addSkillForm').style.display='none';
+  renderSkills();
+  toggleSkillEdit(true); // open edit panel
+}
+function deleteSkill(id){
+  if(!confirm('Delete this skill?')) return;
+  extraState.skills = getSkills().filter(s=>s.id!==id);
+  saveExtra(); renderSkills();
+}
+function updateSkill(id){
+  const skills = getSkills();
+  const s = skills.find(x=>x.id===id); if(!s) return;
+  const prevLvl = getSkillLevel(s.xp).level;
+  const xpGain = window._xpOverride || appSettings.xpPerSession || XP_PER_SESSION;
+  s.xp = (s.xp||0) + xpGain;
+  if(id==='python') extraState.pythonXP = s.xp;
+  if(id==='video')  extraState.videoXP  = s.xp;
+  saveSkills(skills);
+  const newLvl = getSkillLevel(s.xp).level;
+  if(newLvl > prevLvl) showLevelUp(s);
   renderSkills();
 }
-
-// Learning resources per skill type
-var SKILL_RESOURCES = {
-  'Python': ['🐍 freeCodeCamp Python','📘 Python.org Docs','▶️ CS50P Harvard','📱 SoloLearn Python'],
-  'Video Editing': ['▶️ Premiere Pro Tutorial','▶️ DaVinci Resolve Free','📺 YouTube Creators Academy','🎬 CapCut Guide'],
-  'Graphic Design': ['🎨 Canva Design School','▶️ Adobe Express Tutorials','📘 Graphic Design Basics','🖼️ Dribbble Inspiration'],
-  'Logo Design': ['🖋️ Logo Design Tutorial','▶️ Illustrator Basics','📘 Logo Design Principles','🎨 LogoMaker Free'],
-  'Web Dev': ['🌐 freeCodeCamp Web','📘 MDN Web Docs','▶️ The Odin Project','💻 CSS Tricks'],
-  'UI/UX Design': ['📱 Figma Free Course','▶️ Google UX Design','📘 UX Collective','🎨 Dribbble UI'],
-  'Data Analysis': ['📊 Kaggle Free Courses','▶️ Excel/Sheets Tutorial','🐍 Pandas Docs','📈 Google Data Analytics'],
-  'Content Writing': ['✍️ Copyblogger','📘 HubSpot Writing','▶️ Content Marketing','📝 Hemingway App'],
-  'Photography': ['📸 Photography Basics','▶️ Lightroom Tutorial','📘 Digital Photography School','🖼️ 500px Inspiration'],
-};
-
-function getSkillResources(name){
-  // Try exact match first, then partial
-  if(SKILL_RESOURCES[name]) return SKILL_RESOURCES[name];
-  var lower = name.toLowerCase();
-  for(var key in SKILL_RESOURCES){
-    if(lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)){
-      return SKILL_RESOURCES[key];
-    }
-  }
-  return ['🔍 Search on YouTube: '+name+' tutorial','📘 Search on Google: learn '+name,'▶️ freeCodeCamp on YouTube'];
+function showLevelUp(skill){
+  const toast = document.getElementById('levelUpToast');
+  const msg   = document.getElementById('levelUpMsg');
+  if(!toast||!msg) return;
+  msg.textContent = `${skill.icon} ${skill.name} leveled up! You reached ${SKILL_LEVELS[Math.min(getSkillLevel(skill.xp).level, SKILL_LEVELS.length-1)]}`;
+  toast.style.display='block';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(()=>{ toast.style.display='none'; }, 4000);
 }
+function renderSkills(){
+  var grid=document.getElementById('skillCardsGrid'); if(!grid) return;
+  var skills=getSkills();
+  if(!skills.length){
+    grid.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">&#128200;</div><div>No skills yet. Tap + Add Skill.</div></div>';
+    return;
+  }
+  var COLS=['#f5c542','#34d9c3','#fb923c','#a78bfa','#f87171','#4ade80'];
+  var xpLabel=(appSettings&&appSettings.xpPerSession)||25;
+  var LVLS=['Beginner','Learner','Intermediate','Advanced','Expert','Master'];
+  var THRS=[0,100,300,600,1000,1500];
+  var RES={'Python':['&#128014; freeCodeCamp Python','&#128218; python.org/docs'],'Video Editing':['&#127909; DaVinci Resolve Free','&#9654; Premiere Pro'],'Graphic Design':['&#127912; Canva Design School','&#9654; Adobe Express'],'Logo Design':['&#9654; Logo Design Tutorial','&#9654; Illustrator Basics'],'Web Dev':['&#127760; freeCodeCamp','&#128218; MDN Web Docs'],'UI/UX Design':['&#128241; Figma Free','&#9654; Google UX Certificate'],'Data Analysis':['&#128202; Kaggle Courses','&#128218; Pandas Docs']};
+  function getRes(n){if(RES[n])return RES[n];var lo=n.toLowerCase();for(var k in RES){if(lo.includes(k.toLowerCase()))return RES[k];}return ['Search: '+n+' tutorial on YouTube'];}
+  grid.innerHTML=skills.map(function(s,i){
+    var xp=s.xp||0; var lvl=0;
+    for(var j=0;j<THRS.length;j++){if(xp>=THRS[j])lvl=j;}
+    var cur=THRS[lvl]||0; var nxt=THRS[lvl+1];
+    var pct=nxt?Math.round((xp-cur)/(nxt-cur)*100):100;
+    var progTxt=nxt?(xp-cur)+'/'+(nxt-cur)+' XP to next':'Max level!';
+    var col=COLS[i%COLS.length]; var sid=s.id;
+    var res=getRes(s.name);
+    var resHtml=res.slice(0,2).map(function(r){return '<div style="font-size:0.75rem;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);">'+r+'</div>';}).join('');
+    var h='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">';
+    h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">';
+    h+='<div style="font-size:1.6rem;">'+s.icon+'</div>';
+    h+='<div style="flex:1;"><div style="font-size:0.65rem;color:'+col+';font-weight:700;text-transform:uppercase;">'+LVLS[lvl]+' &middot; Lv.'+(lvl+1)+'</div>';
+    h+='<div style="font-size:0.95rem;font-weight:700;color:var(--text);">'+s.name+'</div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);">'+xp+' XP</div></div>';
+    h+='<div style="display:flex;gap:4px;">';
+    h+='<button onclick="skillEdit('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#9998;</button>';
+    h+='<button onclick="skillDel('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#128465;</button>';
+    h+='</div></div>';
+    h+='<div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:3px;"></div></div>';
+    h+='<div style="font-size:0.62rem;color:var(--muted);margin-bottom:10px;">'+progTxt+'</div>';
+    h+='<button onclick="skillXP('+(sid)+')" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-weight:700;font-size:0.82rem;margin-bottom:10px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log session</button>';
+    h+='<div style="border-top:1px solid var(--border);padding-top:10px;"><div style="font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">&#128218; How to learn</div>'+resHtml+'</div>';
+    h+='<div id="sep_'+sid+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
+    h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+    h+='<input id="sei_'+sid+'" value="'+s.icon+'" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;"/>';
+    h+='<input id="sen_'+sid+'" value="'+s.name+'" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;"/>';
+    h+='</div><div style="display:flex;gap:8px;">';
+    h+='<button onclick="skillSave('+(sid)+')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:9px;cursor:pointer;font-weight:700;">Save</button>';
+    h+='<button onclick="skillCancelEdit('+(sid)+')" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:9px 14px;cursor:pointer;">Cancel</button>';
+    h+='</div></div></div>';
+    return h;
+  }).join('');
+}
+function skillEdit(id){var p=document.getElementById('sep_'+id);if(p)p.style.display=p.style.display==='none'?'block':'none';}
+function skillCancelEdit(id){var p=document.getElementById('sep_'+id);if(p)p.style.display='none';}
+function skillDel(id){if(!confirm('Delete this skill?'))return;saveSkills(getSkills().filter(function(x){return x.id!==id;}));renderSkills();}
+function skillSave(id){var icon=(document.getElementById('sei_'+id)||{}).value||'📌';var name=((document.getElementById('sen_'+id)||{}).value||'').trim();if(!name)return;var skills=getSkills();var sk=skills.find(function(x){return x.id===id;});if(!sk)return;sk.icon=icon.trim();sk.name=name;saveSkills(skills);renderSkills();}
+function skillXP(id){var skills=getSkills();var sk=skills.find(function(x){return x.id===id;});if(!sk)return;sk.xp=(sk.xp||0)+((appSettings&&appSettings.xpPerSession)||25);saveSkills(skills);renderSkills();}
 
 
+function toggleSkillEdit(forceOpen){
+  const panel = document.getElementById('skillEditPanel');
+  if(!panel) return;
+  const opening = forceOpen || panel.style.display==='none';
+  panel.style.display = opening ? 'block' : 'none';
+  if(opening) renderSkillEditList();
+}
+function renderSkillEditList(){
+  const list = document.getElementById('skillEditList'); if(!list) return;
+  const skills = getSkills();
+  list.innerHTML = skills.map((s,i)=>`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <input value="${s.icon}" maxlength="2" onchange="updateSkillField('${s.id}','icon',this.value)"
+        style="width:40px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 4px;color:var(--text);font-size:1rem;font-family:'Inter',sans-serif;" />
+      <input value="${s.name}" onchange="updateSkillField('${s.id}','name',this.value)"
+        style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.83rem;font-family:'Inter',sans-serif;" />
+      <button onclick="deleteSkill('${s.id}')" style="background:transparent;border:1px solid #7a2020;color:#f87171;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:0.8rem;font-family:'Inter',sans-serif;">🗑</button>
+    </div>`).join('');
+}
+function updateSkillField(id, field, val){
+  const skills = getSkills();
+  const s = skills.find(x=>x.id===id); if(!s) return;
+  s[field] = val;
+  saveSkills(skills);
+  renderSkills();
+}
+// stub — no longer needed but kept so old calls don't break
+function toggleSkillEdit2(){}
 function saveSkillNames(){}
 function previewSkillNames(){}
 function applySkillNames(){}
@@ -1767,17 +1888,6 @@ function renderTimeline(){
   // Filter out removed slots
   const removedKeys = extraState['removedSlots']||[];
   const visibleSlots = slots.filter(s=>s.section||!removedKeys.includes(dk+'_'+s.time));
-
-  // Empty state for new users
-  if(!visibleSlots.length){
-    tl.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:14px;">
-      <div style="font-size:3rem;opacity:0.3;">🗓️</div>
-      <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--muted);text-align:center;">No slots for this day</div>
-      <div style="font-size:0.78rem;color:var(--muted);text-align:center;max-width:220px;line-height:1.6;">Add your daily schedule from the Slots tab.</div>
-      <button onclick="switchView('slots')" style="background:var(--accent);border:none;color:#0a0905;border-radius:10px;padding:12px 24px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;margin-top:4px;">+ Add Slots</button>
-    </div>`;
-    return;
-  }
 
   // Current time in minutes
   const now=new Date();
@@ -2196,15 +2306,14 @@ function renderWeekProgress(){
 // SETTINGS SYSTEM
 // ═══════════════════════════════════════════════
 const ALL_TABS = [
-  {id:'daily',    label:'📋 Daily',    required:true},
-  {id:'monthly',  label:'📅 Month'},
-  {id:'medicine', label:'💊 Medicine'},
-  {id:'skills',   label:'📈 Skills'},
-  {id:'goals',    label:'🎯 Goals'},
-  {id:'notes',    label:'📝 Notes'},
-  {id:'pomo',     label:'⏱️ Pomodoro'},
-  {id:'tracker',  label:'🩺 Tracker'},
-  {id:'slots',    label:'🗓️ Slots'},
+  {id:'daily',  label:'📋 Daily',   required:true},
+  {id:'monthly',label:'📅 Month'},
+  {id:'skills', label:'📈 Skills'},
+  {id:'goals',  label:'🎯 Goals'},
+  {id:'notes',  label:'📝 Notes'},
+  {id:'pomo',   label:'⏱️ Pomodoro'},
+  {id:'tracker',label:'🩺 Tracker'},
+  {id:'slots',  label:'🗓️ Slots'},
 ];
 const DAILY_OPTIONS = [
   {id:'showQuickAccess', label:'Quick Access Buttons', sub:'Pomo / Tracker / Slots shortcuts', def:true},
@@ -2212,15 +2321,20 @@ const DAILY_OPTIONS = [
   {id:'showProgressBar', label:'Progress Bar',          sub:'Completion % bar',                 def:true},
   {id:'showSelectBtns',  label:'Select All / Clear',    sub:'Bulk check/uncheck buttons',       def:true},
 ];
-
+const DASHBOARD_OPTIONS = [
+  {id:'dashStreak', label:'Streak Banner',   sub:'Daily streak count',        def:true},
+  {id:'dashWater',  label:'Water Tracker',   sub:'Glass count on daily view', def:true},
+  {id:'dashMood',   label:'Mood Tracker',    sub:'Mood emoji row',            def:true},
+  {id:'dashPomo',   label:'Pomodoro Widget', sub:'Mini timer on daily view',  def:false},
+];
 
 function loadSettings(){ try{return JSON.parse(localStorage.getItem(getUserKey('voice_settings'))||'{}')}catch(e){return {};} }
 function saveSettings(s){ localStorage.setItem(getUserKey('voice_settings'),JSON.stringify(s)); }
-let appSettings = loadSettings();
+let appSettings = {};
 
 function getTabVisible(id){ return appSettings['tab_'+id]!==false; }
 function getDailyOpt(id){ const o=DAILY_OPTIONS.find(x=>x.id===id); return appSettings[id]!==false&&(o?o.def:true); }
-function getDashOpt(id){ return getDailyOpt(id); } // alias
+function getDashOpt(id){ const o=DASHBOARD_OPTIONS.find(x=>x.id===id); return appSettings[id]!==false&&(o?o.def:true); }
 
 function initSettings(){
   const tabEl=document.getElementById('tabToggles');
@@ -2237,7 +2351,12 @@ function initSettings(){
       <label class="toggle-switch"><input type="checkbox" ${getDailyOpt(o.id)?'checked':''} onchange="toggleDailyOpt('${o.id}',this.checked)"><span class="toggle-slider"></span></label>
     </div>`).join('');
 
-  // Dashboard options unified with Daily View options
+  const dbEl=document.getElementById('dashboardToggles');
+  if(dbEl) dbEl.innerHTML=DASHBOARD_OPTIONS.map(o=>`
+    <div class="setting-row">
+      <div><div class="setting-label">${o.label}</div><div class="setting-sub">${o.sub}</div></div>
+      <label class="toggle-switch"><input type="checkbox" ${getDashOpt(o.id)?'checked':''} onchange="toggleDashOpt('${o.id}',this.checked)"><span class="toggle-slider"></span></label>
+    </div>`).join('');
 
   const slEl=document.getElementById('skillLevelEditor');
   if(slEl){
@@ -2271,7 +2390,7 @@ function setActiveBtn(prefix,val){
 
 function toggleTabSetting(id,v){ appSettings['tab_'+id]=v; saveSettings(appSettings); applyTabVisibility(); }
 function toggleDailyOpt(id,v){ appSettings[id]=v; saveSettings(appSettings); applyDailyOptions(); }
-function toggleDashOpt(id,v){ toggleDailyOpt(id,v); } // alias
+function toggleDashOpt(id,v){ appSettings[id]=v; saveSettings(appSettings); applyDashboardOptions(); }
 
 function setTheme(t){ appSettings.theme=t; saveSettings(appSettings); applyTheme(); setActiveBtn('themeBtn',t); }
 function applyTheme(){
@@ -2329,27 +2448,27 @@ function applyTabVisibility(){
   });
 }
 function applyDailyOptions(){
-  applyDashboardOptions();
+  const qar=document.getElementById('quickAccessRow'); if(qar) qar.style.display=getDailyOpt('showQuickAccess')?'flex':'none';
+  const sr=document.querySelector('.stats-row'); if(sr) sr.style.display=getDailyOpt('showStatsRow')?'':'none';
+  const pb=document.querySelector('.progress-bar'); if(pb) pb.style.display=getDailyOpt('showProgressBar')?'':'none';
+  const sel=document.getElementById('selectBtnsRow'); if(sel) sel.style.display=getDailyOpt('showSelectBtns')?'flex':'none';
 }
 function applyDashboardOptions(){
-  // Unified with daily options
-  const qar=document.getElementById('quickAccessRow');
-  if(qar) qar.style.display=getDailyOpt('showQuickAccess')?'flex':'none';
-  const sr=document.querySelector('.stats-row');
-  if(sr) sr.style.display=getDailyOpt('showStatsRow')?'':'none';
-  const pb=document.querySelector('.progress-bar');
-  if(pb) pb.style.display=getDailyOpt('showProgressBar')?'':'none';
-  const sel=document.getElementById('selectBtnsRow');
-  if(sel) sel.style.display=getDailyOpt('showSelectBtns')?'flex':'none';
+  const waterSection=document.getElementById('inlineWaterSection');
+  if(waterSection) waterSection.style.display=getDashOpt('dashWater')?'':'none';
+  const moodSection=document.getElementById('inlineMoodSection');
+  if(moodSection) moodSection.style.display=getDashOpt('dashMood')?'':'none';
+  const pomoWidget=document.getElementById('dailyPomoWidget');
+  if(pomoWidget) pomoWidget.style.display=getDashOpt('dashPomo')?'':'none';
 }
 // Language strings
 const LANG={
-  en:{daily:'Daily',month:'Month',skills:'Skills',goals:'Goals',notes:'Notes',settings:'Settings',streak:'day streak',meds:'Meds'},
-  bn:{daily:'দৈনিক',month:'মাস',skills:'দক্ষতা',goals:'লক্ষ্য',notes:'নোট',settings:'সেটিং',streak:'দিনের ধারা',meds:'ওষুধ'}
+  en:{daily:'Daily',month:'Month',skills:'Skills',goals:'Goals',notes:'Notes',settings:'Settings',streak:'day streak'},
+  bn:{daily:'দৈনিক',month:'মাস',skills:'দক্ষতা',goals:'লক্ষ্য',notes:'নোট',settings:'সেটিং',streak:'দিনের ধারা'}
 };
 function applyLang(){
   const L=LANG[appSettings.lang||'en']||LANG.en;
-  const tabMap={tabDaily:'daily',tabMonthly:'month',tabSkills:'skills',tabGoals:'goals',tabNotes:'notes',tabSettings:'settings',tabMedicine:'meds'};
+  const tabMap={tabDaily:'daily',tabMonthly:'month',tabSkills:'skills',tabGoals:'goals',tabNotes:'notes',tabSettings:'settings'};
   Object.entries(tabMap).forEach(([id,key])=>{
     const btn=document.getElementById(id); if(!btn) return;
     const icon=btn.querySelector('.tab-icon');
@@ -2390,62 +2509,9 @@ function importData(e){
   reader.readAsText(file);
 }
 function confirmReset(){
-  if(!confirm('Delete YOUR data only? Other accounts will not be affected. This cannot be undone.')) return;
-  // Delete ALL localStorage keys belonging to current user
-  var userSuffix = getUserKey('_').replace('_','');
-  var toDelete = [];
-  for(var i=0; i<localStorage.length; i++){
-    var k = localStorage.key(i);
-    if(k && (
-      k === getUserKey('voice_done') ||
-      k === getUserKey('voice_extra') ||
-      k === getUserKey('voice_settings') ||
-      k === getUserKey('voice_cancelled') ||
-      k === getUserKey('voice_setup_done') ||
-      k.endsWith(userSuffix)
-    )) toDelete.push(k);
+  if(confirm('⚠️ Delete ALL data? This cannot be undone.')){
+    localStorage.clear(); showDataMsg('🗑️ Cleared. Refreshing...'); setTimeout(()=>location.reload(),1000);
   }
-  toDelete.forEach(function(k){ localStorage.removeItem(k); });
-
-  // Ask about sign out
-  var wantSignOut = confirm('Data cleared! Do you want to sign out too?\n\nYes = Go to login page\nNo = Go to setup (stay logged in)');
-  if(wantSignOut){
-    localStorage.removeItem('db_user');
-    sessionStorage.removeItem('gdrive_token');
-    window.location.href = 'index_V4.html';
-  } else {
-    window.location.href = 'setup_V4.html';
-  }
-}
-function sendAppFeedback(){
-  var text = document.getElementById('appFeedbackText')?.value.trim();
-  var email = document.getElementById('appFeedbackEmail')?.value.trim();
-  var msg = document.getElementById('appFeedbackMsg');
-  if(!text){ alert('Please write your feedback first.'); return; }
-  var user = JSON.parse(localStorage.getItem('db_user')||'null');
-  var userInfo = user ? (user.email||user.name||'Anonymous') : 'Anonymous';
-  fetch('https://formsubmit.co/ajax/voicelessvoice00@gmail.com',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body:JSON.stringify({
-      message: text,
-      from: email||userInfo,
-      _subject: 'Daily Balance App Feedback',
-      _captcha: 'false'
-    })
-  }).then(function(r){ return r.json(); })
-    .then(function(){
-      if(msg){ msg.textContent='✅ Feedback sent! Thank you.'; msg.style.display='block'; }
-      document.getElementById('appFeedbackText').value='';
-      document.getElementById('appFeedbackEmail').value='';
-      setTimeout(function(){ if(msg) msg.style.display='none'; },4000);
-    })
-    .catch(function(){
-      // Fallback: mailto
-      var sub = encodeURIComponent('Daily Balance Feedback');
-      var body = encodeURIComponent('From: '+(email||userInfo)+'\n\n'+text);
-      window.open('mailto:voicelessvoice00@gmail.com?subject='+sub+'&body='+body);
-    });
 }
 function showDataMsg(msg){
   const el=document.getElementById('dataMsg'); if(!el) return;
@@ -2560,9 +2626,6 @@ const NOTE_CAT_COLORS = {study:'var(--accent2)',class:'var(--class-b)',idea:'var
 const NOTE_CAT_LABELS = {study:'📚 Study',class:'🏫 Class',idea:'💡 Idea',todo:'✅ Todo',personal:'🌙 Personal'};
 function renderNotes(){
   const el = document.getElementById('notesList'); if(!el) return;
-  // Update count
-  const totalNotes = Object.keys(extraState).filter(k=>k.startsWith('notes_')).reduce((acc,k)=>acc+(extraState[k]||[]).length,0);
-  const countEl = document.getElementById('notesCount'); if(countEl) countEl.textContent = totalNotes+' note'+(totalNotes!==1?'s':'');
   const search = (document.getElementById('noteSearch')?.value||'').toLowerCase().trim();
   // Collect all notes with their day keys
   const allNotes = [];
@@ -2940,7 +3003,6 @@ function updateClock(){
 updateClock();
 setInterval(updateClock,1000);
 setInterval(()=>{ if(document.getElementById('dailyView').style.display!=='none') renderTimeline(); },60000);
-window.addEventListener('beforeunload',function(){ saveState(); saveExtra(); saveSettings(appSettings); });
 
 // ── POMODORO (r=30, circumference=188) ──
 let pomoRunning=false, pomoBreak=false;
@@ -3046,21 +3108,13 @@ function addMedicine(){
   const dose=document.getElementById('medDose')?.value.trim();
   const times=parseInt(document.getElementById('medTimes')?.value)||1;
   const note=document.getElementById('medNote')?.value.trim();
-  const timeSlots=[];
-  ['Morning','Afternoon','Evening','Night'].forEach(t=>{
-    const el=document.getElementById('med'+t);
-    if(el&&el.checked) timeSlots.push(el.value);
-  });
   if(!name) return;
   if(!extraState.medicines) extraState.medicines=[];
-  extraState.medicines.push({id:Date.now(), name, dose, times, note, timeSlots, active:true});
+  extraState.medicines.push({id:Date.now(), name, dose, times, note, active:true});
   saveExtra();
   document.getElementById('medName').value='';
   document.getElementById('medDose').value='';
   document.getElementById('medNote').value='';
-  ['medMorning','medAfternoon','medEvening','medNight'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.checked=false;
-  });
   document.getElementById('addMedForm').style.display='none';
   renderMedList();
 }
@@ -3093,7 +3147,7 @@ function renderMedList(){
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
         <div>
           <div style="font-size:0.88rem;font-weight:600;color:var(--text);">💊 ${m.name}</div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">\${m.dose?m.dose+' · ':''}\${m.times}x daily\${m.timeSlots&&m.timeSlots.length?' · '+m.timeSlots.map(t=>t==='morning'?'🌅':t==='afternoon'?'☀️':t==='evening'?'🌆':'🌙').join(' '):''}\${m.note?' · '+m.note:''}</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${m.dose?m.dose+' · ':''}${m.times}x daily${m.note?' · '+m.note:''}</div>
         </div>
         <button onclick="deleteMedicine(${m.id})" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">🗑</button>
       </div>
@@ -3156,7 +3210,7 @@ function renderModalTracker(){
 function initUserGreeting(){
   try{
     var user=JSON.parse(localStorage.getItem('db_user')||'null');
-    if(!user){ window.location.href='index_V4.html'; return; }
+    if(!user){ window.location.href='index.html'; return; }
     var av=document.getElementById('userAvatar');
     var ai=document.getElementById('userAvatarInner');
     if(av&&ai){
@@ -3183,7 +3237,7 @@ function signOut(){
   if(confirm('Sign out? Your data will stay saved.')){
     localStorage.removeItem('db_user');
     sessionStorage.removeItem('gdrive_token');
-    window.location.href='index_V4.html';
+    window.location.href='index.html';
   }
 }
 document.addEventListener('click',function(e){
@@ -3192,79 +3246,10 @@ document.addEventListener('click',function(e){
   if(m&&a&&!m.contains(e.target)&&!a.contains(e.target)) m.style.display='none';
 });
 window.addEventListener('DOMContentLoaded',function(){
-  if(!localStorage.getItem('db_user')){ window.location.href='index_V4.html'; return; }
+  if(!localStorage.getItem('db_user')){ window.location.href='index.html'; return; }
   initUserGreeting();
 });
 
-
-
-function renderSkills(){
-  var grid=document.getElementById('skillCardsGrid'); if(!grid) return;
-  var skills=getSkills();
-  if(!skills.length){
-    grid.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px;">&#128200;</div><div style="font-size:0.85rem;">No skills yet.<br/>Tap + Add Skill.</div></div>';
-    return;
-  }
-  var COLS=['#f5c542','#34d9c3','#fb923c','#a78bfa','#f87171','#4ade80'];
-  var xpLabel=(appSettings&&appSettings.xpPerSession)||25;
-  var LVLS=['Beginner','Learner','Intermediate','Advanced','Expert','Master'];
-  var THRS=[0,100,300,600,1000,1500];
-  var RES={'Python':['&#128014; freeCodeCamp Python','&#128218; python.org/docs','&#9654; CS50P Harvard'],'Video Editing':['&#127909; DaVinci Resolve Free','&#9654; Premiere Pro Tutorial'],'Graphic Design':['&#127912; Canva Design School','&#9654; Adobe Express'],'Logo Design':['&#9654; Logo Design Tutorial','&#9654; Illustrator Basics'],'Web Dev':['&#127760; freeCodeCamp','&#128218; MDN Web Docs'],'UI/UX Design':['&#128241; Figma Free','&#9654; Google UX Certificate'],'Data Analysis':['&#128202; Kaggle Courses','&#128218; Pandas Docs']};
-  function getRes(n){if(RES[n])return RES[n];var lo=n.toLowerCase();for(var k in RES){if(lo.includes(k.toLowerCase()))return RES[k];}return ['Search: '+n+' tutorial on YouTube'];}
-  grid.innerHTML=skills.map(function(s,i){
-    var xp=s.xp||0;
-    var lvl=0; for(var j=0;j<THRS.length;j++){if(xp>=THRS[j])lvl=j;}
-    var cur=THRS[lvl]||0; var nxt=THRS[lvl+1];
-    var pct=nxt?Math.round((xp-cur)/(nxt-cur)*100):100;
-    var progTxt=nxt?(xp-cur)+'/'+(nxt-cur)+' XP to next':'Max level!';
-    var col=COLS[i%COLS.length]; var sid=s.id;
-    var res=getRes(s.name);
-    var resHtml=res.slice(0,3).map(function(r){return '<div style="font-size:0.75rem;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);">'+r+'</div>';}).join('');
-    var h='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">';
-    h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">';
-    h+='<div style="font-size:1.6rem;">'+s.icon+'</div>';
-    h+='<div style="flex:1;"><div style="font-size:0.65rem;color:'+col+';font-weight:700;text-transform:uppercase;">'+LVLS[lvl]+' &middot; Lv.'+(lvl+1)+'</div>';
-    h+='<div style="font-size:0.95rem;font-weight:700;color:var(--text);">'+s.name+'</div>';
-    h+='<div style="font-size:0.62rem;color:var(--muted);">'+xp+' XP total</div></div>';
-    h+='<div style="display:flex;gap:4px;">';
-    h+='<button onclick="skillEdit('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#9998;</button>';
-    h+='<button onclick="skillDel('+(sid)+')" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;cursor:pointer;">&#128465;</button>';
-    h+='</div></div>';
-    h+='<div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:3px;"></div></div>';
-    h+='<div style="font-size:0.62rem;color:var(--muted);margin-bottom:10px;">'+progTxt+'</div>';
-    h+='<button onclick="skillXP('+(sid)+')" style="width:100%;background:var(--bg);border:1px solid '+col+'40;color:'+col+';border-radius:9px;padding:10px;cursor:pointer;font-weight:700;font-size:0.82rem;margin-bottom:10px;">'+s.icon+' +'+xpLabel+' XP &mdash; Log session</button>';
-    h+='<div style="border-top:1px solid var(--border);padding-top:10px;"><div style="font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">&#128218; How to learn</div>'+resHtml+'</div>';
-    h+='<div id="sep_'+sid+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
-    h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
-    h+='<input id="sei_'+sid+'" value="'+s.icon+'" maxlength="2" style="width:44px;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:1rem;"/>';
-    h+='<input id="sen_'+sid+'" value="'+s.name+'" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:0.85rem;"/>';
-    h+='</div><div style="display:flex;gap:8px;">';
-    h+='<button onclick="skillSave('+(sid)+')" style="flex:1;background:var(--accent);border:none;color:#0a0905;border-radius:7px;padding:9px;cursor:pointer;font-weight:700;font-size:0.82rem;">Save</button>';
-    h+='<button onclick="skillCancelEdit('+(sid)+')" style="background:var(--border);border:none;color:var(--muted);border-radius:7px;padding:9px 14px;cursor:pointer;font-size:0.82rem;">Cancel</button>';
-    h+='</div></div></div>';
-    return h;
-  }).join('');
-}
-function skillEdit(id){var p=document.getElementById('sep_'+id);if(p)p.style.display=p.style.display==='none'?'block':'none';}
-function skillCancelEdit(id){var p=document.getElementById('sep_'+id);if(p)p.style.display='none';}
-function skillDel(id){if(!confirm('Delete this skill?'))return;saveSkills(getSkills().filter(function(x){return x.id!==id;}));renderSkills();}
-function skillSave(id){var icon=(document.getElementById('sei_'+id)||{}).value||'&#128204;';var name=((document.getElementById('sen_'+id)||{}).value||'').trim();if(!name)return;var skills=getSkills();var sk=skills.find(function(x){return x.id===id;});if(!sk)return;sk.icon=icon.trim();sk.name=name;saveSkills(skills);renderSkills();}
-function skillXP(id){var skills=getSkills();var sk=skills.find(function(x){return x.id===id;});if(!sk)return;sk.xp=(sk.xp||0)+((appSettings&&appSettings.xpPerSession)||25);saveSkills(skills);renderSkills();}
-
-function editSkill(id){
-  // Toggle edit panel
-  var panel = document.getElementById('editPanel_'+id);
-  if(panel) panel.style.display = panel.style.display==='none'?'block':'none';
-}
-function saveSkillEdit(id){
-  var icon = document.getElementById('editIcon_'+id)?.value.trim()||'📌';
-  var name = document.getElementById('editName_'+id)?.value.trim();
-  if(!name) return;
-  var skills = getSkills();
-  var s = skills.find(x=>x.id===id); if(!s) return;
-  s.icon = icon; s.name = name;
-  saveSkills(skills); renderSkills();
-}
-
 </script>
 </body>
+</html>
