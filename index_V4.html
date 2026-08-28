@@ -187,7 +187,7 @@ function signInWithGoogle(){
     scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
     callback: function(resp){
       if(resp.error){ hideLoading(); alert('Sign in failed: '+resp.error); return; }
-      sessionStorage.setItem('gdrive_token', resp.access_token);
+      // Access token is used only for the immediate UserInfo request and is not persisted.
       showLoading('Loading your profile...');
       fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+resp.access_token}})
         .then(function(r){ return r.json(); })
