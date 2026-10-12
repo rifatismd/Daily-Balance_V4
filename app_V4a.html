@@ -550,6 +550,13 @@ function toggleTab(){}
 function toggleDailyOpt(){}
 function exportData(){}
 function importData(){}
+const V4_DRIVE_SCOPE='https://www.googleapis.com/auth/drive.appdata',V4_DRIVE_NAME='daily-balance-v4-backup.json',V4_CLIENT_ID='247285539126-6pbu6ogtpifr8a3qpt2fo7k1v27vu8u7.apps.googleusercontent.com';let v4DriveToken=null;
+function v4Keys(){return ['voice_done','voice_cancelled','voice_extra','voice_settings','voice_setup_done'].map(k=>getUserKey(k));}
+function v4Snapshot(){const data={};v4Keys().forEach(k=>data[k]=localStorage.getItem(k));return JSON.stringify({version:1,savedAt:new Date().toISOString(),data});}
+async function v4Token(){if(v4DriveToken)return v4DriveToken;if(!window.google||!google.accounts)await new Promise((ok,no)=>{const x=document.createElement('script');x.src='https://accounts.google.com/gsi/client';x.onload=ok;x.onerror=no;document.head.appendChild(x);});return new Promise((ok,no)=>google.accounts.oauth2.initTokenClient({client_id:V4_CLIENT_ID,scope:V4_DRIVE_SCOPE,callback:r=>r.access_token?(v4DriveToken=r.access_token,ok(r.access_token)):no(new Error(r.error||'Permission denied'))}).requestAccessToken({prompt:'consent'}));}
+async function v4Find(t){const q=encodeURIComponent("name='"+V4_DRIVE_NAME+"' and 'appDataFolder' in parents");const r=await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q='+q+'&fields=files(id,modifiedTime)',{headers:{Authorization:'Bearer '+t}});const x=await r.json();return x.files&&x.files[0];}
+async function backupToDrive(){try{const t=await v4Token(),f=await v4Find(t),body=v4Snapshot();let r;if(f)r=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+f.id+'?uploadType=media',{method:'PATCH',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body});else{const b='v4backup',p='--'+b+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify({name:V4_DRIVE_NAME,parents:['appDataFolder']})+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+body+'\r\n--'+b+'--';r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'multipart/related; boundary='+b},body:p});}if(!r.ok)throw Error('Backup failed');appSettings.lastBackup=new Date().toISOString();saveSettings(appSettings);document.getElementById('lastBackupDate').textContent=new Date(appSettings.lastBackup).toLocaleString();showDataMsg('✅ Backup saved to Google Drive.');}catch(e){showDataMsg('❌ Drive backup failed.');}}
+async function restoreFromDrive(){try{const t=await v4Token(),f=await v4Find(t);if(!f){showDataMsg('❌ No Drive backup found.');return;}if(!confirm('Restore Drive backup? Current local data will be replaced.'))return;const r=await fetch('https://www.googleapis.com/drive/v3/files/'+f.id+'?alt=media',{headers:{Authorization:'Bearer '+t}}),x=await r.json();if(!x.data)throw Error('Invalid backup');localStorage.setItem('v4_before_restore_'+Date.now(),v4Snapshot());Object.entries(x.data).forEach(([k,v])=>v===null?localStorage.removeItem(k):localStorage.setItem(k,v));location.reload();}catch(e){showDataMsg('❌ Drive restore failed.');}}
 function confirmReset(){}
 function pinPress(){}
 function pinBackspace(){}
@@ -1072,7 +1079,7 @@ function initSettings(){}
     <div class="settings-section-title">💾 Data & Backup</div>
 
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:0.75rem;color:var(--muted);">
-      Last backup: <span id="lastBackupDate" style="color:var(--text);">Never</span>
+      Last Google Drive backup: <span id="lastBackupDate" style="color:var(--text);">Never</span>
     </div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
@@ -1080,8 +1087,8 @@ function initSettings(){}
       <button onclick="importDataClick()" style="flex:1;min-width:110px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;">📥 Import</button>
     </div>
     <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-      <button onclick="backupToDrive()" style="flex:1;min-width:110px;background:#0f2a1a;border:1px solid #1a4a2a;color:#4ade80;border-radius:9px;padding:10px 8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;">☁️ Drive Backup</button>
-      <button onclick="restoreFromDrive()" style="flex:1;min-width:110px;background:#0f1a2a;border:1px solid #1a2a4a;color:#60a5fa;border-radius:9px;padding:10px 8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;">☁️ Drive Restore</button>
+      <button onclick="backupToDrive()" style="flex:1;min-width:110px;background:#0f2a1a;border:1px solid #1a4a2a;color:#4ade80;border-radius:9px;padding:10px 8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;">☁️ Backup to Drive</button>
+      <button onclick="restoreFromDrive()" style="flex:1;min-width:110px;background:#0f1a2a;border:1px solid #1a2a4a;color:#60a5fa;border-radius:9px;padding:10px 8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;">☁️ Restore from Drive</button>
     </div>
     <div id="driveSyncMsg" style="display:none;margin-top:8px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.82rem;color:var(--text);text-align:center;"></div>
     <input type="file" id="importFileInput" accept=".json" onchange="importData(event)" style="display:none;" />
