@@ -2171,52 +2171,14 @@ function checkBackupReminder(){
   if(daysSince>=7) setTimeout(()=>alert('📦 '+daysSince+' days since last backup. Export from Settings!'),2000);
 }
 
-// PIN LOCK
-let pinBuffer='';
-function togglePinLock(v){
-  appSettings.pinEnabled=v; saveSettings(appSettings);
-  const psa=document.getElementById('pinSetupArea'); if(psa) psa.style.display=v?'block':'none';
-  if(!v){delete appSettings.pin; saveSettings(appSettings);}
-}
-function savePIN(){
-  const inp=document.getElementById('pinInput'); const val=inp.value.trim();
-  if(val.length!==4||!/^\d{4}$/.test(val)){alert('PIN must be 4 digits.');return;}
-  appSettings.pin=btoa(val); appSettings.pinEnabled=true; saveSettings(appSettings);
-  inp.value=''; showDataMsg('✅ PIN saved!');
-}
-function removePIN(){
-  delete appSettings.pin; appSettings.pinEnabled=false; saveSettings(appSettings);
-  const plt=document.getElementById('pinLockToggle'); if(plt) plt.checked=false;
-  const psa=document.getElementById('pinSetupArea'); if(psa) psa.style.display='none';
-  showDataMsg('🔓 PIN removed.');
-}
-function checkPinLock(){
-  const ls=document.getElementById('lockScreen'); if(!ls) return;
-  // Only show lock if PIN is explicitly enabled AND a PIN exists
-  if(!appSettings.pinEnabled || !appSettings.pin){
-    ls.style.display='none';
-    return;
-  }
-  ls.style.display='flex';
-  const lockMsg=document.getElementById('lockMsg');
-  if(lockMsg){lockMsg.textContent='Enter your PIN to unlock';lockMsg.style.color='';}
-  pinBuffer=''; updatePinDots();
-}
-
-function pinPress(n){
-  if(pinBuffer.length>=4) return;
-  pinBuffer+=String(n); updatePinDots();
-  if(pinBuffer.length===4){
-    if(btoa(pinBuffer)===appSettings.pin){
-      const ls=document.getElementById('lockScreen'); if(ls) ls.style.display='none';
-      pinBuffer=''; updatePinDots();
-    } else {
-      const msg=document.getElementById('lockMsg');
-      if(msg){msg.textContent='Wrong PIN. Try again.';msg.style.color='var(--rose)';}
-      setTimeout(()=>{pinBuffer='';updatePinDots();if(msg){msg.textContent='Enter your PIN to unlock';msg.style.color='';}},700);
-    }
-  }
-}
+// PIN LOCK — local privacy lock protected with Web Crypto hashing.
+let pinBuffer='',pinFailures=0,pinLockedUntil=0;
+async function hashPIN(pin){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pin));return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function togglePinLock(v){appSettings.pinEnabled=v;saveSettings(appSettings);const a=document.getElementById('pinSetupArea');if(a)a.style.display=v?'block':'none';if(!v){delete appSettings.pin;delete appSettings.pinHash;saveSettings(appSettings);}}
+async function savePIN(){const i=document.getElementById('pinInput'),v=i.value.trim();if(v.length!==4||!/^\d{4}$/.test(v)){alert('PIN must be 4 digits.');return;}if(!crypto.subtle){alert('Please update your browser.');return;}appSettings.pinHash=await hashPIN(v);delete appSettings.pin;appSettings.pinEnabled=true;saveSettings(appSettings);i.value='';showDataMsg('✅ PIN saved securely.');}
+function removePIN(){delete appSettings.pin;delete appSettings.pinHash;appSettings.pinEnabled=false;saveSettings(appSettings);const t=document.getElementById('pinLockToggle');if(t)t.checked=false;const a=document.getElementById('pinSetupArea');if(a)a.style.display='none';showDataMsg('🔓 PIN removed.');}
+function checkPinLock(){const l=document.getElementById('lockScreen');if(!l)return;if(!appSettings.pinEnabled||(!appSettings.pin&&!appSettings.pinHash)){l.style.display='none';return;}l.style.display='flex';pinBuffer='';pinFailures=0;pinLockedUntil=0;updatePinDots();}
+async function pinPress(n){if(Date.now()<pinLockedUntil||pinBuffer.length>=4)return;pinBuffer+=String(n);updatePinDots();if(pinBuffer.length!==4)return;const p=pinBuffer,ok=appSettings.pinHash?(await hashPIN(p))===appSettings.pinHash:appSettings.pin&&btoa(p)===appSettings.pin;if(ok){if(!appSettings.pinHash){appSettings.pinHash=await hashPIN(p);delete appSettings.pin;saveSettings(appSettings);}document.getElementById('lockScreen').style.display='none';pinBuffer='';updatePinDots();return;}pinFailures++;const m=document.getElementById('lockMsg');if(pinFailures>=5){pinLockedUntil=Date.now()+30000;pinFailures=0;if(m)m.textContent='Too many attempts. Try again in 30 seconds.';}else if(m)m.textContent='Wrong PIN. Try again.';setTimeout(()=>{pinBuffer='';updatePinDots();},700);}
 function pinBackspace(){ pinBuffer=pinBuffer.slice(0,-1); updatePinDots(); }
 function updatePinDots(){
   document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pinBuffer.length));
