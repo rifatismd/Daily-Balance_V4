@@ -522,7 +522,7 @@
 .legal-back{display:inline-flex;align-items:center;gap:6px;background:#12151e;border:1px solid #1e2535;border-radius:8px;padding:8px 14px;color:#5e728c;font-size:0.8rem;cursor:pointer;margin-bottom:24px;font-family:"Inter",sans-serif;}
 .legal-back:hover{color:#f5c542;border-color:#f5c542;}
   </style>
-</head>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script><script>window.DB_FIREBASE_CONFIG={apiKey:"AIzaSyDZJ69DLs-3il510iYzvZYttYVUx6iqDbk",authDomain:"daily-balance-500720-d62e1.firebaseapp.com",projectId:"daily-balance-500720-d62e1",storageBucket:"daily-balance-500720-d62e1.firebasestorage.app",messagingSenderId:"394083765985",appId:"1:394083765985:web:4881d1334c8893e738b1a0"};if(!firebase.apps.length)firebase.initializeApp(window.DB_FIREBASE_CONFIG);</script></head>
 <body>
 <script>
 function getUserKey(b){try{var u=JSON.parse(localStorage.getItem('db_user')||'null');if(u&&u.email&&u.authType==='google')return b+'_'+u.email.replace(/[^a-z0-9]/gi,'_');}catch(e){}return b+'_guest';}
@@ -2880,4 +2880,15 @@ window.addEventListener('DOMContentLoaded',function(){
 
 
 </script>
-</body>
+<script>
+(function(){
+ const db=firebase.firestore();let timer=null;
+ function uid(){return firebase.auth().currentUser&&firebase.auth().currentUser.uid;}
+ function keys(){return ['voice_done','voice_cancelled','voice_extra','voice_settings','voice_setup_done'].map(k=>getUserKey(k));}
+ function blob(){const x={};keys().forEach(k=>x[k]=localStorage.getItem(k));return x;}
+ async function sync(){const id=uid();if(!id)return;try{await db.collection('users').doc(id).set({v4:{data:blob(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},schemaVersion:1},{merge:true});showDataMsg('☁️ Firebase synced.');}catch(e){showDataMsg('⚠️ Cloud sync pending — data stays local.');}}
+ window.firebaseSyncNow=sync;
+ ['saveState','saveCancelled','saveExtra','saveSettings'].forEach(n=>{const old=window[n];if(old)window[n]=function(){old.apply(this,arguments);clearTimeout(timer);timer=setTimeout(sync,1500);};});
+ firebase.auth().onAuthStateChanged(async u=>{if(!u)return;const d=await db.collection('users').doc(u.uid).get(),c=d.exists&&d.data().v4&&d.data().v4.data;if(c){const local=blob();if(confirm('Cloud data found. Press OK to use Cloud data, or Cancel to keep this device data.')){Object.entries(c).forEach(([k,v])=>v===null?localStorage.removeItem(k):localStorage.setItem(k,v));location.reload();}else sync();}else sync();});
+})();
+</script></body>
