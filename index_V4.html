@@ -59,7 +59,7 @@
     .switch-account{font-size:0.72rem;color:#3a4a60;text-align:center;margin-top:-8px;margin-bottom:12px;cursor:pointer;}
     .switch-account:hover{color:#f5c542;}
   </style>
-</head>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script><script>window.DB_FIREBASE_CONFIG={apiKey:"AIzaSyDZJ69DLs-3il510iYzvZYttYVUx6iqDbk",authDomain:"daily-balance-500720-d62e1.firebaseapp.com",projectId:"daily-balance-500720-d62e1",storageBucket:"daily-balance-500720-d62e1.firebasestorage.app",messagingSenderId:"394083765985",appId:"1:394083765985:web:4881d1334c8893e738b1a0"};if(!firebase.apps.length)firebase.initializeApp(window.DB_FIREBASE_CONFIG);</script></head>
 <body>
 <div class="bg-grid"></div>
 <div class="bg-glow bg-glow-1"></div>
@@ -254,5 +254,18 @@ function sendFeedback(){
     });
 }
 </script>
-</body>
+<script>
+// Firebase Google sign-in replaces the legacy profile-only OAuth flow.
+async function signInWithGoogle(){
+ try{
+  showLoading('Signing you in...');
+  const result=await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+  const u=result.user;
+  const user={name:u.displayName||'',email:u.email||'',photo:u.photoURL||'',authType:'google',firebaseUid:u.uid};
+  localStorage.setItem('db_user',JSON.stringify(user));
+  showLoading('Welcome, '+(user.name||'').split(' ')[0]+'!');
+  setTimeout(()=>{hideLoading();typeof goToApp==='function'?goToApp():openApp();},500);
+ }catch(e){hideLoading();alert('Google sign-in failed. Please try again.');}
+}
+</script></body>
 </html>
